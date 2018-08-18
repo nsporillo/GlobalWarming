@@ -40,3 +40,12 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# intellij
+*.iml
+*.ipr
+*.iws
+.idea/
+
+out/
+.idea/**/libraries
