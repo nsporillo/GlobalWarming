@@ -12,5 +12,5 @@ public class World {
 	private String worldName;
 	private double temperature;
 	private long age;
-	private int size;
+	private int size, score;
 }
