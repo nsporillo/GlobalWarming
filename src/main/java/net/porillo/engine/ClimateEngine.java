@@ -6,6 +6,8 @@ import net.porillo.objects.World;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
+import java.util.UUID;
+
 public class ClimateEngine {
 
 	private ScoreTempModel scoreTempModel;
@@ -24,6 +26,8 @@ public class ClimateEngine {
 
 	public Contribution furnaceBurn(FurnaceBurnEvent event) {
 		Contribution contribution = new Contribution();
+		contribution.setUniqueID(UUID.randomUUID());
+
 		contribution.setWorldName(world.getWorldName());
 		contribution.setContributionValue(contributionModel.getContribution(event.getFuel().getType().name().toLowerCase()));
 	}

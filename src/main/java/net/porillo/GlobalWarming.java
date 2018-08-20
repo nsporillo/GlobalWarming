@@ -21,8 +21,8 @@ public class GlobalWarming extends JavaPlugin {
 		this.connectionManager = config.makeConnectionManager();
 		this.tableManager = new TableManager();
 
-		Bukkit.getPluginManager().registerEvents(new AttributionListener(), this);
-		Bukkit.getPluginManager().registerEvents(new CO2Listener(), this);
+		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
 
 
 	}
