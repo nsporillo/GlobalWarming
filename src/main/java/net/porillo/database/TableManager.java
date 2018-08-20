@@ -11,6 +11,7 @@ public class TableManager {
 	@Getter private ContributionTable contributionTable;
 	@Getter private FurnaceTable furnaceTable;
 	@Getter private TreeTable treeTable;
+	@Getter private OffsetTable offsetTable;
 
 	public TableManager() {
 		this.worldTable = new WorldTable();
@@ -19,5 +20,6 @@ public class TableManager {
 		this.contributionTable = new ContributionTable();
 		this.furnaceTable = new FurnaceTable();
 		this.treeTable = new TreeTable();
+		this.offsetTable = new OffsetTable();
 	}
 }
