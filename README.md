@@ -11,7 +11,7 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Ever had the hankering to turn a game meant for fun into a emulator of one of the modern worlds toughest challenges?
 + Observe the [Prisoner's Dilemma](https://en.wikipedia.org/wiki/Prisoner%27s_dilemma#In_environmental_studies) first hand! 
 + Players are best off when they co-operate and agree to reduce their emissions
-+ However, each individual player typically believes they are better off for themselves to emit as much as possible. 
++ However, each individual player typically believes they are better off for themselves to emit as much as they wish. 
 + Avoiding a [Tragedy of the Commons](https://en.wikipedia.org/wiki/Tragedy_of_the_commons) might be fun! If the players dont play nice and end up dealing with the consequences, they might decide to make an agreement to fix the planet. 
 
 ## Mechanics 
@@ -19,11 +19,14 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Every tree growth causes a "Reduction" from emissions with an associated numerical value (based on the model)
 + The global temperature is a function of the net global carbon score. 
 + As the global temperature rises, the frequency and severity of negative climate damages increases.
-+ Allow players to purchase "carbon offsets" which instantly reduce their personal carbon score
++ Players can purchase "carbon offsets" which creates a tree-planting bounty for other players to furfill. 
+
+## Challenges
++ Currently, a tree growth will instantly reduce CO2 levels so players can commercially farm trees while still reducing emissions. This is not ideal. Keeping track of all planted trees is an expensive operation, so some ingenuity is needed here.
 
 ## (Planned) Features
 + Scoreboard Integration - Players can compete for carbon neutrality! The worst polluters can be shamed.
-+ Economy Integration - Carbon Offsetting using your in-game currency! Make em pay for being lazy with not replanting.
++ Economy Integration - Carbon Offsetting using your in-game currency! Set up tree-planting bountys 
 + Carbon Scorecard - Each player can see their latest carbon footprint trends via command line.
 + Multi-world - You can experiment with this plugin on one of your worlds to test it out!
 + Custom Models - The inner numerical workings are configurable as possible. Set thresholds, probabilities, and distributions.
@@ -43,7 +46,7 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Oceans rise b/c water expands when heated and glaciers are melting
 ![Oceans](https://i.imgur.com/dJPkYAo.png)
 
-## Negative Climate Damages (Sample Model) 
+## Negative Climate Damages (Sample Model) - 
 - Higher temps inherit the damages from the lower temps
 + 14.0 C - No effects [Baseline]
 + 14.5 C - | Minor changes | 
@@ -56,6 +59,8 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 
 ## Suggestions 
 Feel free to create issues on this github project, or email me at nsporillo@gmail.com
+
+I'm still working on establishing a stable default model that doesnt implode servers a day after they install. The negative effects need to be burdensome but not devastating right off the bat, and it's difficult to project what will happpen. Please let me know if you have any thoughts
 
 ## Contributing 
 Always welcome to fork this repository and submit pull requests!
