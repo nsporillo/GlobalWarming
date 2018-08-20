@@ -20,7 +20,6 @@ public class ContributionTable extends Table {
 
 	}
 
-	@Override
 	public List<Contribution> loadTable() {
 		return null;
 	}

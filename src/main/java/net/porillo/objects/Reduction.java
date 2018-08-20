@@ -13,7 +13,6 @@ public class Reduction {
 
 	private UUID uniqueID;
 	private UUID reductioner;
-	private UUID reductionKey;
 	private String worldName;
 	private double reductionValue;
 }

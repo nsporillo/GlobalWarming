@@ -2,19 +2,19 @@ package net.porillo.objects;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.bukkit.Location;
 
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode
 @AllArgsConstructor
 public class Furnace {
 
 	private UUID uniqueID;
 	private Player owner;
 	private Location location;
-	private boolean exists;
 
 }

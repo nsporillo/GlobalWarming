@@ -8,7 +8,7 @@ import java.util.List;
 
 public class WorldTable extends Table {
 
-	@Getter  private List<World> worlds = new ArrayList<>();
+	@Getter private List<World> worlds = new ArrayList<>();
 
 	public WorldTable() {
 		super("worlds");
@@ -18,12 +18,21 @@ public class WorldTable extends Table {
 	public void createIfNotExists() {
 
 	}
+	
+	public World getWorld(String name) {
+		for (World world : worlds) {
+			if (world.getWorldName().equals(name)) {
+				return world;
+			}
+		}
 
-	public void addWorld(org.bukkit.World world) {
-
+		return null;
+	}
+	
+	public void addWorld(World world) {
+		this.worlds.add(world);
 	}
 
-	@Override
 	public List<World> loadTable() {
 		return null;
 	}

@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.porillo.config.GlobalWarmingConfig;
 import net.porillo.database.AsynchronousConnectionManager;
 import net.porillo.database.TableManager;
+import net.porillo.engine.ClimateEngine;
 import net.porillo.listeners.AttributionListener;
 import net.porillo.listeners.CO2Listener;
 import org.bukkit.Bukkit;
@@ -11,14 +12,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class GlobalWarming extends JavaPlugin {
 
-	@Getter private GlobalWarmingConfig config;
+	@Getter private GlobalWarmingConfig conf;
 	@Getter private AsynchronousConnectionManager connectionManager;
 	@Getter private TableManager tableManager;
 
 	@Override
 	public void onEnable() {
-		this.config = new GlobalWarmingConfig(this);
-		this.connectionManager = config.makeConnectionManager();
+		this.conf = new GlobalWarmingConfig(this);
+		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
 
 		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
@@ -31,4 +32,5 @@ public class GlobalWarming extends JavaPlugin {
 	public void onDisable() {
 
 	}
+
 }

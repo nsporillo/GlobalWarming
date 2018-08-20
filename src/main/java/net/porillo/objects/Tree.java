@@ -3,7 +3,6 @@ package net.porillo.objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bukkit.Location;
 
 import java.util.UUID;
 

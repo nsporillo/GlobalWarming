@@ -20,7 +20,6 @@ public class ReductionTable extends Table {
 
 	}
 
-	@Override
 	public List<Reduction> loadTable() {
 		return null;
 	}

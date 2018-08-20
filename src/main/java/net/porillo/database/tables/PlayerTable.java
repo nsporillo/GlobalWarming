@@ -19,7 +19,6 @@ public class PlayerTable extends Table {
 
 	}
 
-	@Override
 	public List<Player> loadTable() {
 		return null;
 	}

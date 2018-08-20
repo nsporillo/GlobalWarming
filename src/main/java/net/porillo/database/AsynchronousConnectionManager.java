@@ -20,7 +20,6 @@ public class AsynchronousConnectionManager {
 		this.password = password;
 	}
 
-	// TODO Async callback return connection for table classes to access
 	public void openConnection() throws SQLException, ClassNotFoundException {
 		if (connection != null && !connection.isClosed()) {
 			return;

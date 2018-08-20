@@ -8,14 +8,15 @@ import lombok.Getter;
 import net.porillo.objects.Furnace;
 import net.porillo.objects.Location;
 import net.porillo.objects.Player;
+import net.porillo.objects.Tree;
 
-public class FurnaceTable extends Table {
+public class TreeTable extends Table {
 
-	@Getter private Map<Location, Furnace> locationMap = new HashMap<>();
-	@Getter private Map<Player, HashSet<Furnace>> playerMap = new HashMap<>();
+	@Getter private Map<Location, Tree> locationMap = new HashMap<>();
+	@Getter private Map<Player, HashSet<Tree>> playerMap = new HashMap<>();
 
-	public FurnaceTable() {
-		super("furnaces");
+	public TreeTable() {
+		super("trees");
 	}
 
 	@Override

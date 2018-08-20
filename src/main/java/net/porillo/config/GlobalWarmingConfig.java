@@ -1,6 +1,12 @@
 package net.porillo.config;
 
 import net.porillo.database.AsynchronousConnectionManager;
+import net.porillo.engine.ClimateEngine;
+import net.porillo.objects.World;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.plugin.Plugin;
 
 public class GlobalWarmingConfig extends ConfigLoader {
@@ -9,11 +15,13 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	private int port;
 	private String database;
 	private String username, password;
+	private Map<World, ClimateEngine> engineMap;
 
 	public GlobalWarmingConfig(Plugin plugin) {
 		super(plugin, "config.yml");
 		super.saveIfNotExist();
 		super.load();
+		this.engineMap = new HashMap<>();
 	}
 
 	@Override
@@ -35,4 +43,13 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		super.rereadFromDisk();
 		super.load();
 	}
-}
+	
+	public ClimateEngine getEngine(World world) {
+		if (engineMap.containsKey(world)) {
+			return engineMap.get(world);
+		} else {
+			engineMap.put(world, new ClimateEngine(world));
+			return getEngine(world);
+		}
+	}
+} 

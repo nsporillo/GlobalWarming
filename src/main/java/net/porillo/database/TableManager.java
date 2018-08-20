@@ -10,7 +10,7 @@ public class TableManager {
 	@Getter private ReductionTable reductionTable;
 	@Getter private ContributionTable contributionTable;
 	@Getter private FurnaceTable furnaceTable;
-	@Getter private PlayerFurnaceTable playerFurnaceTable;
+	@Getter private TreeTable treeTable;
 
 	public TableManager() {
 		this.worldTable = new WorldTable();
@@ -18,6 +18,6 @@ public class TableManager {
 		this.reductionTable = new ReductionTable();
 		this.contributionTable = new ContributionTable();
 		this.furnaceTable = new FurnaceTable();
-		this.playerFurnaceTable = new PlayerFurnaceTable();
+		this.treeTable = new TreeTable();
 	}
 }

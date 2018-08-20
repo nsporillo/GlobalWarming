@@ -10,6 +10,4 @@ public abstract class Table {
 	private String tableName;
 
 	public abstract void createIfNotExists();
-
-	public abstract List<?> loadTable();
 }
