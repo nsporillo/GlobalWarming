@@ -38,7 +38,7 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Education Edition support
 + Incorporate Methane, since CO2 is not the only greenhouse gas that matters.
 
-## Science and Economics of Climate Change
+## Related Science of Climate Change
 + Atmosphere warms with more CO2 because of Greenhouse Effect
 ![Greenhouse Effect](https://i.imgur.com/XsWJGz9.png)
 + ![Earth's Global Energy Budget](https://i.imgur.com/aHdJxXc.png)
@@ -52,15 +52,15 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + 14.5 C - | Minor changes | 
 + 15.0 C - | Localized Acid Rain | Some mobs spawn less | Some mobs spawn more |
 + 16.0 C - | +1 Sea Level Rise | Tropical fish die |
-+ 17.0 C - |Global Acid Rain | Some trees no longer grow | +1 Sea Level Rise |
++ 17.0 C - |Global Acid Rain | Some trees no longer grow | +1 Sea Level Rise | Coral Reefs die |
 + 18.0 C - |Noxious Area Potion Effect Clouds | Farm yields decrease | +2 Sea Level Rise | All Snow/Ice melts |
-+ 19.0 C - | All fish die |
++ 19.0 C - | All fish die | Random Forest Fires | Slower Health Regen |
 + 20.0 C - "Devastation".. Highly polluted chunks get permanent severe area potion effects, forest fires, etc
 
 ## Suggestions 
 Feel free to create issues on this github project, or email me at nsporillo@gmail.com
 
-I'm still working on establishing a stable default model that doesnt implode servers a day after they install. The negative effects need to be burdensome but not devastating right off the bat, and it's difficult to project what will happpen. Please let me know if you have any thoughts
+I'm still working on establishing a stable default model that doesnt implode servers a day after they install. The negative effects need to be burdensome but not devastating right off the bat, and it's difficult to project what will happpen. Please let me know if you have any thoughts!
 
 ## Contributing 
 Always welcome to fork this repository and submit pull requests!
