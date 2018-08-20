@@ -49,3 +49,8 @@ $RECYCLE.BIN/
 
 out/
 .idea/**/libraries
+/target/
+
+.classpath
+.project
+.settings/
