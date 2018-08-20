@@ -4,12 +4,11 @@ import lombok.Getter;
 import net.porillo.objects.Player;
 import net.porillo.objects.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PlayerTable extends Table {
 
-	@Getter  private List<Player> players = new ArrayList<>();
+	@Getter  private Map<UUID, Player> players = new HashMap<>();
 
 	public PlayerTable() {
 		super("players");
