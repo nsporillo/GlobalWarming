@@ -1,18 +1,22 @@
 package net.porillo.database.tables;
 
+import lombok.Getter;
+import net.porillo.objects.Furnace;
+import net.porillo.objects.GLocation;
+import net.porillo.objects.GPlayer;
+import org.bukkit.World;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import lombok.Getter;
-import net.porillo.objects.Furnace;
-import net.porillo.objects.Location;
-import net.porillo.objects.Player;
 
 public class FurnaceTable extends Table {
 
-	@Getter private Map<Location, Furnace> locationMap = new HashMap<>();
-	@Getter private Map<Player, HashSet<Furnace>> playerMap = new HashMap<>();
+	@Getter
+	private Map<GLocation, Furnace> locationMap = new HashMap<>();
+	@Getter
+	private Map<GPlayer, HashSet<Furnace>> playerMap = new HashMap<>();
 
 	public FurnaceTable() {
 		super("furnaces");
@@ -23,7 +27,7 @@ public class FurnaceTable extends Table {
 
 	}
 
-	public void addWorld(org.bukkit.World world) {
+    public void addWorld(World world) {
 
 	}
 

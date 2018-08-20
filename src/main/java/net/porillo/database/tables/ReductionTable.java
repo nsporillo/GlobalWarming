@@ -1,7 +1,6 @@
 package net.porillo.database.tables;
 
 import lombok.Getter;
-import net.porillo.objects.Player;
 import net.porillo.objects.Reduction;
 
 import java.util.ArrayList;
