@@ -1,19 +1,23 @@
 package net.porillo.database.tables;
 
+import lombok.Getter;
+import net.porillo.objects.Furnace;
+import net.porillo.objects.GLocation;
+import net.porillo.objects.GPlayer;
+import net.porillo.objects.Tree;
+import org.bukkit.World;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import lombok.Getter;
-import net.porillo.objects.Furnace;
-import net.porillo.objects.Location;
-import net.porillo.objects.Player;
-import net.porillo.objects.Tree;
 
 public class TreeTable extends Table {
 
-	@Getter private Map<Location, Tree> locationMap = new HashMap<>();
-	@Getter private Map<Player, HashSet<Tree>> playerMap = new HashMap<>();
+	@Getter
+	private Map<GLocation, Tree> locationMap = new HashMap<>();
+	@Getter
+	private Map<GPlayer, HashSet<Tree>> playerMap = new HashMap<>();
 
 	public TreeTable() {
 		super("trees");
@@ -24,7 +28,7 @@ public class TreeTable extends Table {
 
 	}
 
-	public void addWorld(org.bukkit.World world) {
+	public void addWorld(World world) {
 
 	}
 

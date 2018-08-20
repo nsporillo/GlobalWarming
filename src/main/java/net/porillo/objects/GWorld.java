@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Player {
+public class GWorld {
 
-	private UUID uuid;
-	private long firstSeen;
-	private int carbonScore;
+	private String worldName;
+	private double temperature;
+	private long age;
+	private int size, score;
 }
