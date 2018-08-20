@@ -5,10 +5,9 @@ import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.database.tables.TreeTable;
 import net.porillo.objects.Furnace;
-import net.porillo.objects.Location;
-import net.porillo.objects.Player;
+import net.porillo.objects.GLocation;
+import net.porillo.objects.GPlayer;
 import net.porillo.objects.Tree;
-
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,21 +35,21 @@ public class AttributionListener implements Listener {
 		if (event.getBlockPlaced().getType() != Material.FURNACE && !event.getBlockPlaced().getType().name().endsWith("SAPLING")) {
 			return;
 		}
-		
-		Location location = new Location(event.getBlockPlaced().getLocation());
+
+		GLocation location = new GLocation(event.getBlockPlaced().getLocation());
 		PlayerTable playerTable = gw.getTableManager().getPlayerTable();
-		Player player;
+		GPlayer player;
 
 		if (playerTable.getPlayers().containsKey(event.getPlayer().getUniqueId())) {
 			player = playerTable.getPlayers().get(event.getPlayer().getUniqueId());
 		} else {
-			player = new Player(event.getPlayer().getUniqueId(), System.currentTimeMillis(), 0);
+			player = new GPlayer(event.getPlayer().getUniqueId(), System.currentTimeMillis(), 0);
 		}
 		
 		if (event.getBlockPlaced().getType() == Material.FURNACE) {
-			// Record furnace placement to track player attribution
+			// Record furnace placement to track GPlayer attribution
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
-			Map<Player, HashSet<Furnace>> playerFurnaceMap = furnaceTable.getPlayerMap();
+			Map<GPlayer, HashSet<Furnace>> playerFurnaceMap = furnaceTable.getPlayerMap();
 			
 			// Create new furnace object 
 			Furnace furnace = new Furnace(UUID.randomUUID(), player, location);
@@ -70,7 +69,7 @@ public class AttributionListener implements Listener {
 				furnaces.add(furnace);
 				playerFurnaceMap.put(player, furnaces);
 			}
-			
+
 			furnaceTable.getLocationMap().put(location, furnace);
 			// TODO: Queue Async DB update
 			
@@ -79,13 +78,13 @@ public class AttributionListener implements Listener {
 			// Track saplings to give credit to those when their saplings grow
 			// Saplings are trees of size 0
 			Tree tree = new Tree(UUID.randomUUID(), player, location, 0);
-			
+
 			if (treeTable.getLocationMap().containsKey(location)) {
 				gw.getLogger().severe("Tree placed at location of existing tree!");
 				gw.getLogger().severe("@ " + location.toString());
 				return;
 			}
-			
+
 			if (treeTable.getPlayerMap().containsKey(player)) {
 				HashSet<Tree> trees = treeTable.getPlayerMap().get(player);
 				trees.add(tree);
@@ -95,7 +94,7 @@ public class AttributionListener implements Listener {
 				trees.add(tree);
 				treeTable.getPlayerMap().put(player, trees);
 			}
-			
+
 			treeTable.getLocationMap().put(location, tree);
 			// TODO: Queue Async DB update
 		}
@@ -109,12 +108,12 @@ public class AttributionListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.getBlock().getType() == Material.FURNACE) {
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
-			Map<Player, HashSet<Furnace>> playerFurnaceMap = furnaceTable.getPlayerMap();
-			Location location = new Location(event.getBlock().getLocation());
-			
+			Map<GPlayer, HashSet<Furnace>> playerFurnaceMap = furnaceTable.getPlayerMap();
+			GLocation location = new GLocation(event.getBlock().getLocation());
+
 			if (furnaceTable.getLocationMap().containsKey(location)) {
 				Furnace furnace = furnaceTable.getLocationMap().get(location);
-				final Player owner = furnace.getOwner();
+				final GPlayer owner = furnace.getOwner();
 				
 				HashSet<Furnace> furnaces = playerFurnaceMap.get(owner);
 				furnaces.remove(furnace);

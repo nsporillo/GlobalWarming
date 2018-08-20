@@ -1,39 +1,40 @@
 package net.porillo.database.tables;
 
 import lombok.Getter;
-import net.porillo.objects.World;
+import net.porillo.objects.GWorld;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorldTable extends Table {
 
-	@Getter private List<World> worlds = new ArrayList<>();
+    @Getter
+    private List<GWorld> worlds = new ArrayList<>();
 
 	public WorldTable() {
-		super("worlds");
+        super("worlds");
 	}
 
 	@Override
 	public void createIfNotExists() {
 
 	}
-	
-	public World getWorld(String name) {
-		for (World world : worlds) {
-			if (world.getWorldName().equals(name)) {
-				return world;
+
+    public GWorld getWorld(String name) {
+        for (GWorld world : worlds) {
+            if (world.getWorldName().equals(name)) {
+                return world;
 			}
 		}
 
 		return null;
 	}
-	
-	public void addWorld(World world) {
-		this.worlds.add(world);
-	}
 
-	public List<World> loadTable() {
+    public void addWorld(GWorld world) {
+        this.worlds.add(world);
+    }
+
+    public List<GWorld> loadTable() {
 		return null;
 	}
 }

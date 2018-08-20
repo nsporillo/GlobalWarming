@@ -12,8 +12,8 @@ import java.util.UUID;
 public class Tree {
 
 	private UUID uniqueID;
-	private Player owner;
-	private Location location;
+	private GPlayer owner;
+	private GLocation location;
 	private int size;
 
 }
