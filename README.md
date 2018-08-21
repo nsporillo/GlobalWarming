@@ -42,7 +42,6 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Atmosphere warms with more CO2 because of Greenhouse Effect
 ![Greenhouse Effect](https://i.imgur.com/XsWJGz9.png)
 + ![Earth's Global Energy Budget](https://i.imgur.com/aHdJxXc.png)
-+ [Acid Rain](https://en.wikipedia.org/wiki/Acid_rain)
 + Oceans rise b/c water expands when heated and glaciers are melting
 ![Oceans](https://i.imgur.com/dJPkYAo.png)
 
