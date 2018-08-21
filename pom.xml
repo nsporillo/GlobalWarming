@@ -16,7 +16,7 @@
     </properties>
     <build>
         <defaultGoal>clean package install</defaultGoal>
-        <finalName>EntityManager</finalName>
+        <finalName>GlobalWarming</finalName>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <resources>
             <resource>
