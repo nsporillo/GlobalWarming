@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Furnace {
 
 	private UUID uniqueID;
-	private Player owner;
-	private Location location;
+    private GPlayer owner;
+    private GLocation location;
 
 }

@@ -1,14 +1,17 @@
 package net.porillo.database.tables;
 
 import lombok.Getter;
-import net.porillo.objects.Player;
-import net.porillo.objects.World;
+import net.porillo.objects.GPlayer;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerTable extends Table {
 
-	@Getter  private Map<UUID, Player> players = new HashMap<>();
+	@Getter
+	private Map<UUID, GPlayer> players = new HashMap<>();
 
 	public PlayerTable() {
 		super("players");
@@ -19,7 +22,7 @@ public class PlayerTable extends Table {
 
 	}
 
-	public List<Player> loadTable() {
+	public List<GPlayer> loadTable() {
 		return null;
 	}
 }

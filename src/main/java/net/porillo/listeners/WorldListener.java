@@ -1,13 +1,13 @@
 package net.porillo.listeners;
 
+import net.porillo.GlobalWarming;
+import net.porillo.database.tables.WorldTable;
+import net.porillo.objects.GWorld;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-
-import net.porillo.GlobalWarming;
-import net.porillo.database.tables.WorldTable;
-import net.porillo.objects.World;
 
 public class WorldListener implements Listener {
 
@@ -17,8 +17,8 @@ public class WorldListener implements Listener {
 		this.gw = main;
 	}
 
-	private World initializeNewWorld(org.bukkit.World world) {
-		World newWorld = new World();
+	private GWorld initializeNewWorld(World world) {
+		GWorld newWorld = new GWorld();
 		newWorld.setWorldName(world.getName());
 		newWorld.setScore(0);
 		newWorld.setAge(System.currentTimeMillis());
@@ -30,7 +30,7 @@ public class WorldListener implements Listener {
 	public void onWorldLoad(WorldLoadEvent event) {
 		WorldTable worldTable = gw.getTableManager().getWorldTable();
 
-		// World is not in our database, create new world object
+		// GWorld is not in our database, create new world object
 		if (worldTable.getWorld(event.getWorld().getName()) == null) {
 			worldTable.addWorld(initializeNewWorld(event.getWorld()));
 		}
@@ -40,7 +40,7 @@ public class WorldListener implements Listener {
 	@EventHandler
 	public void onChunkPopulation(ChunkPopulateEvent event) {
 		WorldTable worldTable = gw.getTableManager().getWorldTable();
-		World world = worldTable.getWorld(event.getWorld().getName());
+		GWorld world = worldTable.getWorld(event.getWorld().getName());
 
 		if (world != null) {
 			int size = world.getSize();

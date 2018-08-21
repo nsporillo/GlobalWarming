@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 @AllArgsConstructor
 public class OffsetBounty {
 
-	private Player creator;
-	private Player hunter;
+	private GPlayer creator;
+	private GPlayer hunter;
 	private int treeTarget;
 	private double reward;
 	private long timeStarted, timeCompleted;
