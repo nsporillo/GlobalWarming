@@ -34,22 +34,6 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Highly configurable - Almost everything will have some degree of configuration to suit your servers needs.
 + Efficient - Despite major mechanics changes and an extensive event listening setup, I plan to optimize this plugin to be suitable for up to medium to large servers. 
 
-## Roadmap
-+ Education Edition support
-+ Incorporate Methane, since CO2 is not the only greenhouse gas that matters.
-
-## Related Science of Climate Change
-### Atmosphere warms with more CO2 because of Greenhouse Effect
-![Greenhouse Effect](https://i.imgur.com/XsWJGz9.png)
-### Atmospheric Energy Budget
-+ ![Earth's Global Energy Budget](https://i.imgur.com/aHdJxXc.png)
-### Impact on Oceans
-![Oceans](https://i.imgur.com/dJPkYAo.png)
-### Ecological Niche
-![Niche](https://i.imgur.com/e6pwXlI.png)
-- Species have a temperature range for which they can survive
-- Plants also have niches (Sunlight, Temperature, Water, Nutrients, CO2, Soil, etc)
-
 
 ## Negative Climate Damages (Sample Model)
 Higher temps inherit the damages from the lower temps
@@ -65,6 +49,23 @@ Higher temps inherit the damages from the lower temps
 | 20.0 C | +1 Sea level rise | Severe Forest Fires | Violent T-Storms | Permanent Slowness Effect |
 
 These are just a sample of the possible effects, these will be configurable and implement randomness and probabilities.
+
+
+## Roadmap
++ Education Edition support
++ Incorporate Methane, since CO2 is not the only greenhouse gas that matters.
+
+## Related Science of Climate Change
+### Atmosphere warms with more CO2 because of Greenhouse Effect
+![Greenhouse Effect](https://i.imgur.com/XsWJGz9.png)
+### Atmospheric Energy Budget
++ ![Earth's Global Energy Budget](https://i.imgur.com/aHdJxXc.png)
+### Impact on Oceans
+![Oceans](https://i.imgur.com/dJPkYAo.png)
+### Ecological Niche
+![Niche](https://i.imgur.com/e6pwXlI.png)
+- Species have a temperature range for which they can survive
+- Plants also have niches (Sunlight, Temperature, Water, Nutrients, CO2, Soil, etc)
 
 ## Suggestions 
 Feel free to create issues on this github project, or email me at nsporillo@gmail.com
