@@ -45,16 +45,20 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Oceans rise b/c water expands when heated and glaciers are melting
 ![Oceans](https://i.imgur.com/dJPkYAo.png)
 
-## Negative Climate Damages (Sample Model) - 
-- Higher temps inherit the damages from the lower temps
-+ 14.0 C - No effects [Baseline]
-+ 14.5 C - | Minor changes | 
-+ 15.0 C - | Localized Acid Rain | Some mobs spawn less | Some mobs spawn more |
-+ 16.0 C - | +1 Sea Level Rise | Tropical fish die |
-+ 17.0 C - |Global Acid Rain | Some trees no longer grow | +1 Sea Level Rise | Coral Reefs die |
-+ 18.0 C - |Noxious Area Potion Effect Clouds | Farm yields decrease | +2 Sea Level Rise | All Snow/Ice melts |
-+ 19.0 C - | All fish die | Random Forest Fires | Slower Health Regen |
-+ 20.0 C - "Devastation".. Highly polluted chunks get permanent severe area potion effects, forest fires, etc
+## Negative Climate Damages (Sample Model)
+Higher temps inherit the damages from the lower temps
+
+| Global Temp | Effect 1 | Effect 2 | Effect 3 | Effect 4 |
+| ------ | ------------ | ------- | --------|-----------|
+| 14.0 C | None | | | |
+| 15.0 C | Some mobs spawn less | some mobs spawn more | | |
+| 16.0 C | +1 Sea level rise | Some fish die | Ice/Snow stops forming | |
+| 17.0 C | +1 Sea level rise | Flora species growth stunted | Aquatic life stops spawning | Ocean flora/fauna dies |
+| 18.0 C | +1 Sea level rise | Area Potion Effect Clouds | Farm yields lower | Snow/Ice melts |
+| 19.0 C | +1 Sea level rise | Forest Fires | Slower Health Regen | Frequent T-Storms | |
+| 20.0 C | +1 Sea level rise | Severe Forest Fires | Violent T-Storms | Permanent Slowness Effect |
+
+These are just a sample of the possible effects, these will be configurable and implement randomness and probabilities.
 
 ## Suggestions 
 Feel free to create issues on this github project, or email me at nsporillo@gmail.com
