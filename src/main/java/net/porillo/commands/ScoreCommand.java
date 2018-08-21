@@ -1,9 +1,10 @@
 package net.porillo.commands;
 
 import net.porillo.GlobalWarming;
-import net.porillo.objects.Player;
+import net.porillo.objects.GPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,8 @@ public class ScoreCommand extends BaseCommand {
 	@Override
 	public void runCommand(CommandSender sender, List<String> args) {
 		if (sender instanceof Player) {
-			org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
-			Map<UUID, Player> playerMap = plugin.getTableManager().getPlayerTable().getPlayers();
+			Player player = (Player) sender;
+			Map<UUID, GPlayer> playerMap = plugin.getTableManager().getPlayerTable().getPlayers();
 
 			// If player is not in the memory yet, their score is 0.
 			int carbonScore = playerMap.containsKey(player.getUniqueId()) ? playerMap.get(player.getUniqueId()).getCarbonScore(): 0;

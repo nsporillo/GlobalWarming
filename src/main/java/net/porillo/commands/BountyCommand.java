@@ -3,9 +3,9 @@ package net.porillo.commands;
 import net.porillo.GlobalWarming;
 import net.porillo.database.tables.OffsetTable;
 import net.porillo.objects.OffsetBounty;
-import net.porillo.objects.Player;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 

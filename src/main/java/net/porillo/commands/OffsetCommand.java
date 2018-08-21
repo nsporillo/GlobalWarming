@@ -2,9 +2,10 @@ package net.porillo.commands;
 
 import net.porillo.GlobalWarming;
 import net.porillo.database.tables.PlayerTable;
+import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
-import net.porillo.objects.Player;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class OffsetCommand extends BaseCommand {
 			PlayerTable playerTable = plugin.getTableManager().getPlayerTable();
 
 			if (playerTable.getPlayers().containsKey(player.getUniqueId())) {
-				Player creator = playerTable.getPlayers().get(player.getUniqueId());
+				GPlayer creator = playerTable.getPlayers().get(player.getUniqueId());
 				OffsetBounty bounty = new OffsetBounty();
 				bounty.setCreator(creator);
 				bounty.setTreeTarget(trees);
