@@ -38,7 +38,7 @@ public class OffsetCommand extends BaseCommand {
 			}
 
 			//TODO: Add economy integration
-			org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
+            Player player = (Player) sender;
 			PlayerTable playerTable = plugin.getTableManager().getPlayerTable();
 
 			if (playerTable.getPlayers().containsKey(player.getUniqueId())) {
