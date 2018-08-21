@@ -11,10 +11,25 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Contribution {
 
-	private UUID uniqueID;
-	private UUID contributer;
+	/**
+	 * Random UUID created for this contribution
+	 */
+	private UUID uniqueID; 
+	/**
+	 * UUID of the Player who caused this contribution
+	 */
+	private UUID contributer; 
+	/**
+	 * UUID of the associated object that corresponds to this emission
+	 */
 	private UUID contributionKey;
+	/**
+	 * Name of the Bukkit world this contribution took place
+	 */
 	private String worldName;
+	/**
+	 * Calculated emissions value for this contribution
+	 */
 	private double contributionValue;
 
 }

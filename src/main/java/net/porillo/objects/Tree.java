@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +15,7 @@ public class Tree {
 
 	private UUID uniqueID;
 	private GPlayer owner;
-	private GLocation location;
+	private Location location;
 	private int size;
 
 }

@@ -45,6 +45,6 @@ public class ClimateEngine {
 	}
 
 	public Double getTemperature() {
-		return scoreTempModel.getTemperature(world.getScore());
+		return scoreTempModel.getTemperature(world.getCarbonValue());
 	}
 }

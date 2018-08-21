@@ -20,8 +20,8 @@ public class WorldListener implements Listener {
 	private GWorld initializeNewWorld(World world) {
 		GWorld newWorld = new GWorld();
 		newWorld.setWorldName(world.getName());
-		newWorld.setScore(0);
-		newWorld.setAge(System.currentTimeMillis());
+		
+		newWorld.setFirstSeen(System.currentTimeMillis());
 		newWorld.setSize(world.getLoadedChunks().length);
 		return newWorld;
 	}

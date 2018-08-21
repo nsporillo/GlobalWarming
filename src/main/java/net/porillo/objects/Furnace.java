@@ -7,14 +7,25 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
+
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
 public class Furnace {
 
+	/**
+	 * Random generated UUID for this furnace instance
+	 */
 	private UUID uniqueID;
+	/**
+	 * Associated GPlayer who placed this furnace
+	 */
     private GPlayer owner;
-    private GLocation location;
+    /**
+     * The Bukkit location of this furnace
+     */
+    private Location location;
 
 }

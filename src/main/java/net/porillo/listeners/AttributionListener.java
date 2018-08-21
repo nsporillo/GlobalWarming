@@ -5,9 +5,10 @@ import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.database.tables.TreeTable;
 import net.porillo.objects.Furnace;
-import net.porillo.objects.GLocation;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.Tree;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +37,7 @@ public class AttributionListener implements Listener {
 			return;
 		}
 
-		GLocation location = new GLocation(event.getBlockPlaced().getLocation());
+		Location location = event.getBlockPlaced().getLocation();
 		PlayerTable playerTable = gw.getTableManager().getPlayerTable();
 		GPlayer player;
 
@@ -109,7 +110,7 @@ public class AttributionListener implements Listener {
 		if (event.getBlock().getType() == Material.FURNACE) {
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
 			Map<GPlayer, HashSet<Furnace>> playerFurnaceMap = furnaceTable.getPlayerMap();
-			GLocation location = new GLocation(event.getBlock().getLocation());
+			Location location = event.getBlock().getLocation();
 
 			if (furnaceTable.getLocationMap().containsKey(location)) {
 				Furnace furnace = furnaceTable.getLocationMap().get(location);

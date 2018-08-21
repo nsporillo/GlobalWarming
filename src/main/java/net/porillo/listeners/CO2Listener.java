@@ -4,6 +4,8 @@ import net.porillo.GlobalWarming;
 import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.TreeTable;
 import net.porillo.objects.*;
+
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -25,8 +27,8 @@ public class CO2Listener implements Listener {
 	 */
 	@EventHandler
 	public void onFurnaceSmelt(FurnaceBurnEvent event) {
-		GLocation location = new GLocation(event.getBlock().getLocation());
-		GWorld world = gw.getTableManager().getWorldTable().getWorld(location.getWorldName());
+		Location location = event.getBlock().getLocation();
+		GWorld world = gw.getTableManager().getWorldTable().getWorld(location.getWorld().getName());
 		FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
 
 		if (furnaceTable.getLocationMap().containsKey(location)) {
@@ -52,8 +54,8 @@ public class CO2Listener implements Listener {
 	 */
 	@EventHandler
 	public void onStructureGrow(StructureGrowEvent event) {
-		GLocation location = new GLocation(event.getLocation());
-		GWorld world = gw.getTableManager().getWorldTable().getWorld(location.getWorldName());
+		Location location = event.getLocation();
+		GWorld world = gw.getTableManager().getWorldTable().getWorld(location.getWorld().getName());
 		TreeTable treeTable = gw.getTableManager().getTreeTable();
 
 		if (treeTable.getLocationMap().containsKey(location)) {
