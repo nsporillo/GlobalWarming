@@ -39,11 +39,17 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Incorporate Methane, since CO2 is not the only greenhouse gas that matters.
 
 ## Related Science of Climate Change
-+ Atmosphere warms with more CO2 because of Greenhouse Effect
+### Atmosphere warms with more CO2 because of Greenhouse Effect
 ![Greenhouse Effect](https://i.imgur.com/XsWJGz9.png)
+### Atmospheric Energy Budget
 + ![Earth's Global Energy Budget](https://i.imgur.com/aHdJxXc.png)
-+ Oceans rise b/c water expands when heated and glaciers are melting
+### Impact on Oceans
 ![Oceans](https://i.imgur.com/dJPkYAo.png)
+### Ecological Niche
+![Niche](https://i.imgur.com/e6pwXlI.png)
+- Species have a temperature range for which they can survive
+- Plants also have niches (Sunlight, Temperature, Water, Nutrients, CO2, Soil, etc)
+
 
 ## Negative Climate Damages (Sample Model)
 Higher temps inherit the damages from the lower temps
