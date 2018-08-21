@@ -16,6 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class GlobalWarming extends JavaPlugin {
 
+	private static GlobalWarming instance; // single plugin instance
+	
 	@Getter private GlobalWarmingConfig conf;
 	@Getter private AsynchronousConnectionManager connectionManager;
 	@Getter private TableManager tableManager;
@@ -32,6 +34,8 @@ public class GlobalWarming extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
 		Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
+		
+		instance = this;
 	}
 
 	@Override
@@ -45,4 +49,11 @@ public class GlobalWarming extends JavaPlugin {
 
 	}
 
+	/**
+	 * 
+	 * @return instance of main class
+	 */
+	public static GlobalWarming getInstance() {
+		return instance;
+	}
 }
