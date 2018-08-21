@@ -15,21 +15,21 @@ public class OffsetCommand extends BaseCommand {
 		super(plugin);
 		super.setName("offset");
 		super.setRequiredArgs(2);
-		super.addUsage("Set tree-planting bounties to reduce carbon footprint", "trees", "reward");
+		super.addUsage("Set tree-planting bounties to reduce carbon footprint", "logTarget", "reward");
 	}
 
 	@Override
 	public void runCommand(CommandSender sender, List<String> args) {
 		if (sender instanceof Player) {
 			// Validate input
-			Integer trees = null;
+			Integer logTarget = null;
 			Integer reward = null;
 
 			try {
-				trees = Integer.parseInt(args.get(0));
+				logTarget = Integer.parseInt(args.get(0));
 				reward = Integer.getInteger(args.get(1));
 
-				if (trees <= 0 || reward <= 0) {
+				if (logTarget <= 0 || reward <= 0) {
 					throw new NumberFormatException();
 				}
 			} catch (NumberFormatException nfe) {
@@ -45,7 +45,7 @@ public class OffsetCommand extends BaseCommand {
 				GPlayer creator = playerTable.getPlayers().get(player.getUniqueId());
 				OffsetBounty bounty = new OffsetBounty();
 				bounty.setCreator(creator);
-				bounty.setTreeTarget(trees);
+				bounty.setLogBlocksTarget(logTarget);
 				bounty.setReward(reward);
 			} else {
 				plugin.getLogger().severe("Error: Player " + sender.getName() + " tried to set a offset bounty"
