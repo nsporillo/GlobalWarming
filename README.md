@@ -1,6 +1,11 @@
 # GlobalWarming
 Minecraft Server Java Edition (Spigot) plugin which adds game changing climate change mechanics.
 
+## Contributing
+- [Developer Setup](https://github.com/nsporillo/GlobalWarming/wiki/Developer-Setup-and-Installation)
+- There is a Kanban board on Github where I'll be prioritizing work, feel free to help work on any of the tasks.
+- Pull requests welcome! This is a very new project and I appreciate contributions.
+
 ## Overview
 + Adds the concept of greenhouse gases (CO2) in the worlds atmosphere 
 + Furnaces emit CO2 when players smelt items
@@ -22,7 +27,8 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Players can purchase "carbon offsets" which creates a tree-planting bounty for other players to furfill. 
 
 ## Challenges
-+ Currently, a tree growth will instantly reduce CO2 levels so players can commercially farm trees while still reducing emissions. This is not ideal. Keeping track of all planted trees is an expensive operation, so some ingenuity is needed here.
++ Designing a default model that doesn't quickly destroy worlds
++ Efficiently applying in-game mechanics changes
 
 ## (Planned) Features
 + Scoreboard Integration - Players can compete for carbon neutrality! The worst polluters can be shamed.
@@ -69,10 +75,3 @@ These are just a sample of the possible effects, these will be configurable and 
 
 ## Suggestions 
 Feel free to create issues on this github project, or email me at nsporillo@gmail.com
-
-I'm still working on establishing a stable default model that doesnt implode servers a day after they install. The negative effects need to be burdensome but not devastating right off the bat, and it's difficult to project what will happpen. Please let me know if you have any thoughts!
-
-## Contributing 
-Always welcome to fork this repository and submit pull requests!
-
-I will need at least a medium size server to test this plugin on once I've completed features and testing! Performance is important to me, and I can only identify the problematic code sections with the help of server owners. 
