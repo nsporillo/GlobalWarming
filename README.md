@@ -24,7 +24,7 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Every tree growth causes a "Reduction" from emissions with an associated numerical value (based on the model)
 + The global temperature is a function of the net global carbon score. 
 + As the global temperature rises, the frequency and severity of negative climate damages increases.
-+ Players can purchase "carbon offsets" which creates a tree-planting bounty for other players to furfill. 
++ Players can purchase "carbon offsets" which creates a tree-planting bounty for other players to fulfill. 
 
 ## Challenges
 + Designing a default model that doesn't quickly destroy worlds
@@ -32,12 +32,12 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 
 ## (Planned) Features
 + Scoreboard Integration - Players can compete for carbon neutrality! The worst polluters can be shamed.
-+ Economy Integration - Carbon Offsetting using your in-game currency! Set up tree-planting bountys 
++ Economy Integration - Carbon Offsetting using your in-game currency! Set up tree-planting bounties 
 + Carbon Scorecard - Each player can see their latest carbon footprint trends via command line.
 + Multi-world - You can experiment with this plugin on one of your worlds to test it out!
-+ Custom Models - The inner numerical workings are configurable as possible. Set thresholds, probabilities, and distributions.
++ Custom Models - The inner numerical workings are as configurable as possible. Set thresholds, probabilities, and distributions.
 + Database storage - Load data on startup, queue DB changes to be done async and at intervals (instead of as they happen, that'd kill performance), and empty queue on shutdown. 
-+ Highly configurable - Almost everything will have some degree of configuration to suit your servers needs.
++ Highly configurable - Almost everything will have some degree of configuration to suit your server's needs.
 + Efficient - Despite major mechanics changes and an extensive event listening setup, I plan to optimize this plugin to be suitable for up to medium to large servers. 
 
 
@@ -49,7 +49,7 @@ Higher temps inherit the damages from the lower temps
 | 14.0 C | None | | | |
 | 15.0 C | Some mobs spawn less | some mobs spawn more | | |
 | 16.0 C | +1 Sea level rise | Some fish die | Ice/Snow stops forming | |
-| 17.0 C | +1 Sea level rise | Flora species growth stunted | Aquatic life stops spawning | Ocean flora/fauna dies |
+| 17.0 C | +1 Sea level rise | Flora species growth stunted | Aquatic life stops spawning | Ocean flora/fauna die |
 | 18.0 C | +1 Sea level rise | Area Potion Effect Clouds | Farm yields lower | Snow/Ice melts |
 | 19.0 C | +1 Sea level rise | Forest Fires | Slower Health Regen | Frequent T-Storms | |
 | 20.0 C | +1 Sea level rise | Severe Forest Fires | Violent T-Storms | Permanent Slowness Effect |
@@ -70,7 +70,7 @@ These are just a sample of the possible effects, these will be configurable and 
 ![Oceans](https://i.imgur.com/dJPkYAo.png)
 ### Ecological Niche
 ![Niche](https://i.imgur.com/e6pwXlI.png)
-- Species have a temperature range for which they can survive
+- Species have a temperature range in which they can survive
 - Plants also have niches (Sunlight, Temperature, Water, Nutrients, CO2, Soil, etc)
 
 ## Suggestions 
