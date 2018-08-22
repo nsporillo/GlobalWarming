@@ -1,4 +1,4 @@
-# GlobalWarming
+# GlobalWarming - Supports Minecraft 1.13+
 Minecraft Server Java Edition (Spigot) plugin which adds game changing climate change mechanics.
 
 ## Contributing
