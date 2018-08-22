@@ -1,5 +1,8 @@
 package net.porillo.engine;
 
+import net.porillo.engine.models.ContributionModel;
+import net.porillo.engine.models.EntityFitnessModel;
+import net.porillo.engine.models.ScoreTempModel;
 import net.porillo.objects.Contribution;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
@@ -13,14 +16,18 @@ import java.util.UUID;
 
 public class ClimateEngine {
 
+	private GWorld world;
+	
+	// Models 
 	private ScoreTempModel scoreTempModel;
 	private ContributionModel contributionModel;
-	private GWorld world;
+	private EntityFitnessModel entityFitnessModel;
 
 	public ClimateEngine(GWorld world) {
 		this.world = world;
 		this.scoreTempModel = new ScoreTempModel();
 		this.contributionModel = new ContributionModel();
+		this.entityFitnessModel = new EntityFitnessModel();
 	}
 
 	public Reduction treeGrow(GPlayer player, TreeType treeType, List<BlockState> blocks) {

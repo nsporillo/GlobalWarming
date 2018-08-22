@@ -1,41 +1,31 @@
-package net.porillo.engine;
+package net.porillo.engine.models;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
 import net.porillo.GlobalWarming;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import net.porillo.engine.api.Model;
 
 public class ContributionModel extends Model {
 
 	private Map<String, Double> contributionMap = new HashMap<>();
 
 	public ContributionModel() {
-		super("contributionModel");
+		super("contributionModel.txt");
 		this.loadModel();
 	}
 
 	@Override
 	public void loadModel() {
-		try {
-			BufferedReader reader = super.getReader();
-			String line;
-
-			while ((line = reader.readLine()) != null) {
-				String[] args = line.split(":");
-				if (NumberUtils.isNumber(args[1])) {
-					contributionMap.put(args[0], Double.parseDouble(args[1]));
-				} else {
-					//TODO handle
-				}
-
+		for (String line : super.getLines()) {
+			String[] args = line.split(":");
+			if (NumberUtils.isNumber(args[1])) {
+				contributionMap.put(args[0], Double.parseDouble(args[1]));
+			} else {
+				// TODO handle non numbers in model file?
 			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
