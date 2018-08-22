@@ -20,17 +20,18 @@ public class AsynchronousConnectionManager {
 		this.password = password;
 	}
 
-	public void openConnection() throws SQLException, ClassNotFoundException {
+	public Connection openConnection() throws SQLException, ClassNotFoundException {
 		if (connection != null && !connection.isClosed()) {
-			return;
+			return null;
 		}
 
 		synchronized (this) {
 			if (connection != null && !connection.isClosed()) {
-				return;
+				return null;
 			}
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.username, this.password);
+			return connection;
 		}
 	}
 }

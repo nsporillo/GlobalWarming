@@ -2,6 +2,8 @@ package net.porillo.listeners;
 
 import lombok.AllArgsConstructor;
 import net.porillo.GlobalWarming;
+import net.porillo.database.queries.PlayerInsertQuery;
+import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.objects.GPlayer;
 import org.bukkit.event.EventHandler;
@@ -19,9 +21,9 @@ public class PlayerListener implements Listener {
 
 		if (!table.getPlayers().containsKey(event.getPlayer().getUniqueId())) {
 			GPlayer player = new GPlayer(event.getPlayer().getUniqueId(), System.currentTimeMillis(), 0);
-			table.getPlayers().put(event.getPlayer().getUniqueId(), player);
 
-			//TODO Queue DB player insert
+			table.getPlayers().put(event.getPlayer().getUniqueId(), player);
+			AsyncDBQueue.getInstance().queueInsertQuery(new PlayerInsertQuery(player));
 		}
 	}
 }
