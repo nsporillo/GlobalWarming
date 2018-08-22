@@ -26,7 +26,8 @@ public abstract class Model {
 
 	public List<String> getLines() {
 		List<String> modelLines = new ArrayList<>();
-
+		createIfNotExists();
+		
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(getPath())))) {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -40,7 +41,7 @@ public abstract class Model {
 	}
 
 	public void writeLines(List<String> lines) {
-		deleteIfExists();
+		clearFileForNewWrite();
 		
 		try {
 			Files.write(getPath(), lines, Charset.forName("UTF-8"));
@@ -51,7 +52,8 @@ public abstract class Model {
 
 	public String getContents() {
 		byte[] content = null;
-
+		createIfNotExists();
+		
 		try {
 			Path file = getPath();
 			int size = (int) Files.size(file);
@@ -72,7 +74,7 @@ public abstract class Model {
 	}
 
 	public void writeContents(String data) {
-		deleteIfExists();
+		clearFileForNewWrite();
 		
 		try (BufferedWriter writer = Files.newBufferedWriter(getPath(), Charset.forName("UTF-8"))) {
 			writer.write(data, 0, data.length());
@@ -80,9 +82,22 @@ public abstract class Model {
 			x.printStackTrace();
 		}
 	}
-
-	private void deleteIfExists() {
+	
+	private void createIfNotExists() {
 		Path file = getPath();
+		
+		if (!Files.exists(file)) {
+			try {
+				Files.createFile(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} 
+	}
+
+	private void clearFileForNewWrite() {
+		Path file = getPath();
+		
 		try {
 			if (Files.exists(file)) {
 				Files.delete(file);

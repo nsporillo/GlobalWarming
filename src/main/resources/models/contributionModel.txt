@@ -1,6 +1,0 @@
-coal:8
-charcoal:8
-wood:1.5
-sapling:0.5
-lava:20
-blaze_rod:8

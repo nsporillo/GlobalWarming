@@ -42,12 +42,11 @@ public class ClimateEngine {
 	}
 
     public Contribution furnaceBurn(GPlayer player, ItemStack fuel) {
-    	String fuelType = fuel.getType().name().toLowerCase();
 		Contribution contribution = new Contribution();
 		contribution.setUniqueID(UUID.randomUUID());
 		contribution.setWorldName(world.getWorldName());
         contribution.setContributionKey(player.getUuid());
-		contribution.setContributionValue(contributionModel.getContribution(fuelType));
+		contribution.setContributionValue(contributionModel.getContribution(fuel.getType()));
 		return contribution;
 	}
 

@@ -1,6 +1,5 @@
 package net.porillo.engine.models;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,12 +9,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import net.porillo.GlobalWarming;
 import net.porillo.engine.api.Distribution;
 import net.porillo.engine.api.Model;
 
 public class EntityFitnessModel extends Model {
 
-	private Map<EntityType, Distribution> entityFitnessMap = new HashMap<>();
+	private Map<EntityType, Distribution> entityFitnessMap;
 	private Gson gson;
 	
 	public EntityFitnessModel() {
@@ -26,18 +26,25 @@ public class EntityFitnessModel extends Model {
 	
 	// Useful for generating the JSON for all EntityTypes 
 	// Uses a sample fitness distribution
-	public void generateTestModel() throws IOException {
+	public void generateTestModel() {
+		Map<EntityType, Distribution> sampleMap = new HashMap<>();
+		
 		for (EntityType entityType : EntityType.values()) {
 			if (entityType.isAlive() && entityType.isSpawnable()) {
-				entityFitnessMap.put(entityType, Distribution.sampleDistribution());
+				sampleMap.put(entityType, Distribution.sampleDistribution());
 			}
 		}
 		
-		super.writeContents(this.gson.toJson(entityFitnessMap));
+		super.writeContents(this.gson.toJson(sampleMap));
 	}
 
 	@Override
 	public void loadModel() {
 		this.entityFitnessMap = this.gson.fromJson(super.getContents(), new TypeToken<Map<EntityType, Distribution>>(){}.getType());
+
+		if (this.entityFitnessMap == null) {
+			this.entityFitnessMap = new HashMap<>();
+			GlobalWarming.getInstance().getLogger().warning("Did not find any values in " + super.getName());
+		}
 	}
 }
