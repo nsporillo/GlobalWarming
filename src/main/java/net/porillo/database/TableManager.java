@@ -14,6 +14,7 @@ public class TableManager {
 	@Getter private OffsetTable offsetTable;
 
 	public TableManager() {
+		// TODO: Read table creation sql from file!
 		this.worldTable = new WorldTable();
 		this.playerTable = new PlayerTable();
 		this.reductionTable = new ReductionTable();
