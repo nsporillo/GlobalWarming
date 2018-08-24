@@ -27,6 +27,23 @@
                     <include>*.yml</include>
                 </includes>
             </resource>
+            <resource>
+                <targetPath>models</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources/models/</directory>
+                <includes>
+                    <include>*.json</include>
+                    <include>*.txt</include>
+                </includes>
+            </resource>
+            <resource>
+                <targetPath>scripts</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources/scripts/</directory>
+                <includes>
+                    <include>*.sql</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
