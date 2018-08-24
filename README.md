@@ -6,6 +6,9 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 - There is a Kanban board on Github where I'll be prioritizing work, feel free to help work on any of the tasks.
 - Pull requests welcome! This is a very new project and I appreciate contributions.
 
+## Builds
+- <a href="http://jenkins.porillo.net/job/GlobalWarming/">Snapshots on <img src="https://i.imgur.com/3FtNxcM.png" height="30"></a>
+
 ## Overview
 + Adds the concept of greenhouse gases (CO2) in the worlds atmosphere 
 + Furnaces emit CO2 when players smelt items
