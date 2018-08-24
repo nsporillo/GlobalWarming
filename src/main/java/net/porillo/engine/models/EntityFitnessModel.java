@@ -1,17 +1,15 @@
 package net.porillo.engine.models;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.entity.EntityType;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import net.porillo.GlobalWarming;
 import net.porillo.engine.api.Distribution;
 import net.porillo.engine.api.Model;
+import org.bukkit.entity.EntityType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityFitnessModel extends Model {
 
@@ -45,6 +43,8 @@ public class EntityFitnessModel extends Model {
 		if (this.entityFitnessMap == null) {
 			this.entityFitnessMap = new HashMap<>();
 			GlobalWarming.getInstance().getLogger().warning("Did not find any values in " + super.getName());
+		} else {
+			GlobalWarming.getInstance().getLogger().info("Loaded " + entityFitnessMap.size() + " entity fitness key pairs.");
 		}
 	}
 }

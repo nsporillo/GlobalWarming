@@ -12,8 +12,7 @@ import java.util.UUID;
 
 public class PlayerTable extends Table {
 
-	@Getter
-	private Map<UUID, GPlayer> players = new HashMap<>();
+	@Getter private Map<UUID, GPlayer> players = new HashMap<>();
 
 	public PlayerTable() {
 		super("players");

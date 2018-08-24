@@ -1,16 +1,14 @@
 package net.porillo.engine.models;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Material;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import net.porillo.GlobalWarming;
 import net.porillo.engine.api.Model;
+import org.bukkit.Material;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ContributionModel extends Model {
 
@@ -30,6 +28,8 @@ public class ContributionModel extends Model {
 		if (this.contributionMap == null) {
 			this.contributionMap = new HashMap<>();
 			GlobalWarming.getInstance().getLogger().warning("Did not find any values in " + super.getName());
+		} else {
+			GlobalWarming.getInstance().getLogger().info("Loaded " + contributionMap.size() + " contribution key pairs.");
 		}
 	}
 	

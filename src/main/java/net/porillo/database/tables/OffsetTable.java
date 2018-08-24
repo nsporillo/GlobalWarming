@@ -1,7 +1,8 @@
 package net.porillo.database.tables;
 
-import lombok.Data;
 import lombok.Getter;
+import net.porillo.database.queries.other.CreateTableQuery;
+import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.OffsetBounty;
 
 import java.util.ArrayList;
@@ -19,5 +20,7 @@ public class OffsetTable extends Table {
 	@Override
 	public void createIfNotExists() {
 
+		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), "");
+		AsyncDBQueue.getInstance().executeCreateTable(createTableQuery);
 	}
 }

@@ -1,13 +1,12 @@
 package net.porillo.database.tables;
 
 import lombok.AllArgsConstructor;
-
-import java.util.List;
+import lombok.Getter;
 
 @AllArgsConstructor
 public abstract class Table {
 
-	private String tableName;
+	@Getter private String tableName;
 
 	public abstract void createIfNotExists();
 }

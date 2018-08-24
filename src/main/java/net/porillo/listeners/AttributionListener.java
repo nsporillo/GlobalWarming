@@ -72,13 +72,13 @@ public class AttributionListener implements Listener {
 			}
 
 			furnaceTable.getLocationMap().put(location, furnace);
-			// TODO: Queue Async DB update
+			// TODO: Queue Furnace Insert
 			
 		} else if (event.getBlockPlaced().getType().name().endsWith("SAPLING")) {
 			TreeTable treeTable = gw.getTableManager().getTreeTable();
 			// Track saplings to give credit to those when their saplings grow
 			// Saplings are trees of size 0
-			Tree tree = new Tree(UUID.randomUUID(), player, location, 0);
+			Tree tree = new Tree(UUID.randomUUID(), player, location, true, 0);
 
 			if (treeTable.getLocationMap().containsKey(location)) {
 				gw.getLogger().severe("Tree placed at location of existing tree!");
@@ -97,7 +97,7 @@ public class AttributionListener implements Listener {
 			}
 
 			treeTable.getLocationMap().put(location, tree);
-			// TODO: Queue Async DB update
+			// TODO: Queue Tree Insert
 		}
 	}
 
@@ -107,10 +107,11 @@ public class AttributionListener implements Listener {
 	 */
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
+		Location location = event.getBlock().getLocation();
+
 		if (event.getBlock().getType() == Material.FURNACE) {
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
 			Map<GPlayer, HashSet<Furnace>> playerFurnaceMap = furnaceTable.getPlayerMap();
-			Location location = event.getBlock().getLocation();
 
 			if (furnaceTable.getLocationMap().containsKey(location)) {
 				Furnace furnace = furnaceTable.getLocationMap().get(location);
@@ -119,11 +120,25 @@ public class AttributionListener implements Listener {
 				HashSet<Furnace> furnaces = playerFurnaceMap.get(owner);
 				furnaces.remove(furnace);
 				playerFurnaceMap.put(owner, furnaces);
-				
+				// TODO: Queue Furnace Delete
 			} else {
 				gw.getLogger().info("Untracked furnace destroyed. @ " + location.toString());
 			}
-			// TODO: Queue Async DB update
+		} else if (event.getBlock().getType().name().endsWith("SAPLING")) {
+			TreeTable treeTable = gw.getTableManager().getTreeTable();
+			Map<GPlayer, HashSet<Tree>> playerTreeMap = treeTable.getPlayerMap();
+
+			if (treeTable.getLocationMap().containsKey(location)) {
+				Tree tree = treeTable.getLocationMap().get(location);
+				final GPlayer owner = tree.getOwner();
+
+				HashSet<Tree> trees = playerTreeMap.get(owner);
+				trees.remove(tree);
+				playerTreeMap.put(owner, trees);
+				// TODO: Queue Tree Delete
+			} else {
+				gw.getLogger().info("Untracked furnace destroyed. @ " + location.toString());
+			}
 		}
 	}
 }

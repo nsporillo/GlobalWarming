@@ -27,7 +27,7 @@ public class ContributionTable extends Table {
 				"  value DOUBLE,\n" +
 				"  PRIMARY KEY (uniqueID)\n" +
 				")";
-		CreateTableQuery createTableQuery = new CreateTableQuery("contributions", sql);
+		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), sql);
 		AsyncDBQueue.getInstance().executeCreateTable(createTableQuery);
 	}
 
