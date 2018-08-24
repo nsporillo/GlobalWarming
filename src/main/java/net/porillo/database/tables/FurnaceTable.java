@@ -1,7 +1,7 @@
 package net.porillo.database.tables;
 
 import lombok.Getter;
-import net.porillo.database.queries.CreateTableQuery;
+import net.porillo.database.queries.other.CreateTableQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.Furnace;
 

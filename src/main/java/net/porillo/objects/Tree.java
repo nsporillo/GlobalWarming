@@ -16,6 +16,7 @@ public class Tree {
 	private UUID uniqueID;
 	private GPlayer owner;
 	private Location location;
+	private boolean isSapling;
 	private int size;
 
 }

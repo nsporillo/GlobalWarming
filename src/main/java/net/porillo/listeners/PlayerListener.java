@@ -2,7 +2,7 @@ package net.porillo.listeners;
 
 import lombok.AllArgsConstructor;
 import net.porillo.GlobalWarming;
-import net.porillo.database.queries.PlayerInsertQuery;
+import net.porillo.database.queries.insert.PlayerInsertQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.objects.GPlayer;

@@ -21,6 +21,11 @@ public class OffsetBounty {
 	// TODO: Consider allowing multiple players to participate
 	// in someone's bounty, and the reward be split evenly
 	private GPlayer hunter;
+
+	/**
+	 * World this offset bounty must be completed in
+	 */
+	private GWorld world;
 	/**
 	 * The required number of log blocks that need to be 
 	 * grown by the hunter before this bounty is completed

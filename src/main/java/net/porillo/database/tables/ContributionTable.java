@@ -1,13 +1,10 @@
 package net.porillo.database.tables;
 
 import lombok.Getter;
-import net.porillo.database.queries.CreateTableQuery;
+import net.porillo.database.queries.other.CreateTableQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.Contribution;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

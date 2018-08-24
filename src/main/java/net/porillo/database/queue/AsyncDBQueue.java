@@ -2,7 +2,7 @@ package net.porillo.database.queue;
 
 import net.porillo.GlobalWarming;
 import net.porillo.database.api.*;
-import net.porillo.database.queries.CreateTableQuery;
+import net.porillo.database.queries.other.CreateTableQuery;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
@@ -137,6 +137,10 @@ public class AsyncDBQueue {
 	}
 
 	public static AsyncDBQueue getInstance() {
+		if (instance == null) {
+			instance = new AsyncDBQueue();
+		}
+
 		return instance;
 	}
 }

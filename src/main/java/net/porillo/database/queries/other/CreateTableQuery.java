@@ -1,4 +1,4 @@
-package net.porillo.database.queries;
+package net.porillo.database.queries.other;
 
 import lombok.AllArgsConstructor;
 import net.porillo.database.api.Query;

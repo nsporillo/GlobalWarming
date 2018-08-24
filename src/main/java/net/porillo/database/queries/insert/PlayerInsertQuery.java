@@ -1,4 +1,4 @@
-package net.porillo.database.queries;
+package net.porillo.database.queries.insert;
 
 import lombok.Getter;
 import net.porillo.database.api.InsertQuery;
@@ -18,7 +18,7 @@ public class PlayerInsertQuery extends InsertQuery {
 	}
 
 	public static String getSQL() {
-		return "INSERT INTO players (UniqueID, FirstSeen, CarbonScore) VALUES (?,?,?)";
+		return "INSERT INTO players (uuid, firstSeen, carbonScore) VALUES (?,?,?)";
 	}
 
 	@Override
