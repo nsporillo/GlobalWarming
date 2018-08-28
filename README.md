@@ -69,12 +69,18 @@ These are just a sample of the possible effects, these will be configurable and 
 ![Greenhouse Effect](https://i.imgur.com/XsWJGz9.png)
 ### Atmospheric Energy Budget
 + ![Earth's Global Energy Budget](https://i.imgur.com/aHdJxXc.png)
+
+Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
 ### Impact on Oceans
 ![Oceans](https://i.imgur.com/dJPkYAo.png)
+
+Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
 ### Ecological Niche
 ![Niche](https://i.imgur.com/e6pwXlI.png)
 - Species have a temperature range in which they can survive
 - Plants also have niches (Sunlight, Temperature, Water, Nutrients, CO2, Soil, etc)
+
+Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
 
 ## Suggestions 
 Feel free to create issues on this github project, or email me at nsporillo@gmail.com
