@@ -1,6 +1,8 @@
 # GlobalWarming - ![](https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master) - Supports Minecraft 1.13+
 Minecraft Server Java Edition (Spigot) plugin which adds game changing climate change mechanics.
 
+<a href="https://discord.gg/VR96VvC"><img src="https://discordapp.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png" height="50"></a>
+
 ## Contributing
 - [Developer Setup](https://github.com/nsporillo/GlobalWarming/wiki/Developer-Setup-and-Installation)
 - There is a Kanban board on Github where I'll be prioritizing work, feel free to help work on any of the tasks.
