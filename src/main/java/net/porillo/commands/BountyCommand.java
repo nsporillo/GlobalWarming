@@ -16,6 +16,7 @@ public class BountyCommand extends BaseCommand {
 		super(plugin);
 		super.setName("bounty");
 		super.addUsage("Starts a tree-planting bounty job.", "bountyId");
+		super.setPermission("globalwarming.bounty");
 	}
 
 	// TODO: When listing bounties, add a clickable chat link to easily start job

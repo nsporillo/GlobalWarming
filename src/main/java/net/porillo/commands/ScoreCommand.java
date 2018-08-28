@@ -16,6 +16,7 @@ public class ScoreCommand extends BaseCommand {
 		super(plugin);
 		super.setName("score");
 		super.addUsage("View your carbon footprint scorecard");
+		super.setPermission("globalwarming.score");
 	}
 
 	@Override

@@ -16,6 +16,7 @@ public class OffsetCommand extends BaseCommand {
 		super.setName("offset");
 		super.setRequiredArgs(2);
 		super.addUsage("Set tree-planting bounties to reduce carbon footprint", "logTarget", "reward");
+		super.setPermission("globalwarming.offset");
 	}
 
 	@Override
