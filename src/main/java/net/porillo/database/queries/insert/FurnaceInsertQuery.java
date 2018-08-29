@@ -23,12 +23,12 @@ public class FurnaceInsertQuery extends InsertQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setString(0, furnace.getUniqueID().toString());
-		preparedStatement.setString(1, furnace.getOwner().getUuid().toString());
-		preparedStatement.setString(2, furnace.getLocation().getWorld().getName());
-		preparedStatement.setInt(3, furnace.getLocation().getBlockX());
-		preparedStatement.setInt(4, furnace.getLocation().getBlockY());
-		preparedStatement.setInt(5, furnace.getLocation().getBlockZ());
+		preparedStatement.setString(1, furnace.getUniqueID().toString());
+		preparedStatement.setString(2, furnace.getOwner().getUuid().toString());
+		preparedStatement.setString(3, furnace.getLocation().getWorld().getName());
+		preparedStatement.setInt(4, furnace.getLocation().getBlockX());
+		preparedStatement.setInt(5, furnace.getLocation().getBlockY());
+		preparedStatement.setInt(6, furnace.getLocation().getBlockZ());
 		return preparedStatement;
 	}
 }

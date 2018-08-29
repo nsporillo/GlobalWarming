@@ -22,12 +22,12 @@ public class AsynchronousConnectionManager {
 
 	public Connection openConnection() throws SQLException, ClassNotFoundException {
 		if (connection != null && !connection.isClosed()) {
-			return null;
+			return connection;
 		}
 
 		synchronized (this) {
 			if (connection != null && !connection.isClosed()) {
-				return null;
+				return connection;
 			}
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.username, this.password);

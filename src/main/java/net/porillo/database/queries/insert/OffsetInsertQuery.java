@@ -24,19 +24,19 @@ public class OffsetInsertQuery extends InsertQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setString(0, offsetBounty.getCreator().getUuid().toString());
+		preparedStatement.setString(1, offsetBounty.getCreator().getUuid().toString());
 
 		if (offsetBounty.getHunter() == null) {
-			preparedStatement.setString(1, null);
+			preparedStatement.setString(2, null);
 		} else {
-			preparedStatement.setString(1, offsetBounty.getHunter().getUuid().toString());
+			preparedStatement.setString(2, offsetBounty.getHunter().getUuid().toString());
 		}
 
-		preparedStatement.setString(2, offsetBounty.getWorld().getWorldName());
-		preparedStatement.setInt(3, offsetBounty.getLogBlocksTarget());
-		preparedStatement.setDouble(4, offsetBounty.getReward());
-		preparedStatement.setLong(5, offsetBounty.getTimeStarted());
-		preparedStatement.setLong(6, offsetBounty.getTimeCompleted());
+		preparedStatement.setString(3, offsetBounty.getWorld().getWorldName());
+		preparedStatement.setInt(4, offsetBounty.getLogBlocksTarget());
+		preparedStatement.setDouble(5, offsetBounty.getReward());
+		preparedStatement.setLong(6, offsetBounty.getTimeStarted());
+		preparedStatement.setLong(7, offsetBounty.getTimeCompleted());
 		return preparedStatement;
 	}
 }

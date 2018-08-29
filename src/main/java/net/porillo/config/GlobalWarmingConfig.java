@@ -14,6 +14,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	private int port;
 	private String database;
 	private String username, password;
+	public int updateInterval;
     private Map<GWorld, ClimateEngine> engineMap;
 
 	public GlobalWarmingConfig(Plugin plugin) {
@@ -30,6 +31,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		this.database = conf.getString("database.name");
 		this.username = conf.getString("database.username");
 		this.password = conf.getString("database.password");
+		this.updateInterval = conf.getInt("database.update-interval", 300);
 	}
 
 	public AsynchronousConnectionManager makeConnectionManager() {

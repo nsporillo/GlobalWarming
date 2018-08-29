@@ -5,6 +5,7 @@ import net.porillo.commands.CommandHandler;
 import net.porillo.config.GlobalWarmingConfig;
 import net.porillo.database.AsynchronousConnectionManager;
 import net.porillo.database.TableManager;
+import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.listeners.AttributionListener;
 import net.porillo.listeners.CO2Listener;
 import net.porillo.listeners.PlayerListener;
@@ -36,7 +37,8 @@ public class GlobalWarming extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 		
 		instance = this;
-	}
+        AsyncDBQueue.getInstance().scheduleAsyncTask(conf.updateInterval * 20L);
+    }
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

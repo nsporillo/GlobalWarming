@@ -4,3 +4,4 @@ database:
   name: GlobalWarming
   username: user
   password: pass
+  update-interval: 300
