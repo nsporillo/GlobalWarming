@@ -29,7 +29,7 @@ public class AsynchronousConnectionManager {
 			if (connection != null && !connection.isClosed()) {
 				return connection;
 			}
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver");
 			String connectionString = "jdbc:mysql://" + this.host + ":" + this.port + "/"
 					+ this.database + "?user=" + this.username + "&password=" + this.password +
 					"&autoReconnect=true&useSSL=false&useUnicode=true" +
