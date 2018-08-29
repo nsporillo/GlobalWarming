@@ -85,4 +85,4 @@ Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
 Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
 
 ## Suggestions 
-Feel free to create issues on this github project, or email me at nsporillo@gmail.com
+Feel free to create issues on this github project, or join the discord
