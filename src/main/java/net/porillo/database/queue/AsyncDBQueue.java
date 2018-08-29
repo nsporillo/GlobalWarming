@@ -1,5 +1,6 @@
 package net.porillo.database.queue;
 
+import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.database.api.*;
 import net.porillo.database.queries.other.CreateTableQuery;
@@ -43,10 +44,10 @@ public class AsyncDBQueue {
 	 * Each query type has it's own queue
 	 * Allows for simplistic query batching
 	 */
-	private Queue<DeleteQuery> deleteQueue = new ConcurrentLinkedQueue<>();
-	private Queue<InsertQuery> insertQueue = new ConcurrentLinkedQueue<>();
-	private Queue<CreateTableQuery> createQueue = new ConcurrentLinkedQueue<>();
-	private Queue<UpdateQuery> updateQueue = new ConcurrentLinkedQueue<>();
+	@Getter private Queue<DeleteQuery> deleteQueue = new ConcurrentLinkedQueue<>();
+	@Getter private Queue<InsertQuery> insertQueue = new ConcurrentLinkedQueue<>();
+	@Getter private Queue<CreateTableQuery> createQueue = new ConcurrentLinkedQueue<>();
+	@Getter private Queue<UpdateQuery> updateQueue = new ConcurrentLinkedQueue<>();
 
 	private BukkitRunnable queueWriteThread = new BukkitRunnable(){
 
@@ -92,7 +93,7 @@ public class AsyncDBQueue {
 		writeUpdateQueue(connection);
 	}
 
-	private void writeDeleteQueue(Connection connection){
+	public void writeDeleteQueue(Connection connection){
 		for (DeleteQuery obj = deleteQueue.poll(); obj != null; obj = deleteQueue.poll()) {
 			try {
 				PreparedStatement statement = obj.prepareStatement(connection);
@@ -103,7 +104,7 @@ public class AsyncDBQueue {
 		}
 	}
 
-	private void writeInsertQueue(Connection connection) {
+	public void writeInsertQueue(Connection connection) {
 		for (InsertQuery obj = insertQueue.poll(); obj != null; obj = insertQueue.poll()) {
 			try {
 				PreparedStatement statement = obj.prepareStatement(connection);
@@ -114,7 +115,7 @@ public class AsyncDBQueue {
 		}
 	}
 
-	private void writeCreateTableQueue(Connection connection) {
+	public void writeCreateTableQueue(Connection connection) {
 		for (CreateTableQuery obj = createQueue.poll(); obj != null; obj = createQueue.poll()) {
 			try {
 				PreparedStatement statement = obj.prepareStatement(connection);
@@ -125,7 +126,7 @@ public class AsyncDBQueue {
 		}
 	}
 
-	private void writeUpdateQueue(Connection connection) {
+	public void writeUpdateQueue(Connection connection) {
 		for (UpdateQuery obj = updateQueue.poll(); obj != null; obj = updateQueue.poll()) {
 			try {
 				PreparedStatement statement = obj.prepareStatement(connection);

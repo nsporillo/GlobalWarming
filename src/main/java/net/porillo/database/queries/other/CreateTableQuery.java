@@ -1,6 +1,7 @@
 package net.porillo.database.queries.other;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.porillo.database.api.Query;
 
 import java.sql.Connection;
@@ -10,13 +11,8 @@ import java.sql.SQLException;
 @AllArgsConstructor
 public class CreateTableQuery implements Query {
 
-	private String table;
+	@Getter private String table;
 	private String sql;
-
-	@Override
-	public String getTable() {
-		return table;
-	}
 
 	@Override
 	public String getQueryType() {

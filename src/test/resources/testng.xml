@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="DatabaseTests" verbose="1" >
+    <test name="TableCreation" >
+        <classes>
+            <class name="net.porillo.database.TableCreationTest" />
+        </classes>
+    </test>
+</suite>

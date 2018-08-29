@@ -29,8 +29,12 @@ public class AsynchronousConnectionManager {
 			if (connection != null && !connection.isClosed()) {
 				return connection;
 			}
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.username, this.password);
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			String connectionString = "jdbc:mysql://" + this.host + ":" + this.port + "/"
+					+ this.database + "?user=" + this.username + "&password=" + this.password +
+					"&autoReconnect=true&useSSL=false&useUnicode=true" +
+					"&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+			connection = DriverManager.getConnection(connectionString);
 			return connection;
 		}
 	}
