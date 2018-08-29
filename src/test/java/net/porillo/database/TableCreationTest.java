@@ -22,7 +22,7 @@ public class TableCreationTest {
 	@DataProvider(name = "mysqlDataSource")
 	public static Object[][] createTestDataSource() {
 		return new Object[][]{
-				{"localhost", 3306, "globalwarming", "jenkins", "tests"}
+				{"localhost", 3306, "GlobalWarming", "jenkins", "tests"}
 		};
 	}
 
