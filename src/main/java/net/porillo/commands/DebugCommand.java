@@ -27,7 +27,7 @@ public class DebugCommand extends BaseCommand {
 					if (sender instanceof Player) {
 						Player player = (Player) sender;
 						World world = player.getWorld();
-						SeaLevelRise seaLevelRise = new SeaLevelRise(player.getLocation().getChunk().getChunkSnapshot());
+						SeaLevelRise seaLevelRise = new SeaLevelRise(world.getChunkAt(player.getLocation()).getChunkSnapshot());
 						EffectEngine.getInstance().processChunk(world, seaLevelRise);
 						sender.sendMessage(ChatColor.GREEN + String.format("Applying sea level rise to chunk"));
 					}
