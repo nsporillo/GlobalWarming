@@ -22,6 +22,7 @@ public class FurnaceTable extends Table {
 
 	public FurnaceTable() {
 		super("furnaces");
+		createIfNotExists();
 	}
 
 	@Override
@@ -35,7 +36,7 @@ public class FurnaceTable extends Table {
 				"  blockZ INT,\n" +
 				"  PRIMARY KEY (uniqueID)\n" +
 				")";
-		CreateTableQuery createTableQuery = new CreateTableQuery("furnaces", sql);
+		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), sql);
 		AsyncDBQueue.getInstance().executeCreateTable(createTableQuery);
 	}
 

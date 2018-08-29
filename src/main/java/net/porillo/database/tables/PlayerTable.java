@@ -27,7 +27,7 @@ public class PlayerTable extends Table {
 				"  carbonScore INT,\n" +
 				"  PRIMARY KEY (uuid)\n" +
 				")";
-		CreateTableQuery createTableQuery = new CreateTableQuery("players", sql);
+		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), sql);
 		AsyncDBQueue.getInstance().executeCreateTable(createTableQuery);
 	}
 

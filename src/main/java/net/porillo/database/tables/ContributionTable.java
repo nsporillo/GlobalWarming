@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ContributionTable extends Table {
 
-	@Getter  private List<Contribution> reductions = new ArrayList<>();
+	@Getter private List<Contribution> reductions = new ArrayList<>();
 
 	public ContributionTable() {
 		super("contributions");

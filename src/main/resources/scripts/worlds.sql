@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS worlds (
   worldName VARCHAR(36) NOT NULL,
   firstSeen LONG,
   carbonValue INT,
+  seaLevel INT,
   size INT,
   PRIMARY KEY (worldName)
 );

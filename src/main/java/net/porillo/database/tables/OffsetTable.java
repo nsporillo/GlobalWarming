@@ -15,12 +15,22 @@ public class OffsetTable extends Table {
 
 	public OffsetTable() {
 		super("offsets");
+		createIfNotExists();
 	}
 
 	@Override
 	public void createIfNotExists() {
-
-		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), "");
+		String sql = "CREATE TABLE IF NOT EXISTS offsets (\n" +
+				"  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n" +
+				"  creatorId VARCHAR(36) NOT NULL,\n" +
+				"  hunterId VARCHAR(36),\n" +
+				"  worldName VARCHAR(36) NOT NULL,\n" +
+				"  logBlocksTarget INT,\n" +
+				"  reward DOUBLE,\n" +
+				"  timeStarted LONG,\n" +
+				"  timeCompleted LONG\n" +
+				");";
+		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), sql);
 		AsyncDBQueue.getInstance().executeCreateTable(createTableQuery);
 	}
 }

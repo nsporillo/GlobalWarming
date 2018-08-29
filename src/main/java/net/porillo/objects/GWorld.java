@@ -40,4 +40,10 @@ public class GWorld {
 	 * in the worlds atmosphere. Initially 0
 	 */
 	private int carbonValue;
+
+	/**
+	 * The y coordinate which represents the current world sea level
+	 * Changes based on the effects of climate change
+	 */
+	private int seaLevel;
 }
