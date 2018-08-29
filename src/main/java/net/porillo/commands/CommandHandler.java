@@ -16,6 +16,7 @@ public class CommandHandler {
     public CommandHandler(GlobalWarming plugin) {
         cmds.put("score", new ScoreCommand(plugin));
         cmds.put("offset", new OffsetCommand(plugin));
+        cmds.put("debug", new DebugCommand(plugin));
     }
 
     public void runCommand(CommandSender s, String l, String[] a) {
