@@ -1,12 +1,10 @@
 package net.porillo.config;
 
-import net.porillo.database.AsynchronousConnectionManager;
-import net.porillo.engine.ClimateEngine;
-import net.porillo.objects.GWorld;
+import lombok.Getter;
+import net.porillo.database.ConnectionManager;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class GlobalWarmingConfig extends ConfigLoader {
 
@@ -15,13 +13,12 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	private String database;
 	private String username, password;
 	public int updateInterval;
-    private Map<GWorld, ClimateEngine> engineMap;
+    @Getter private List<String> enabledWorlds;
 
 	public GlobalWarmingConfig(Plugin plugin) {
 		super(plugin, "config.yml");
 		super.saveIfNotExist();
 		super.load();
-		this.engineMap = new HashMap<>();
 	}
 
 	@Override
@@ -32,10 +29,11 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		this.username = conf.getString("database.username");
 		this.password = conf.getString("database.password");
 		this.updateInterval = conf.getInt("database.update-interval", 300);
+		this.enabledWorlds = conf.getStringList("worlds");
 	}
 
-	public AsynchronousConnectionManager makeConnectionManager() {
-		return new AsynchronousConnectionManager(host, port, database, username, password);
+	public ConnectionManager makeConnectionManager() {
+		return new ConnectionManager(host, port, database, username, password);
 	}
 
 	@Override
@@ -43,14 +41,5 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		// clear memory
 		super.rereadFromDisk();
 		super.load();
-	}
-
-	public ClimateEngine getEngine(GWorld world) {
-		if (engineMap.containsKey(world)) {
-			return engineMap.get(world);
-		} else {
-			engineMap.put(world, new ClimateEngine(world));
-			return getEngine(world);
-		}
 	}
 } 

@@ -5,3 +5,8 @@ database:
   username: user
   password: pass
   update-interval: 300
+worlds:
+    - world
+associations:
+  - world_nether:world
+  - world_the_end:world
