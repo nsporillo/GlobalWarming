@@ -19,7 +19,7 @@ public class TableInsertDeleteTest extends TestBase {
 
 	@Test(dataProvider = "mysqlDataSource")
 	public void testContributionTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		AsynchronousConnectionManager connectionManager = new AsynchronousConnectionManager(host, port, db, user, pass);
+		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
 		new ContributionTable(); // make sure contribution table exists
 
 		// Create a contribution and insert it into the DB

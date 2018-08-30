@@ -3,7 +3,7 @@ package net.porillo;
 import lombok.Getter;
 import net.porillo.commands.CommandHandler;
 import net.porillo.config.GlobalWarmingConfig;
-import net.porillo.database.AsynchronousConnectionManager;
+import net.porillo.database.ConnectionManager;
 import net.porillo.database.TableManager;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.listeners.AttributionListener;
@@ -18,14 +18,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class GlobalWarming extends JavaPlugin {
 
 	private static GlobalWarming instance; // single plugin instance
-	
+
 	@Getter private GlobalWarmingConfig conf;
-	@Getter private AsynchronousConnectionManager connectionManager;
+	@Getter private ConnectionManager connectionManager;
 	@Getter private TableManager tableManager;
 	private CommandHandler commandHandler;
 
 	@Override
 	public void onEnable() {
+		instance = this;
+
 		this.conf = new GlobalWarmingConfig(this);
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
@@ -35,10 +37,9 @@ public class GlobalWarming extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
 		Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
-		
-		instance = this;
-        AsyncDBQueue.getInstance().scheduleAsyncTask(conf.updateInterval * 20L);
-    }
+
+		AsyncDBQueue.getInstance().scheduleAsyncTask(conf.updateInterval * 20L);
+	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -52,7 +53,6 @@ public class GlobalWarming extends JavaPlugin {
 	}
 
 	/**
-	 * 
 	 * @return instance of main class
 	 */
 	public static GlobalWarming getInstance() {

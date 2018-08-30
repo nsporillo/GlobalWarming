@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class AsynchronousConnectionManager {
+public class ConnectionManager {
 
 	private Connection connection;
 	private String host;
@@ -12,7 +12,7 @@ public class AsynchronousConnectionManager {
 	private String database;
 	private String username, password;
 
-	public AsynchronousConnectionManager(String host, int port, String database, String username, String password) {
+	public ConnectionManager(String host, int port, String database, String username, String password) {
 		this.host = host;
 		this.port = port;
 		this.database = database;
