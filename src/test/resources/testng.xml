@@ -3,7 +3,8 @@
 <suite name="DatabaseTests" verbose="1" >
     <test name="TableCreation" >
         <classes>
-            <class name="net.porillo.database.TableCreationTest" />
+            <class name="net.porillo.database.TableCreationTest"/>
+            <class name="net.porillo.database.TableInsertDeleteTest"/>
         </classes>
     </test>
 </suite>
