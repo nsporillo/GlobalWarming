@@ -3,6 +3,7 @@ package net.porillo.listeners;
 import net.porillo.GlobalWarming;
 import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.TreeTable;
+import net.porillo.engine.ClimateEngine;
 import net.porillo.objects.*;
 
 import org.bukkit.Location;
@@ -36,7 +37,7 @@ public class CO2Listener implements Listener {
 			// Note: We hold the owner of the furnace responsible for emissions
 			// If the furnace isn't protected, the furnace owner is still charged
 			GPlayer polluter = gw.getTableManager().getPlayerTable().getPlayers().get(furnace.getOwner().getUuid());
-			Contribution emissions = gw.getConf().getEngine(world).furnaceBurn(polluter, event.getFuel());
+			Contribution emissions = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).furnaceBurn(polluter, event.getFuel());
 			int carbonScore = polluter.getCarbonScore();
 			polluter.setCarbonScore((int) (carbonScore + emissions.getContributionValue()));
 			
@@ -62,7 +63,7 @@ public class CO2Listener implements Listener {
 			Tree tree = treeTable.getLocationMap().get(location);
 			UUID ownerUUID = tree.getOwner().getUuid();
 			GPlayer planter = gw.getTableManager().getPlayerTable().getPlayers().get(ownerUUID);
-			Reduction reduction = gw.getConf().getEngine(world).treeGrow(planter, event.getSpecies(), event.getBlocks());
+			Reduction reduction = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).treeGrow(planter, event.getSpecies(), event.getBlocks());
 			int carbonScore = planter.getCarbonScore();
 			planter.setCarbonScore((int) (carbonScore - reduction.getReductionValue())); 
 			
