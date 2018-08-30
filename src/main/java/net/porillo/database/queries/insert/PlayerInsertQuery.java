@@ -18,7 +18,7 @@ public class PlayerInsertQuery extends InsertQuery {
 	}
 
 	public static String getSQL() {
-		return "INSERT INTO players (uuid, firstSeen, carbonScore) VALUES (?,?,?)";
+		return "INSERT INTO players (uuid, firstSeen, carbonScore) VALUES (?,?,?) ON DUPLICATE KEY UPDATE carbonScore = VALUES(carbonScore)";
 	}
 
 	@Override
