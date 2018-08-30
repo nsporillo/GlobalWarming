@@ -4,6 +4,7 @@ import net.porillo.GlobalWarming;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GWorld;
+import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,10 @@ public class ClimateEngine {
 	private static ClimateEngine climateEngine;
 
 	private Map<String, WorldClimateEngine> worldClimateEngines = new HashMap<>();
+
+	public ClimateEngine() {
+		loadWorldClimateEngines(GlobalWarming.getInstance().getConf().getEnabledWorlds());
+	}
 
 	public void loadWorldClimateEngines(List<String> enabledWorlds) {
 		for (String world : enabledWorlds) {
