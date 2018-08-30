@@ -8,15 +8,23 @@ import net.porillo.objects.GPlayer;
 import net.porillo.objects.Tree;
 import org.bukkit.Location;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TreeTable extends Table {
 
-	@Getter private Map<Location, Tree> locationMap = new HashMap<>();
-	@Getter private Map<GPlayer, HashSet<Tree>> playerMap = new HashMap<>();
+	/**
+	 * Single source of truth for Tree objects
+	 * Simply maps the furnace unique id to the tree object
+	 */
+	@Getter private Map<UUID, Tree> treeMap = new HashMap<>();
+	/**
+	 * Helper collection to speed up event listeners that use locations
+	 */
+	@Getter private Map<Location, UUID> locationMap = new HashMap<>();
+	/**
+	 * Helper collection to get every furnace a player is tied to
+	 */
+	@Getter private Map<GPlayer, HashSet<UUID>> playerMap = new HashMap<>();
 
 	public TreeTable() {
 		super("trees");

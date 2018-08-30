@@ -33,7 +33,8 @@ public class CO2Listener implements Listener {
 		FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
 
 		if (furnaceTable.getLocationMap().containsKey(location)) {
-			Furnace furnace = furnaceTable.getLocationMap().get(location);
+			UUID uuid = furnaceTable.getLocationMap().get(location);
+			Furnace furnace = furnaceTable.getFurnaceMap().get(uuid);
 			// Note: We hold the owner of the furnace responsible for emissions
 			// If the furnace isn't protected, the furnace owner is still charged
 			GPlayer polluter = gw.getTableManager().getPlayerTable().getPlayers().get(furnace.getOwner().getUuid());
@@ -60,13 +61,17 @@ public class CO2Listener implements Listener {
 		TreeTable treeTable = gw.getTableManager().getTreeTable();
 
 		if (treeTable.getLocationMap().containsKey(location)) {
-			Tree tree = treeTable.getLocationMap().get(location);
+			UUID uuid = treeTable.getLocationMap().get(location);
+			Tree tree = treeTable.getTreeMap().get(uuid);
 			UUID ownerUUID = tree.getOwner().getUuid();
 			GPlayer planter = gw.getTableManager().getPlayerTable().getPlayers().get(ownerUUID);
 			Reduction reduction = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).treeGrow(planter, event.getSpecies(), event.getBlocks());
 			int carbonScore = planter.getCarbonScore();
 			planter.setCarbonScore((int) (carbonScore - reduction.getReductionValue())); 
-			
+
+			tree.setSapling(false);
+
+			// TODO: Queue tree DB update
 			// TODO: Queue planter score DB update
 			// TODO: Queue new reduction DB insert
 		} else {
