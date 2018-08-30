@@ -91,6 +91,7 @@ public class AsyncDBQueue {
 		writeDeleteQueue(connection);
 		writeInsertQueue(connection);
 		writeUpdateQueue(connection);
+		connection.close(); // close connection after all queues written
 	}
 
 	public void writeDeleteQueue(Connection connection){
