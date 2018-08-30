@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.bukkit.Location;
 
 import java.util.UUID;
-
-import org.bukkit.Location;
 
 @Data
 @NoArgsConstructor
@@ -27,5 +26,10 @@ public class Furnace {
      * The Bukkit location of this furnace
      */
     private Location location;
+
+	/**
+	 * If this furnace currently exists in the world
+	 */
+	private boolean active;
 
 }

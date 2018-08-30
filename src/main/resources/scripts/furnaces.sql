@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS furnaces (
   blockX INT,
   blockY INT,
   blockZ INT,
+  active BOOL,
   PRIMARY KEY (uniqueID)
 );
