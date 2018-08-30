@@ -1,56 +1,50 @@
 package net.porillo.engine;
 
-import net.porillo.engine.models.ContributionModel;
-import net.porillo.engine.models.EntityFitnessModel;
-import net.porillo.engine.models.ScoreTempModel;
-import net.porillo.objects.Contribution;
-import net.porillo.objects.GPlayer;
+import net.porillo.GlobalWarming;
+import net.porillo.database.tables.WorldTable;
+import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GWorld;
-import net.porillo.objects.Reduction;
-import org.bukkit.TreeType;
-import org.bukkit.block.BlockState;
-import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 public class ClimateEngine {
 
-	private GWorld world;
-	
-	// Models 
-	private ScoreTempModel scoreTempModel;
-	private ContributionModel contributionModel;
-	private EntityFitnessModel entityFitnessModel;
+	private static ClimateEngine climateEngine;
 
-	public ClimateEngine(GWorld world) {
-		this.world = world;
-		this.scoreTempModel = new ScoreTempModel();
-		this.contributionModel = new ContributionModel();
-		this.entityFitnessModel = new EntityFitnessModel();
+	private Map<String, WorldClimateEngine> worldClimateEngines = new HashMap<>();
+
+	public void loadWorldClimateEngines(List<String> enabledWorlds) {
+		for (String world : enabledWorlds) {
+			WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
+
+			GWorld gWorld = worldTable.getWorld(world);
+			if (gWorld == null) {
+				gWorld = worldTable.insertNewWorld(world);
+			}
+
+			worldClimateEngines.put(world, new WorldClimateEngine(gWorld));
+		}
 	}
 
-	public Reduction treeGrow(GPlayer player, TreeType treeType, List<BlockState> blocks) {
-		// TODO: Add ReductionModel 
-		// For now, we use a flat reduction rate proportional to number of blocks which grew
-		Reduction reduction = new Reduction();
-		reduction.setUniqueID(UUID.randomUUID());
-		reduction.setReductioner(player.getUuid());
-		reduction.setWorldName(world.getWorldName());
-		reduction.setReductionValue(blocks.size());
-		return reduction;
+	public WorldClimateEngine getClimateEngine(String worldName) {
+		if (worldClimateEngines.containsKey(worldName)) {
+			return worldClimateEngines.get(worldName);
+		}
+
+		return null;
 	}
 
-    public Contribution furnaceBurn(GPlayer player, ItemStack fuel) {
-		Contribution contribution = new Contribution();
-		contribution.setUniqueID(UUID.randomUUID());
-		contribution.setWorldName(world.getWorldName());
-        contribution.setContributionKey(player.getUuid());
-		contribution.setContributionValue(contributionModel.getContribution(fuel.getType()));
-		return contribution;
+	public boolean hasClimateEngine(String worldName) {
+		return getClimateEngine(worldName) != null;
 	}
 
-	public Double getTemperature() {
-		return scoreTempModel.getTemperature(world.getCarbonValue());
+	public static ClimateEngine getInstance() {
+		if (climateEngine == null) {
+			climateEngine = new ClimateEngine();
+		}
+
+		return climateEngine;
 	}
 }
