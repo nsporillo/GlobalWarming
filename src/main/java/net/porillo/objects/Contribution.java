@@ -12,15 +12,15 @@ public class Contribution {
 	/**
 	 * Random UUID created for this contribution
 	 */
-	private Long uniqueID;
+	private Integer uniqueID;
 	/**
 	 * UUID of the Player who caused this contribution
 	 */
-	private Long contributer;
+	private Integer contributer;
 	/**
 	 * UUID of the associated object that corresponds to this emission
 	 */
-	private Long contributionKey;
+	private Integer contributionKey;
 	/**
 	 * Name of the Bukkit world this contribution took place
 	 */
@@ -28,6 +28,6 @@ public class Contribution {
 	/**
 	 * Calculated emissions value for this contribution
 	 */
-	private double contributionValue;
+	private Integer contributionValue;
 
 }

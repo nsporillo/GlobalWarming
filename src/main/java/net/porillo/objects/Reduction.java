@@ -12,15 +12,15 @@ public class Reduction {
 	/**
 	 * Unique Id in DB created for this contribution
 	 */
-	private Long uniqueID;
+	private Integer uniqueID;
 	/**
 	 * Unique Id  of the Player who caused this redution
 	 */
-	private Long reductioner;
+	private Integer reductioner;
 	/**
 	 * Unique Id  of the associated object that corresponds to this reduction
 	 */
-	private Long reductionKey;
+	private Integer reductionKey;
 	/**
 	 * Name of the Bukkit world this contribution took place
 	 */
@@ -28,5 +28,5 @@ public class Reduction {
 	/**
 	 * Calculated emissions reduction value
 	 */
-	private double reductionValue;
+	private Integer reductionValue;
 }

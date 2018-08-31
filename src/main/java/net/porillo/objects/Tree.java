@@ -11,10 +11,10 @@ import org.bukkit.Location;
 public class Tree {
 
 	//TODO: Add JavaDocs
-	private Long uniqueID;
+	private Integer uniqueID;
 	private GPlayer owner;
 	private Location location;
 	private boolean isSapling;
-	private int size;
+	private Integer size;
 
 }

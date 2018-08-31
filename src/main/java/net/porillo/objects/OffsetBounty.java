@@ -13,7 +13,7 @@ public class OffsetBounty {
 	/**
 	 * Unique integer ID of this offset bounty
 	 */
-	private Long uniqueId;
+	private Integer uniqueId;
 
 	/**
 	 * The player who created this carbon offset bounty
@@ -35,11 +35,11 @@ public class OffsetBounty {
 	 * The required number of log blocks that need to be 
 	 * grown by the hunter before this bounty is completed
 	 */
-	private int logBlocksTarget;
+	private Integer logBlocksTarget;
 	/**
 	 * The player defined reward for bounty completion
 	 */
-	private double reward;
+	private Integer reward;
 	/**
 	 * Variables to track time 
 	 */

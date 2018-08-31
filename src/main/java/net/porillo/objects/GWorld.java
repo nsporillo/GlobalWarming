@@ -12,7 +12,7 @@ public class GWorld {
 	/**
 	 * Unique ID in database
 	 */
-	private Long uniqueID;
+	private Integer uniqueID;
 	/**
 	 * Bukkit worldname
 	 */
@@ -38,16 +38,16 @@ public class GWorld {
 	 * a tiny world with lots of furnaces and no trees should feel
 	 * the impact.
 	 */
-	private int size;
+	private Integer size;
 	/**
 	 * Numerical value representing the total amount of carbon 
 	 * in the worlds atmosphere. Initially 0
 	 */
-	private int carbonValue;
+	private Integer carbonValue;
 
 	/**
 	 * The y coordinate which represents the current world sea level
 	 * Changes based on the effects of climate change
 	 */
-	private int seaLevel;
+	private Integer seaLevel;
 }

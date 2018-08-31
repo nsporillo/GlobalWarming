@@ -15,7 +15,7 @@ public class Furnace {
 	/**
 	 * Random generated UUID for this furnace instance
 	 */
-	private Long uniqueID;
+	private Integer uniqueID;
 	/**
 	 * Associated GPlayer who placed this furnace
 	 */

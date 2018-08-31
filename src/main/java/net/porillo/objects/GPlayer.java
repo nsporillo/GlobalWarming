@@ -14,7 +14,7 @@ public class GPlayer {
 	/**
 	 * Unique ID in database
 	 */
-	private Long uniqueId;
+	private Integer uniqueId;
 	/**
 	 * All players have a UUID assigned when they first join by CraftBukkit
 	 */
@@ -28,5 +28,5 @@ public class GPlayer {
 	/**
 	 * Numerical "carbon score" value for just this player
 	 */
-	private int carbonScore;
+	private Integer carbonScore;
 }
