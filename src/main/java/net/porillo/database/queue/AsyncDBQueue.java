@@ -88,9 +88,9 @@ public class AsyncDBQueue {
 	private void writeQueues() throws SQLException, ClassNotFoundException {
 		Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
 		writeCreateTableQueue(connection);
-		writeDeleteQueue(connection);
 		writeInsertQueue(connection);
 		writeUpdateQueue(connection);
+		writeDeleteQueue(connection);
 		connection.close(); // close connection after all queues written
 	}
 
