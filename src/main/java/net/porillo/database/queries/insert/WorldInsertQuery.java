@@ -25,17 +25,12 @@ public class WorldInsertQuery extends InsertQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setLong(1, world.getUniqueID());
+		preparedStatement.setInt(1, world.getUniqueID());
 		preparedStatement.setString(2, world.getWorldName());
 		preparedStatement.setLong(3, world.getFirstSeen());
 		preparedStatement.setInt(4, world.getCarbonValue());
 		preparedStatement.setInt(5, world.getSeaLevel());
 		preparedStatement.setInt(6, world.getSize());
 		return preparedStatement;
-	}
-
-	@Override
-	public Long getUniqueID() {
-		return world.getUniqueID();
 	}
 }

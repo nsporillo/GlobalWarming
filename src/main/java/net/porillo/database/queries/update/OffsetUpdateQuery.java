@@ -26,19 +26,15 @@ public class OffsetUpdateQuery extends UpdateQuery {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 
 		if (offsetBounty.getHunter() == null) {
-			//preparedStatement.setLong(1, 0);
+			preparedStatement.setObject(1, null);
 		} else {
-			preparedStatement.setLong(1, offsetBounty.getHunter().getUniqueId());
+			preparedStatement.setInt(1, offsetBounty.getHunter().getUniqueId());
 		}
 
 		preparedStatement.setLong(2, offsetBounty.getTimeCompleted());
-		preparedStatement.setLong(3, offsetBounty.getUniqueId());
+		preparedStatement.setInt(3, offsetBounty.getUniqueId());
 
 		return preparedStatement;
 	}
 
-	@Override
-	public Long getUniqueID() {
-		return offsetBounty.getUniqueId();
-	}
 }

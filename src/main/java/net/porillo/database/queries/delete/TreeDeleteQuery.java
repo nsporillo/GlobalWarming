@@ -24,12 +24,7 @@ public class TreeDeleteQuery extends DeleteQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setString(1, tree.getUniqueID().toString());
+		preparedStatement.setInt(1, tree.getUniqueID());
 		return preparedStatement;
-	}
-
-	@Override
-	public Long getUniqueID() {
-		return tree.getUniqueID();
 	}
 }

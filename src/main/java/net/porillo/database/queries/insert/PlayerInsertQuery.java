@@ -25,15 +25,10 @@ public class PlayerInsertQuery extends InsertQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setLong(1, player.getUniqueId());
+		preparedStatement.setInt(1, player.getUniqueId());
 		preparedStatement.setString(2, player.getUuid().toString());
 		preparedStatement.setLong(3, player.getFirstSeen());
 		preparedStatement.setInt(4, player.getCarbonScore());
 		return preparedStatement;
-	}
-
-	@Override
-	public Long getUniqueID() {
-		return player.getUniqueId();
 	}
 }

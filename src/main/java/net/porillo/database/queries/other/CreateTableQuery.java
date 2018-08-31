@@ -15,17 +15,8 @@ public class CreateTableQuery implements Query {
 	@Getter private String SQL;
 
 	@Override
-	public String getQueryType() {
-		return "create";
-	}
-
-	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		return connection.prepareStatement(this.SQL);
 	}
 
-	@Override
-	public Long getUniqueID() {
-		return null; // unused
-	}
 }

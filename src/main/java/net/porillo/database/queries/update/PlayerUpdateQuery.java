@@ -25,12 +25,7 @@ public class PlayerUpdateQuery extends UpdateQuery {
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 		preparedStatement.setInt(1, gPlayer.getCarbonScore());
-		preparedStatement.setLong(2, gPlayer.getUniqueId());
+		preparedStatement.setInt(2, gPlayer.getUniqueId());
 		return preparedStatement;
-	}
-
-	@Override
-	public Long getUniqueID() {
-		return gPlayer.getUniqueId();
 	}
 }
