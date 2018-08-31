@@ -24,10 +24,9 @@ public class ReductionInsertQuery extends InsertQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setString(1, reduction.getUniqueID().toString());
-		preparedStatement.setString(2, reduction.getReductioner().toString());
-		preparedStatement.setString(3,
-				reduction.getReductionKey() == null ? null : reduction.getReductionKey().toString());
+		preparedStatement.setLong(1, reduction.getUniqueID());
+		preparedStatement.setLong(2, reduction.getReductioner());
+		preparedStatement.setLong(3, reduction.getReductionKey());
 		preparedStatement.setString(4, reduction.getWorldName());
 		preparedStatement.setDouble(5, reduction.getReductionValue());
 		return preparedStatement;

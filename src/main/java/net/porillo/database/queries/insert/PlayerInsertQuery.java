@@ -19,15 +19,16 @@ public class PlayerInsertQuery extends InsertQuery {
 
 	@Override
 	public String getSQL() {
-		return "INSERT INTO players (uuid, firstSeen, carbonScore) VALUES (?,?,?)";
+		return "INSERT INTO players (uniqueID, uuid, firstSeen, carbonScore) VALUES (?,?,?,?)";
 	}
 
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setString(1, player.getUuid().toString());
-		preparedStatement.setLong(2, player.getFirstSeen());
-		preparedStatement.setInt(3, player.getCarbonScore());
+		preparedStatement.setLong(1, player.getUniqueId());
+		preparedStatement.setString(2, player.getUuid().toString());
+		preparedStatement.setLong(3, player.getFirstSeen());
+		preparedStatement.setInt(4, player.getCarbonScore());
 		return preparedStatement;
 	}
 

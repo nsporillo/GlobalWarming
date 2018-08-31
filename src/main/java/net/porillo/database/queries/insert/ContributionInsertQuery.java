@@ -24,10 +24,9 @@ public class ContributionInsertQuery extends InsertQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setString(1, contribution.getUniqueID().toString());
-		preparedStatement.setString(2, contribution.getContributer().toString());
-		preparedStatement.setString(3,
-				contribution.getContributionKey() == null ? null : contribution.getContributionKey().toString());
+		preparedStatement.setLong(1, contribution.getUniqueID());
+		preparedStatement.setLong(2, contribution.getContributer());
+		preparedStatement.setLong(3, contribution.getContributionKey());
 		preparedStatement.setString(4, contribution.getWorldName());
 		preparedStatement.setDouble(5, contribution.getContributionValue());
 		return preparedStatement;

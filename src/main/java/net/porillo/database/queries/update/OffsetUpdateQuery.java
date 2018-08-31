@@ -26,9 +26,9 @@ public class OffsetUpdateQuery extends UpdateQuery {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 
 		if (offsetBounty.getHunter() == null) {
-			preparedStatement.setString(1, null);
+			//preparedStatement.setLong(1, 0);
 		} else {
-			preparedStatement.setString(1, offsetBounty.getHunter().getUuid().toString());
+			preparedStatement.setLong(1, offsetBounty.getHunter().getUniqueId());
 		}
 
 		preparedStatement.setLong(2, offsetBounty.getTimeCompleted());

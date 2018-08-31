@@ -25,7 +25,7 @@ public class FurnaceUpdateQuery extends UpdateQuery {
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 		preparedStatement.setBoolean(1, furnace.isActive());
-		preparedStatement.setString(2, furnace.getUniqueID().toString());
+		preparedStatement.setLong(2, furnace.getUniqueID());
 		return preparedStatement;
 	}
 

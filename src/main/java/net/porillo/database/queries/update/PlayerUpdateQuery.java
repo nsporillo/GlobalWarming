@@ -18,14 +18,14 @@ public class PlayerUpdateQuery extends UpdateQuery {
 
 	@Override
 	public String getSQL() {
-		return "UPDATE players SET carbonScore = ? WHERE uuid = ?";
+		return "UPDATE players SET carbonScore = ? WHERE uniqueID = ?";
 	}
 
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 		preparedStatement.setInt(1, gPlayer.getCarbonScore());
-		preparedStatement.setString(2, gPlayer.getUuid().toString());
+		preparedStatement.setLong(2, gPlayer.getUniqueId());
 		return preparedStatement;
 	}
 

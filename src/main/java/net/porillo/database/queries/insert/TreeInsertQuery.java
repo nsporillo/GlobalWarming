@@ -25,8 +25,8 @@ public class TreeInsertQuery extends InsertQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setString(1, tree.getUniqueID().toString());
-		preparedStatement.setString(2, tree.getOwner().getUuid().toString());
+		preparedStatement.setLong(1, tree.getUniqueID());
+		preparedStatement.setLong(2, tree.getOwner().getUniqueId());
 		preparedStatement.setString(3, tree.getLocation().getWorld().getName());
 		preparedStatement.setInt(4, tree.getLocation().getBlockX());
 		preparedStatement.setInt(5, tree.getLocation().getBlockY());

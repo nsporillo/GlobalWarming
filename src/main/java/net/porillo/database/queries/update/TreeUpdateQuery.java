@@ -18,14 +18,15 @@ public class TreeUpdateQuery extends UpdateQuery {
 
 	@Override
 	public String getSQL() {
-		return "UPDATE trees SET isSapling = ? WHERE uniqueId = ?";
+		return "UPDATE trees SET isSapling = ?, size = ? WHERE uniqueId = ?";
 	}
 
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 		preparedStatement.setBoolean(1, tree.isSapling());
-		preparedStatement.setString(2, tree.getUniqueID().toString());
+		preparedStatement.setInt(2, tree.getSize());
+		preparedStatement.setString(3, tree.getUniqueID().toString());
 		return preparedStatement;
 	}
 
