@@ -20,7 +20,7 @@ public abstract class Table {
 
 	public void createIfNotExists() {
 		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), loadSQLFromFile());
-		AsyncDBQueue.getInstance().executeCreateTable(createTableQuery);
+		AsyncDBQueue.getInstance().queueCreateQuery(createTableQuery);
 	}
 
 	public Path getPath() {
@@ -31,7 +31,17 @@ public abstract class Table {
 		return Paths.get("src/test/resources/scripts").resolve(tableName + ".sql");
 	}
 
+	private void copyFromResource() {
+		Path file = getPath();
+
+		if (!Files.exists(file)) {
+			GlobalWarming.getInstance().getLogger().info("Script " + tableName + ".sql" + " does not exist, creating.");
+			GlobalWarming.getInstance().saveResource("scripts/" + tableName + ".sql", false);
+		}
+	}
+
 	public String loadSQLFromFile() {
+		this.copyFromResource();
 		StringBuilder builder = new StringBuilder();
 
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(getPath())))) {

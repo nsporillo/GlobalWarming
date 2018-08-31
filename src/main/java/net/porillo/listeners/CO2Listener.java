@@ -42,10 +42,11 @@ public class CO2Listener implements Listener {
 		Location location = event.getBlock().getLocation();
 		GWorld world = gw.getTableManager().getWorldTable().getWorld(location.getWorld().getName());
 		FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
+		Furnace furnace;
 		GPlayer polluter;
 
 		if (furnaceTable.getLocationMap().containsKey(location)) {
-			Furnace furnace = furnaceTable.getFurnaceMap().get(furnaceTable.getLocationMap().get(location));
+			furnace = furnaceTable.getFurnaceMap().get(furnaceTable.getLocationMap().get(location));
 			polluter = furnace.getOwner(); // whoever placed the furnace is charged.
 		} else {
 			/*
@@ -57,7 +58,7 @@ public class CO2Listener implements Listener {
 
 			// First create a new furnace object and store it
 			Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
-			Furnace furnace = new Furnace(uniqueId, polluter, location, true);
+			furnace = new Furnace(uniqueId, polluter, location, true);
 
 			// Update all furnace collections
 			furnaceTable.updateFurnace(furnace);
@@ -71,7 +72,7 @@ public class CO2Listener implements Listener {
 		}
 
 		// Create a contribution object using this worlds climate engine
-		Contribution contrib = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).furnaceBurn(polluter, event.getFuel());
+		Contribution contrib = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).furnaceBurn(furnace, event.getFuel());
 		int carbonScore = polluter.getCarbonScore();
 		polluter.setCarbonScore((int) (carbonScore + contrib.getContributionValue()));
 
@@ -93,15 +94,16 @@ public class CO2Listener implements Listener {
 		Location location = event.getLocation();
 		GWorld world = gw.getTableManager().getWorldTable().getWorld(location.getWorld().getName());
 		TreeTable treeTable = gw.getTableManager().getTreeTable();
+		Tree tree;
 		GPlayer planter;
 
 		// TODO: Add TreeType species to reduction model
 
 		if (treeTable.getLocationMap().containsKey(location)) {
-			Tree tree = treeTable.getTreeMap().get(treeTable.getLocationMap().get(location));
+			tree = treeTable.getTreeMap().get(treeTable.getLocationMap().get(location));
 			planter = tree.getOwner();
 
-			Reduction reduction = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).treeGrow(planter, event.getSpecies(), event.getBlocks());
+			Reduction reduction = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).treeGrow(tree, event.getSpecies(), event.getBlocks());
 			int carbonScore = planter.getCarbonScore();
 			planter.setCarbonScore((int) (carbonScore - reduction.getReductionValue()));
 
@@ -118,7 +120,7 @@ public class CO2Listener implements Listener {
 			// First create a new tree object and store it
 			Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
 			// TODO: Only consider core species blocks as tree size
-			Tree tree = new Tree(uniqueId, planter, location, false, event.getBlocks().size());
+			tree = new Tree(uniqueId, planter, location, false, event.getBlocks().size());
 
 			TreeInsertQuery insertQuery = new TreeInsertQuery(tree);
 			AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
@@ -128,7 +130,7 @@ public class CO2Listener implements Listener {
 		}
 
 		// Create a new reduction object using the worlds climate engine
-		Reduction reduction = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).treeGrow(planter, event.getSpecies(), event.getBlocks());
+		Reduction reduction = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).treeGrow(tree, event.getSpecies(), event.getBlocks());
 		int carbonScore = planter.getCarbonScore();
 		planter.setCarbonScore((int) (carbonScore - reduction.getReductionValue()));
 

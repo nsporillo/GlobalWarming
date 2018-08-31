@@ -55,7 +55,7 @@ public class GlobalWarming extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-
+		AsyncDBQueue.getInstance().close();
 	}
 
 	/**

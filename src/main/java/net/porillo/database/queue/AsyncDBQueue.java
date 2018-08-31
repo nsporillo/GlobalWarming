@@ -2,7 +2,9 @@ package net.porillo.database.queue;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import net.porillo.database.api.*;
+import net.porillo.database.api.DeleteQuery;
+import net.porillo.database.api.InsertQuery;
+import net.porillo.database.api.UpdateQuery;
 import net.porillo.database.queries.other.CreateTableQuery;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -49,12 +51,28 @@ public class AsyncDBQueue {
 	@Getter private Queue<CreateTableQuery> createQueue = new ConcurrentLinkedQueue<>();
 	@Getter private Queue<UpdateQuery> updateQueue = new ConcurrentLinkedQueue<>();
 
-	private BukkitRunnable queueWriteThread = new BukkitRunnable(){
+	private BukkitRunnable queueWriteThread = new BukkitRunnable() {
 
 		@Override
 		public void run() {
 			try {
+				GlobalWarming.getInstance().getLogger().info("Syncing database...");
+
+				if (!createQueue.isEmpty()) {
+					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", createQueue.size(), "table creates."));
+				}
+				if (!insertQueue.isEmpty()) {
+					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", insertQueue.size(), "inserts."));
+				}
+				if (!updateQueue.isEmpty()) {
+					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", updateQueue.size(), "updates."));
+				}
+				if (!deleteQueue.isEmpty()) {
+					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", deleteQueue.size(), "deletes."));
+				}
+
 				writeQueues();
+				GlobalWarming.getInstance().getLogger().info("Finished syncing database.");
 			} catch (SQLException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -62,7 +80,11 @@ public class AsyncDBQueue {
 	};
 
 	public void scheduleAsyncTask(long interval) {
-		queueWriteThread.runTaskTimerAsynchronously(GlobalWarming.getInstance(), interval, interval);
+		queueWriteThread.runTaskTimerAsynchronously(GlobalWarming.getInstance(), 100L, interval);
+	}
+
+	public void close() {
+		queueWriteThread.run();
 	}
 
 	public void runQueueWriteTaskNow() {
@@ -73,7 +95,7 @@ public class AsyncDBQueue {
 		this.deleteQueue.offer(deleteQuery);
 	}
 
-	public void executeCreateTable(CreateTableQuery createTableQuery) {
+	public void queueCreateQuery(CreateTableQuery createTableQuery) {
 		this.createQueue.offer(createTableQuery);
 	}
 
@@ -91,6 +113,7 @@ public class AsyncDBQueue {
 		writeInsertQueue(connection);
 		writeUpdateQueue(connection);
 		writeDeleteQueue(connection);
+
 		connection.close(); // close connection after all queues written
 	}
 

@@ -2,11 +2,9 @@ package net.porillo.database.tables;
 
 import net.porillo.GlobalWarming;
 import net.porillo.database.queries.insert.WorldInsertQuery;
+import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.GWorld;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,7 @@ public class WorldTable extends Table {
 
 	public GWorld insertNewWorld(String name) {
 		GWorld gWorld = new GWorld();
+		gWorld.setUniqueID(GlobalWarming.getInstance().getRandom().nextLong());
 		gWorld.setWorldName(name);
 		gWorld.setFirstSeen(System.currentTimeMillis());
 		gWorld.setTemperature(14.0);
@@ -43,14 +42,7 @@ public class WorldTable extends Table {
 		updateWorld(gWorld);
 
 		WorldInsertQuery worldInsertQuery = new WorldInsertQuery(gWorld);
-
-		try {
-			Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
-			PreparedStatement preparedStatement = worldInsertQuery.prepareStatement(connection);
-			preparedStatement.executeUpdate();
-		} catch (SQLException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		AsyncDBQueue.getInstance().queueInsertQuery(worldInsertQuery);
 
 		return gWorld;
 	}
