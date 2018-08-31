@@ -39,7 +39,7 @@ public class ScoreTempModel extends Model {
 			this.temps[i] = temps.get(i);
 		}
 
-		//this.splineFunction = new LinearInterpolator().interpolate(this.scores, this.temps);
+		this.splineFunction = new LinearInterpolator().interpolate(this.scores, this.temps);
 	}
 
 	public double getTemperature(int score) {

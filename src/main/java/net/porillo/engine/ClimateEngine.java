@@ -4,7 +4,6 @@ import net.porillo.GlobalWarming;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GWorld;
-import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.List;
