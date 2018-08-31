@@ -24,7 +24,6 @@ public class GlobalWarming extends JavaPlugin {
 	@Getter private ConnectionManager connectionManager;
 	@Getter private TableManager tableManager;
 	private CommandHandler commandHandler;
-	private ClimateEngine climateEngine;
 
 	@Override
 	public void onEnable() {
@@ -34,7 +33,7 @@ public class GlobalWarming extends JavaPlugin {
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
 		this.commandHandler = new CommandHandler(this);
-		this.climateEngine = new ClimateEngine();
+		ClimateEngine.getInstance();
 
 		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);

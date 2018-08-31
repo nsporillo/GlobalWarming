@@ -18,7 +18,7 @@ public class WorldInsertQuery extends InsertQuery {
 
 	public static String getSQL() {
 		return "INSERT INTO worlds (worldName, firstSeen, carbonValue, seaLevel, size)" +
-				" VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE carbonValue = VALUES(carbonValue), seaLevel = VALUES(seaLevel), size = VALUES(size)";
+				" VALUES (?,?,?,?,?)";
 	}
 
 	@Override
