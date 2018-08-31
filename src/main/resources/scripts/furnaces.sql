@@ -1,11 +1,9 @@
-# Note: Unused by the plugin currently
-# A TODO exists to read all scripts in for usage
 CREATE TABLE IF NOT EXISTS furnaces (
   uniqueID BIGINT PRIMARY KEY,
-  ownerUUID BIGINT,
-  worldName VARCHAR(255),
-  blockX INT,
-  blockY INT,
-  blockZ INT,
-  active BOOL
+  ownerUUID BIGINT NOT NULL,
+  worldName VARCHAR(255) NOT NULL,
+  blockX INT NOT NULL,
+  blockY INT NOT NULL,
+  blockZ INT NOT NULL,
+  active BOOL NOT NULL
 );

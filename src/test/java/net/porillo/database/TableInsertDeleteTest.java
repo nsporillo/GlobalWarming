@@ -4,8 +4,10 @@ import net.porillo.database.queries.insert.ContributionInsertQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.ContributionTable;
 import net.porillo.objects.Contribution;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,22 +18,26 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Test
 public class TableInsertDeleteTest extends TestBase {
 
+	private Connection connection;
 	private Random random = new Random();
 
-	@Test(dataProvider = "mysqlDataSource")
-	public void testContributionTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
+	@BeforeTest
+	public void before() throws SQLException, ClassNotFoundException {
+		this.connection = getConnectionManager().openConnection();
+	}
+
+	public void testContributionTable() throws SQLException, ClassNotFoundException {
 		new ContributionTable(); // make sure contribution table exists
 
 		// Create a contribution and insert it into the DB
 		final Long uniqueId = random.nextLong();
 		Contribution contribution = new Contribution(uniqueId, random.nextLong(), random.nextLong(), "world", 15.0);
 		AsyncDBQueue.getInstance().queueInsertQuery(new ContributionInsertQuery(contribution));
-		AsyncDBQueue.getInstance().writeInsertQueue(connectionManager.openConnection());
+		AsyncDBQueue.getInstance().writeInsertQueue(connection);
 
 		// Verify the object exists in the DB
 		String select = "SELECT * FROM contributions WHERE uniqueID = ?";
-		PreparedStatement insertStatement = connectionManager.openConnection().prepareStatement(select);
+		PreparedStatement insertStatement = connection.prepareStatement(select);
 		insertStatement.setLong(1, uniqueId);
 		ResultSet resultSet = insertStatement.executeQuery();
 
@@ -51,7 +57,7 @@ public class TableInsertDeleteTest extends TestBase {
 
 		// Delete the test object from the database
 		String delete = "DELETE FROM contributions WHERE uniqueID = ?";
-		PreparedStatement deleteStatement = connectionManager.openConnection().prepareStatement(delete);
+		PreparedStatement deleteStatement = connection.prepareStatement(delete);
 		deleteStatement.setLong(1, uniqueId);
 		deleteStatement.execute();
 	}

@@ -3,6 +3,7 @@ package net.porillo.database;
 import net.porillo.database.queries.other.CreateTableQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.*;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
@@ -13,65 +14,71 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Test
 public class TableCreationTest extends TestBase {
 
-	@Test(dataProvider = "mysqlDataSource")
-	public void testContributionTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
-		new ContributionTable(); // create table insert query, add it to the queue
-		tableAssertions(connectionManager, "contributions");
+	private Connection connection;
+
+	@BeforeTest
+	public void before() throws SQLException, ClassNotFoundException {
+		this.connection = getConnectionManager().openConnection();
 	}
 
-	@Test(dataProvider = "mysqlDataSource")
-	public void testReductionTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
-		new ReductionTable(); // create table insert query, add it to the queue
-		tableAssertions(connectionManager, "reductions");
-	}
-
-	@Test(dataProvider = "mysqlDataSource")
-	public void testFurnaceTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
-		new FurnaceTable(); // create table insert query, add it to the queue
-		tableAssertions(connectionManager, "furnaces");
-	}
-
-	@Test(dataProvider = "mysqlDataSource")
-	public void testTreeTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
-		new TreeTable(); // create table insert query, add it to the queue
-		tableAssertions(connectionManager, "trees");
-	}
-
-	@Test(dataProvider = "mysqlDataSource")
-	public void testOffsetTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
-		new OffsetTable(); // create table insert query, add it to the queue
-		tableAssertions(connectionManager, "offsets");
-	}
-
-	@Test(dataProvider = "mysqlDataSource")
-	public void testPlayerTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
+	@Test
+	public void testPlayerTable() throws SQLException, ClassNotFoundException {
+		dropTable("players");
 		new PlayerTable(); // create table insert query, add it to the queue
-		tableAssertions(connectionManager, "players");
+		tableAssertions("players");
 	}
 
-	@Test(dataProvider = "mysqlDataSource")
-	public void testWorldTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
-		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
+	@Test
+	public void testWorldTable() throws SQLException, ClassNotFoundException {
+		dropTable("worlds");
 		new WorldTable(); // create table insert query, add it to the queue
-		tableAssertions(connectionManager, "worlds");
+		tableAssertions("worlds");
 	}
 
-	private void resetTestDatabase(ConnectionManager connectionManager, String table) {
+	@Test
+	public void testFurnaceTable() throws SQLException, ClassNotFoundException {
+		dropTable("furnaces");
+		new FurnaceTable(); // create table insert query, add it to the queue
+		tableAssertions("furnaces");
+	}
+
+	@Test
+	public void testTreeTable() throws SQLException, ClassNotFoundException {
+		dropTable("trees");
+		new TreeTable(); // create table insert query, add it to the queue
+		tableAssertions("trees");
+	}
+
+	@Test
+	public void testContributionTable() throws SQLException, ClassNotFoundException {
+		dropTable("contributions");
+		new ContributionTable(); // create table insert query, add it to the queue
+		tableAssertions("contributions");
+	}
+
+	@Test
+	public void testReductionTable() throws SQLException, ClassNotFoundException {
+		dropTable("reductions");
+		new ReductionTable(); // create table insert query, add it to the queue
+		tableAssertions("reductions");
+	}
+
+	@Test
+	public void testOffsetTable() throws SQLException, ClassNotFoundException {
+		dropTable("offsets");
+		new OffsetTable(); // create table insert query, add it to the queue
+		tableAssertions("offsets");
+	}
+
+	private void dropTable(String table) {
 		try {
-			Connection connection = connectionManager.openConnection();
-			connection.createStatement().execute("DROP DATABASE " + table);
-		} catch (SQLException | ClassNotFoundException e) {
+			connection.createStatement().executeUpdate("DROP TABLE IF EXISTS " + table);
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void tableAssertions(ConnectionManager connectionManager, String table) throws SQLException, ClassNotFoundException {
+	private void tableAssertions(String table) throws SQLException, ClassNotFoundException {
 		// Assert that the queue has an insert query
 		assertThat("CreateQueue doesn't have query", AsyncDBQueue.getInstance().getCreateQueue().size() == 1);
 
@@ -80,9 +87,9 @@ public class TableCreationTest extends TestBase {
 		assertThat("CreateQueue contains wrong table", createTableQuery.getTable().equals(table));
 
 		// Since this is just a test, write the db queue on the same thread
-		AsyncDBQueue.getInstance().writeCreateTableQueue(connectionManager.openConnection());
+		AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 
 		// Verify the table is created, if the query fails then the table does not exist
-		connectionManager.openConnection().createStatement().execute("SELECT 1 FROM contributions LIMIT 1");
+		connection.createStatement().execute("SELECT 1 FROM " + table + " LIMIT 1");
 	}
 }
