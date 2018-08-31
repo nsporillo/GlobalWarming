@@ -28,4 +28,27 @@ public class FurnaceTable extends Table {
 		createIfNotExists();
 	}
 
+	/**
+	 * Handles storage in all furnace collections
+	 * @param furnace updated furnace object
+	 */
+	public void updateFurnace(Furnace furnace) {
+		final GPlayer player = furnace.getOwner();
+
+		// Update map of Gplayer -> Furnace Id
+		if (!playerMap.containsKey(player)) {
+			HashSet<Long> furnaces = new HashSet<>();
+			furnaces.add(furnace.getUniqueID());
+			playerMap.put(player, furnaces);
+		} else {
+			HashSet<Long> furnaces = playerMap.get(player);
+			furnaces.add(furnace.getUniqueID());
+			playerMap.put(player, furnaces);
+		}
+
+		// Map the furnace unique id to the furnace object
+		furnaceMap.put(furnace.getUniqueID(), furnace);
+		// Map the block location to the furnace unique id
+		locationMap.put(furnace.getLocation(), furnace.getUniqueID());
+	}
 }

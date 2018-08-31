@@ -30,4 +30,28 @@ public class TreeTable extends Table {
 		createIfNotExists();
 	}
 
+
+	/**
+	 * Handles all storage for tree collections
+	 * @param tree updated tree object
+	 */
+	public void updateTree(Tree tree) {
+		final GPlayer owner = tree.getOwner();
+
+		// Update map of Gplayer -> Furnace Id
+		if (playerMap.containsKey(owner)) {
+			HashSet<Long> trees = playerMap.get(owner);
+			trees.add(tree.getUniqueID());
+			playerMap.put(owner, trees);
+		} else {
+			HashSet<Long> trees = new HashSet<>();
+			trees.add(tree.getUniqueID());
+			playerMap.put(owner, trees);
+		}
+
+		// Map the tree unique id to the Tree object
+		treeMap.put(tree.getUniqueID(), tree);
+		// Map the block location to the tree unique id
+		locationMap.put(tree.getLocation(), tree.getUniqueID());
+	}
 }
