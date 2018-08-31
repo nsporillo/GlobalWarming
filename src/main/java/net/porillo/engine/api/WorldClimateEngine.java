@@ -1,5 +1,6 @@
 package net.porillo.engine.api;
 
+import net.porillo.GlobalWarming;
 import net.porillo.engine.models.ContributionModel;
 import net.porillo.engine.models.EntityFitnessModel;
 import net.porillo.engine.models.ScoreTempModel;
@@ -12,7 +13,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.UUID;
 
 public class WorldClimateEngine {
 
@@ -34,19 +34,21 @@ public class WorldClimateEngine {
 	public Reduction treeGrow(GPlayer player, TreeType treeType, List<BlockState> blocks) {
 		// TODO: Add ReductionModel
 		// For now, we use a flat reduction rate proportional to number of blocks which grew
+		Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
 		Reduction reduction = new Reduction();
-		reduction.setUniqueID(UUID.randomUUID());
-		reduction.setReductioner(player.getUuid());
+		reduction.setUniqueID(uniqueId);
+		reduction.setReductioner(player.getUniqueId());
 		reduction.setWorldName(world.getWorldName());
 		reduction.setReductionValue(blocks.size());
 		return reduction;
 	}
 
 	public Contribution furnaceBurn(GPlayer player, ItemStack fuel) {
+		Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
 		Contribution contribution = new Contribution();
-		contribution.setUniqueID(UUID.randomUUID());
+		contribution.setUniqueID(uniqueId);
 		contribution.setWorldName(world.getWorldName());
-		contribution.setContributionKey(player.getUuid());
+		contribution.setContributionKey(player.getUniqueId());
 		contribution.setContributionValue(contributionModel.getContribution(fuel.getType()));
 		return contribution;
 	}

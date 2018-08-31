@@ -16,6 +16,7 @@ public class ContributionInsertQuery extends InsertQuery {
 		this.contribution = contribution;
 	}
 
+	@Override
 	public String getSQL() {
 		return "INSERT INTO contributions (uniqueID, contributerId, contributionKey, worldName, value) VALUES (?,?,?,?,?)";
 	}
@@ -30,5 +31,10 @@ public class ContributionInsertQuery extends InsertQuery {
 		preparedStatement.setString(4, contribution.getWorldName());
 		preparedStatement.setDouble(5, contribution.getContributionValue());
 		return preparedStatement;
+	}
+
+	@Override
+	public Long getUniqueID() {
+		return contribution.getUniqueID();
 	}
 }

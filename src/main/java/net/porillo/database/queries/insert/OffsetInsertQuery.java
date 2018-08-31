@@ -16,6 +16,7 @@ public class OffsetInsertQuery extends InsertQuery {
 		this.offsetBounty = offsetBounty;
 	}
 
+	@Override
 	public String getSQL() {
 		return "INSERT INTO offsets (creatorId, hunterId, worldName, logBlocksTarget, reward, timeStarted, timeCompleted)" +
 				" VALUES (?,?,?,?,?,?,?)";
@@ -38,5 +39,10 @@ public class OffsetInsertQuery extends InsertQuery {
 		preparedStatement.setLong(6, offsetBounty.getTimeStarted());
 		preparedStatement.setLong(7, offsetBounty.getTimeCompleted());
 		return preparedStatement;
+	}
+
+	@Override
+	public Long getUniqueID() {
+		return offsetBounty.getUniqueId();
 	}
 }

@@ -16,6 +16,7 @@ public class FurnaceInsertQuery extends InsertQuery {
 		this.furnace = furnace;
 	}
 
+	@Override
 	public String getSQL() {
 		return "INSERT INTO furnaces (uniqueID, ownerUUID, worldName, blockX, blockY, blockZ) VALUES (?,?,?,?,?,?)";
 	}
@@ -30,5 +31,10 @@ public class FurnaceInsertQuery extends InsertQuery {
 		preparedStatement.setInt(5, furnace.getLocation().getBlockY());
 		preparedStatement.setInt(6, furnace.getLocation().getBlockZ());
 		return preparedStatement;
+	}
+
+	@Override
+	public Long getUniqueID() {
+		return furnace.getUniqueID();
 	}
 }

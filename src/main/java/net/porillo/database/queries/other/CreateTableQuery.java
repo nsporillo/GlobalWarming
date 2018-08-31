@@ -23,4 +23,9 @@ public class CreateTableQuery implements Query {
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		return connection.prepareStatement(this.SQL);
 	}
+
+	@Override
+	public Long getUniqueID() {
+		return null; // unused
+	}
 }

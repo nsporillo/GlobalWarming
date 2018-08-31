@@ -17,6 +17,7 @@ public class PlayerInsertQuery extends InsertQuery {
 		this.player = player;
 	}
 
+	@Override
 	public String getSQL() {
 		return "INSERT INTO players (uuid, firstSeen, carbonScore) VALUES (?,?,?)";
 	}
@@ -28,5 +29,10 @@ public class PlayerInsertQuery extends InsertQuery {
 		preparedStatement.setLong(2, player.getFirstSeen());
 		preparedStatement.setInt(3, player.getCarbonScore());
 		return preparedStatement;
+	}
+
+	@Override
+	public Long getUniqueID() {
+		return player.getUniqueId();
 	}
 }

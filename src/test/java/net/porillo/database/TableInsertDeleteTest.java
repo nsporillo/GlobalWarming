@@ -9,13 +9,14 @@ import org.testng.annotations.Test;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
+import java.util.Random;
 
-import static java.util.UUID.randomUUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Test
 public class TableInsertDeleteTest extends TestBase {
+
+	private Random random = new Random();
 
 	@Test(dataProvider = "mysqlDataSource")
 	public void testContributionTable(String host, int port, String db, String user, String pass) throws SQLException, ClassNotFoundException {
@@ -23,25 +24,25 @@ public class TableInsertDeleteTest extends TestBase {
 		new ContributionTable(); // make sure contribution table exists
 
 		// Create a contribution and insert it into the DB
-		final UUID uuid = randomUUID();
-		Contribution contribution = new Contribution(uuid, randomUUID(), randomUUID(), "world", 15.0);
+		final Long uniqueId = random.nextLong();
+		Contribution contribution = new Contribution(uniqueId, random.nextLong(), random.nextLong(), "world", 15.0);
 		AsyncDBQueue.getInstance().queueInsertQuery(new ContributionInsertQuery(contribution));
 		AsyncDBQueue.getInstance().writeInsertQueue(connectionManager.openConnection());
 
 		// Verify the object exists in the DB
 		String select = "SELECT * FROM contributions WHERE uniqueID = ?";
 		PreparedStatement insertStatement = connectionManager.openConnection().prepareStatement(select);
-		insertStatement.setString(1, uuid.toString());
+		insertStatement.setLong(1, uniqueId);
 		ResultSet resultSet = insertStatement.executeQuery();
 
 		// Validate the object is correct
 		while (resultSet.next()) {
 			assertThat("pk mismatch",
-					uuid.equals(UUID.fromString(resultSet.getString(1))));
+					uniqueId.equals(resultSet.getLong(1)));
 			assertThat("contributor mismatch",
-					contribution.getContributer().equals(UUID.fromString(resultSet.getString(2))));
+					contribution.getContributer().equals(resultSet.getLong(2)));
 			assertThat("contribKey mismatch",
-					contribution.getContributionKey().equals(UUID.fromString(resultSet.getString(3))));
+					contribution.getContributionKey().equals(resultSet.getLong(3)));
 			assertThat("world mismatch",
 					contribution.getWorldName().equals(resultSet.getString(4)));
 			assertThat("value mismatch",
@@ -51,7 +52,7 @@ public class TableInsertDeleteTest extends TestBase {
 		// Delete the test object from the database
 		String delete = "DELETE FROM contributions WHERE uniqueID = ?";
 		PreparedStatement deleteStatement = connectionManager.openConnection().prepareStatement(delete);
-		deleteStatement.setString(1, uuid.toString());
+		deleteStatement.setLong(1, uniqueId);
 		deleteStatement.execute();
 	}
 

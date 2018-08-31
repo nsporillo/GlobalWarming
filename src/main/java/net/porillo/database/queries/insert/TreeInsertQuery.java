@@ -16,6 +16,7 @@ public class TreeInsertQuery extends InsertQuery {
 		this.tree = tree;
 	}
 
+	@Override
 	public String getSQL() {
 		return "INSERT INTO trees (uniqueID, ownerUUID, worldName, blockX, blockY, blockZ, sapling, size)" +
 				" VALUES (?,?,?,?,?,?,?,?)";
@@ -33,5 +34,10 @@ public class TreeInsertQuery extends InsertQuery {
 		preparedStatement.setBoolean(7, tree.isSapling());
 		preparedStatement.setInt(8, tree.getSize());
 		return preparedStatement;
+	}
+
+	@Override
+	public Long getUniqueID() {
+		return tree.getUniqueID();
 	}
 }

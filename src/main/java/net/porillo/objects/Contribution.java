@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,15 +12,15 @@ public class Contribution {
 	/**
 	 * Random UUID created for this contribution
 	 */
-	private UUID uniqueID; 
+	private Long uniqueID;
 	/**
 	 * UUID of the Player who caused this contribution
 	 */
-	private UUID contributer; 
+	private Long contributer;
 	/**
 	 * UUID of the associated object that corresponds to this emission
 	 */
-	private UUID contributionKey;
+	private Long contributionKey;
 	/**
 	 * Name of the Bukkit world this contribution took place
 	 */

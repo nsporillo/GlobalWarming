@@ -4,25 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reduction {
 
 	/**
-	 * Random UUID created for this contribution
+	 * Unique Id in DB created for this contribution
 	 */
-	private UUID uniqueID;
+	private Long uniqueID;
 	/**
-	 * UUID of the Player who caused this redution
+	 * Unique Id  of the Player who caused this redution
 	 */
-	private UUID reductioner;
+	private Long reductioner;
 	/**
-	 * UUID of the associated object that corresponds to this reduction
+	 * Unique Id  of the associated object that corresponds to this reduction
 	 */
-	private UUID reductionKey;
+	private Long reductionKey;
 	/**
 	 * Name of the Bukkit world this contribution took place
 	 */

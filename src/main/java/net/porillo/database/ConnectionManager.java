@@ -32,7 +32,7 @@ public class ConnectionManager {
 			Class.forName("com.mysql.jdbc.Driver");
 			String connectionString = "jdbc:mysql://" + this.host + ":" + this.port + "/"
 					+ this.database + "?user=" + this.username + "&password=" + this.password +
-					"&autoReconnect=true&useSSL=false&useUnicode=true" +
+					"&allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&useUnicode=true" +
 					"&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 			connection = DriverManager.getConnection(connectionString);
 			return connection;

@@ -16,6 +16,7 @@ public class WorldInsertQuery extends InsertQuery {
 		this.world = world;
 	}
 
+	@Override
 	public String getSQL() {
 		return "INSERT INTO worlds (worldName, firstSeen, carbonValue, seaLevel, size)" +
 				" VALUES (?,?,?,?,?)";
@@ -30,5 +31,10 @@ public class WorldInsertQuery extends InsertQuery {
 		preparedStatement.setInt(4, world.getSeaLevel());
 		preparedStatement.setInt(5, world.getSize());
 		return preparedStatement;
+	}
+
+	@Override
+	public Long getUniqueID() {
+		return world.getUniqueID();
 	}
 }

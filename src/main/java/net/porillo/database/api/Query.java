@@ -6,11 +6,13 @@ import java.sql.SQLException;
 
 public interface Query {
 
-	public String getTable();
+	String getTable();
 
-	public String getQueryType();
+	String getQueryType();
 
-	public String getSQL();
+	String getSQL();
 
-	public PreparedStatement prepareStatement(Connection connection) throws SQLException;
+	Long getUniqueID();
+
+	PreparedStatement prepareStatement(Connection connection) throws SQLException;
 }

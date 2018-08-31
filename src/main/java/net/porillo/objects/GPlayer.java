@@ -12,6 +12,10 @@ import java.util.UUID;
 public class GPlayer {
 
 	/**
+	 * Unique ID in database
+	 */
+	private Long uniqueId;
+	/**
 	 * All players have a UUID assigned when they first join by CraftBukkit
 	 */
 	private UUID uuid;

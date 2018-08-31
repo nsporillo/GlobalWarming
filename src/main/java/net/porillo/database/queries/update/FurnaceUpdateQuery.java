@@ -28,4 +28,9 @@ public class FurnaceUpdateQuery extends UpdateQuery {
 		preparedStatement.setString(2, furnace.getUniqueID().toString());
 		return preparedStatement;
 	}
+
+	@Override
+	public Long getUniqueID() {
+		return furnace.getUniqueID();
+	}
 }

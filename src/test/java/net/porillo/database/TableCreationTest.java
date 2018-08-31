@@ -5,6 +5,7 @@ import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.*;
 import org.testng.annotations.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -59,6 +60,15 @@ public class TableCreationTest extends TestBase {
 		ConnectionManager connectionManager = new ConnectionManager(host, port, db, user, pass);
 		new WorldTable(); // create table insert query, add it to the queue
 		tableAssertions(connectionManager, "worlds");
+	}
+
+	private void resetTestDatabase(ConnectionManager connectionManager, String table) {
+		try {
+			Connection connection = connectionManager.openConnection();
+			connection.createStatement().execute("DROP DATABASE " + table);
+		} catch (SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void tableAssertions(ConnectionManager connectionManager, String table) throws SQLException, ClassNotFoundException {

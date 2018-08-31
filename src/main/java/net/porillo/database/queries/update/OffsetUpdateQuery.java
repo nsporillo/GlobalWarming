@@ -32,8 +32,13 @@ public class OffsetUpdateQuery extends UpdateQuery {
 		}
 
 		preparedStatement.setLong(2, offsetBounty.getTimeCompleted());
-		preparedStatement.setInt(3, offsetBounty.getId());
+		preparedStatement.setLong(3, offsetBounty.getUniqueId());
 
 		return preparedStatement;
+	}
+
+	@Override
+	public Long getUniqueID() {
+		return offsetBounty.getUniqueId();
 	}
 }

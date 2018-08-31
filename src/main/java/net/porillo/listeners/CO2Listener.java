@@ -33,7 +33,7 @@ public class CO2Listener implements Listener {
 		FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
 
 		if (furnaceTable.getLocationMap().containsKey(location)) {
-			UUID uuid = furnaceTable.getLocationMap().get(location);
+			Long uuid = furnaceTable.getLocationMap().get(location);
 			Furnace furnace = furnaceTable.getFurnaceMap().get(uuid);
 			// Note: We hold the owner of the furnace responsible for emissions
 			// If the furnace isn't protected, the furnace owner is still charged
@@ -61,7 +61,7 @@ public class CO2Listener implements Listener {
 		TreeTable treeTable = gw.getTableManager().getTreeTable();
 
 		if (treeTable.getLocationMap().containsKey(location)) {
-			UUID uuid = treeTable.getLocationMap().get(location);
+			Long uuid = treeTable.getLocationMap().get(location);
 			Tree tree = treeTable.getTreeMap().get(uuid);
 			UUID ownerUUID = tree.getOwner().getUuid();
 			GPlayer planter = gw.getTableManager().getPlayerTable().getPlayers().get(ownerUUID);

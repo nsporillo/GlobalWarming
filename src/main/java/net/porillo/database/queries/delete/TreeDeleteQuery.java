@@ -1,31 +1,30 @@
-package net.porillo.database.queries.update;
+package net.porillo.database.queries.delete;
 
-import net.porillo.database.api.UpdateQuery;
+import net.porillo.database.api.DeleteQuery;
 import net.porillo.objects.Tree;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class TreeUpdateQuery extends UpdateQuery {
+public class TreeDeleteQuery extends DeleteQuery {
 
 	private Tree tree;
 
-	public TreeUpdateQuery(Tree tree) {
+	public TreeDeleteQuery(Tree tree) {
 		super("trees");
 		this.tree = tree;
 	}
 
 	@Override
 	public String getSQL() {
-		return "UPDATE trees SET isSapling = ? WHERE uniqueId = ?";
+		return "DELETE FROM trees WHERE uniqueId = ?";
 	}
 
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setBoolean(1, tree.isSapling());
-		preparedStatement.setString(2, tree.getUniqueID().toString());
+		preparedStatement.setString(1, tree.getUniqueID().toString());
 		return preparedStatement;
 	}
 

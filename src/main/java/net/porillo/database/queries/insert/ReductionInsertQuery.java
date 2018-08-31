@@ -16,6 +16,7 @@ public class ReductionInsertQuery extends InsertQuery {
 		this.reduction = reduction;
 	}
 
+	@Override
 	public String getSQL() {
 		return "INSERT INTO reductions (uniqueID, reductionerId, reductionKey, worldName, value) VALUES (?,?,?,?,?)";
 	}
@@ -30,5 +31,10 @@ public class ReductionInsertQuery extends InsertQuery {
 		preparedStatement.setString(4, reduction.getWorldName());
 		preparedStatement.setDouble(5, reduction.getReductionValue());
 		return preparedStatement;
+	}
+
+	@Override
+	public Long getUniqueID() {
+		return reduction.getUniqueID();
 	}
 }

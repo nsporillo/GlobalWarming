@@ -20,7 +20,8 @@ public class PlayerListener implements Listener {
 		PlayerTable table = gw.getTableManager().getPlayerTable();
 
 		if (!table.getPlayers().containsKey(event.getPlayer().getUniqueId())) {
-			GPlayer player = new GPlayer(event.getPlayer().getUniqueId(), System.currentTimeMillis(), 0);
+			Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
+			GPlayer player = new GPlayer(uniqueId, event.getPlayer().getUniqueId(), System.currentTimeMillis(), 0);
 
 			table.getPlayers().put(event.getPlayer().getUniqueId(), player);
 			AsyncDBQueue.getInstance().queueInsertQuery(new PlayerInsertQuery(player));

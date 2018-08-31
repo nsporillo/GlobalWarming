@@ -13,7 +13,7 @@ public class OffsetBounty {
 	/**
 	 * Unique integer ID of this offset bounty
 	 */
-	private int id;
+	private Long uniqueId;
 
 	/**
 	 * The player who created this carbon offset bounty

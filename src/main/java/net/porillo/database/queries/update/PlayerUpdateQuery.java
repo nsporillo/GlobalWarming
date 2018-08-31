@@ -28,4 +28,9 @@ public class PlayerUpdateQuery extends UpdateQuery {
 		preparedStatement.setString(2, gPlayer.getUuid().toString());
 		return preparedStatement;
 	}
+
+	@Override
+	public Long getUniqueID() {
+		return gPlayer.getUniqueId();
+	}
 }

@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 public class GWorld {
 
 	/**
+	 * Unique ID in database
+	 */
+	private Long uniqueID;
+	/**
 	 * Bukkit worldname
 	 */
 	private String worldName;

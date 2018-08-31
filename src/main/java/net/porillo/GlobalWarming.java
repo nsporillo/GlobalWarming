@@ -15,6 +15,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Random;
+
 public class GlobalWarming extends JavaPlugin {
 
 	private static GlobalWarming instance; // single plugin instance
@@ -22,12 +24,14 @@ public class GlobalWarming extends JavaPlugin {
 	@Getter private GlobalWarmingConfig conf;
 	@Getter private ConnectionManager connectionManager;
 	@Getter private TableManager tableManager;
+	@Getter private Random random;
 	private CommandHandler commandHandler;
 
 	@Override
 	public void onEnable() {
 		instance = this;
 
+		this.random = new Random();
 		this.conf = new GlobalWarmingConfig(this);
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
