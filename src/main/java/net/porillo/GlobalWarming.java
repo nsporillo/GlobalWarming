@@ -33,7 +33,7 @@ public class GlobalWarming extends JavaPlugin {
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
 		this.commandHandler = new CommandHandler(this);
-		ClimateEngine.getInstance();
+		ClimateEngine.getInstance().loadWorldClimateEngines(this.conf.getEnabledWorlds());
 
 		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);

@@ -16,10 +16,6 @@ public class ClimateEngine {
 
 	private Map<String, WorldClimateEngine> worldClimateEngines = new HashMap<>();
 
-	public ClimateEngine() {
-		loadWorldClimateEngines(GlobalWarming.getInstance().getConf().getEnabledWorlds());
-	}
-
 	public void loadWorldClimateEngines(List<String> enabledWorlds) {
 		for (String world : enabledWorlds) {
 			WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
