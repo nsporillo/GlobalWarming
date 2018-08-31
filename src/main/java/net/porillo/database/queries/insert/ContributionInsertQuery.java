@@ -16,7 +16,7 @@ public class ContributionInsertQuery extends InsertQuery {
 		this.contribution = contribution;
 	}
 
-	public static String getSQL() {
+	public String getSQL() {
 		return "INSERT INTO contributions (uniqueID, contributerId, contributionKey, worldName, value) VALUES (?,?,?,?,?)";
 	}
 

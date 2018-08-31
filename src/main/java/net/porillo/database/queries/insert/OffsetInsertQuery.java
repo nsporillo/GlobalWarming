@@ -16,7 +16,7 @@ public class OffsetInsertQuery extends InsertQuery {
 		this.offsetBounty = offsetBounty;
 	}
 
-	public static String getSQL() {
+	public String getSQL() {
 		return "INSERT INTO offsets (creatorId, hunterId, worldName, logBlocksTarget, reward, timeStarted, timeCompleted)" +
 				" VALUES (?,?,?,?,?,?,?)";
 	}

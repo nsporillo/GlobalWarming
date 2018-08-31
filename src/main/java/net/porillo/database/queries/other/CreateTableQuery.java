@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class CreateTableQuery implements Query {
 
 	@Getter private String table;
-	private String sql;
+	@Getter private String SQL;
 
 	@Override
 	public String getQueryType() {
@@ -21,6 +21,6 @@ public class CreateTableQuery implements Query {
 
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
-		return connection.prepareStatement(this.sql);
+		return connection.prepareStatement(this.SQL);
 	}
 }

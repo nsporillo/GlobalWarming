@@ -16,7 +16,7 @@ public class FurnaceInsertQuery extends InsertQuery {
 		this.furnace = furnace;
 	}
 
-	public static String getSQL() {
+	public String getSQL() {
 		return "INSERT INTO furnaces (uniqueID, ownerUUID, worldName, blockX, blockY, blockZ) VALUES (?,?,?,?,?,?)";
 	}
 

@@ -16,7 +16,7 @@ public class ReductionInsertQuery extends InsertQuery {
 		this.reduction = reduction;
 	}
 
-	public static String getSQL() {
+	public String getSQL() {
 		return "INSERT INTO reductions (uniqueID, reductionerId, reductionKey, worldName, value) VALUES (?,?,?,?,?)";
 	}
 

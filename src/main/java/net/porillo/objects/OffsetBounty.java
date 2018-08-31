@@ -11,6 +11,11 @@ import org.bukkit.command.CommandSender;
 public class OffsetBounty {
 
 	/**
+	 * Unique integer ID of this offset bounty
+	 */
+	private int id;
+
+	/**
 	 * The player who created this carbon offset bounty
 	 */
 	private GPlayer creator;

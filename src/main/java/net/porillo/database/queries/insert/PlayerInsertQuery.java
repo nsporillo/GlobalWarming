@@ -17,7 +17,7 @@ public class PlayerInsertQuery extends InsertQuery {
 		this.player = player;
 	}
 
-	public static String getSQL() {
+	public String getSQL() {
 		return "INSERT INTO players (uuid, firstSeen, carbonScore) VALUES (?,?,?)";
 	}
 

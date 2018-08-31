@@ -10,5 +10,7 @@ public interface Query {
 
 	public String getQueryType();
 
+	public String getSQL();
+
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException;
 }

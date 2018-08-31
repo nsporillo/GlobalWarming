@@ -16,7 +16,7 @@ public class WorldInsertQuery extends InsertQuery {
 		this.world = world;
 	}
 
-	public static String getSQL() {
+	public String getSQL() {
 		return "INSERT INTO worlds (worldName, firstSeen, carbonValue, seaLevel, size)" +
 				" VALUES (?,?,?,?,?)";
 	}

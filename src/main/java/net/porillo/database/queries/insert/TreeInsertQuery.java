@@ -16,7 +16,7 @@ public class TreeInsertQuery extends InsertQuery {
 		this.tree = tree;
 	}
 
-	public static String getSQL() {
+	public String getSQL() {
 		return "INSERT INTO trees (uniqueID, ownerUUID, worldName, blockX, blockY, blockZ, sapling, size)" +
 				" VALUES (?,?,?,?,?,?,?,?)";
 	}
