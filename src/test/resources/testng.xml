@@ -5,6 +5,7 @@
         <classes>
             <class name="net.porillo.database.TableCreationTest"/>
             <class name="net.porillo.database.TableInsertDeleteTest"/>
+            <class name="net.porillo.ModelTest"/>
         </classes>
     </test>
 </suite>

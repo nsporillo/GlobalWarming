@@ -3,7 +3,7 @@ package net.porillo.engine.models;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import net.porillo.GlobalWarming;
+import lombok.Getter;
 import net.porillo.engine.api.Model;
 import org.bukkit.Material;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class ContributionModel extends Model {
 
-	private Map<Material, Double> contributionMap;
+	@Getter private Map<Material, Double> contributionMap;
 	private Gson gson;
 
 	public ContributionModel() {
@@ -27,9 +27,7 @@ public class ContributionModel extends Model {
 		
 		if (this.contributionMap == null) {
 			this.contributionMap = new HashMap<>();
-			GlobalWarming.getInstance().getLogger().warning("Did not find any values in " + super.getName());
-		} else {
-			GlobalWarming.getInstance().getLogger().info("Loaded " + contributionMap.size() + " contribution key pairs.");
+			throw new RuntimeException("No values found in " + super.getName());
 		}
 	}
 	
@@ -49,8 +47,7 @@ public class ContributionModel extends Model {
 		if (contributionMap.containsKey(fuelType)) {
 			return contributionMap.get(fuelType);
 		} else {
-			GlobalWarming.getInstance().getLogger().severe("No contribution defined in the model for '" + fuelType.name() + "'");
-			return 0;
+			throw new NullPointerException("No contribution defined in the model for '" + fuelType.name() + "'");
 		}
 	}
 	

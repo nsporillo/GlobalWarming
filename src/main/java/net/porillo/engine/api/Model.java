@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,11 @@ public abstract class Model {
 	}
 
 	public Path getPath() {
-		return GlobalWarming.getInstance().getDataFolder().toPath().resolve("models").resolve(modelName);
+		if (GlobalWarming.getInstance() != null) {
+			return GlobalWarming.getInstance().getDataFolder().toPath().resolve("models").resolve(modelName);
+		}
+
+		return Paths.get("src/test/resources/models/").resolve(modelName);
 	}
 
 	public List<String> getLines() {
