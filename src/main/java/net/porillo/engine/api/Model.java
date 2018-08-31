@@ -88,11 +88,8 @@ public abstract class Model {
 		Path file = getPath();
 		
 		if (!Files.exists(file)) {
-			try {
-				Files.createFile(file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			GlobalWarming.getInstance().getLogger().info("Model " + modelName + " does not exist, creating.");
+			GlobalWarming.getInstance().saveResource("models/" + modelName, false);
 		} 
 	}
 

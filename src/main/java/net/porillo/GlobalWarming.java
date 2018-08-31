@@ -6,6 +6,7 @@ import net.porillo.config.GlobalWarmingConfig;
 import net.porillo.database.ConnectionManager;
 import net.porillo.database.TableManager;
 import net.porillo.database.queue.AsyncDBQueue;
+import net.porillo.engine.ClimateEngine;
 import net.porillo.listeners.AttributionListener;
 import net.porillo.listeners.CO2Listener;
 import net.porillo.listeners.PlayerListener;
@@ -23,6 +24,7 @@ public class GlobalWarming extends JavaPlugin {
 	@Getter private ConnectionManager connectionManager;
 	@Getter private TableManager tableManager;
 	private CommandHandler commandHandler;
+	private ClimateEngine climateEngine;
 
 	@Override
 	public void onEnable() {
@@ -32,6 +34,7 @@ public class GlobalWarming extends JavaPlugin {
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
 		this.commandHandler = new CommandHandler(this);
+		this.climateEngine = new ClimateEngine();
 
 		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
