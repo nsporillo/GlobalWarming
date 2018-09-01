@@ -3,6 +3,8 @@ package net.porillo.objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,6 +33,14 @@ public class GPlayer {
 	 * Numerical "carbon score" value for just this player
 	 */
 	private Integer carbonScore;
+
+	public Player getPlayer() {
+		return Bukkit.getPlayer(uuid);
+	}
+
+	public void sendMsg(String msg) {
+		getPlayer().sendMessage(msg);
+	}
 
 	public GPlayer(ResultSet rs) throws SQLException {
 		this.uniqueId = rs.getInt(1);
