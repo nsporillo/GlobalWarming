@@ -25,6 +25,10 @@ public abstract class Table {
 
 	public Path getPath() {
 		if (GlobalWarming.getInstance() != null) {
+			Path path = GlobalWarming.getInstance().getDataFolder().toPath().resolve("scripts").resolve(tableName + ".sql");
+			if (!Files.exists(path)) {
+				GlobalWarming.getInstance().saveResource("scripts/" + tableName + ".sql", false);
+			}
 			return GlobalWarming.getInstance().getDataFolder().toPath().resolve("scripts").resolve(tableName + ".sql");
 		}
 		// For testing only. Plugin instance should never be null.

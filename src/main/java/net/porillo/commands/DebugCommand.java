@@ -1,45 +1,44 @@
 package net.porillo.commands;
 
-import net.porillo.GlobalWarming;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
 import net.porillo.effect.EffectEngine;
+import net.porillo.objects.GPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
+@CommandAlias("globalwarming|gw")
+@CommandPermission("globalwarming.admin")
 public class DebugCommand extends BaseCommand {
 
-	DebugCommand(GlobalWarming plugin) {
-		super(plugin);
-		super.setName("debug");
-		super.addUsage("Debug things");
-		super.setPermission("globalwarming.debug");
-	}
+    @Subcommand("debug effect")
+    @Syntax("[effect]")
+    @Description("Force execute a certain effect")
+    public void onEffect(GPlayer gPlayer, String[] args) {
+        Player player = Bukkit.getPlayer(gPlayer.getUuid());
+        if (args.length == 0) {
+            player.sendMessage(ChatColor.RED + "Please specify a effect");
+        } else {
+            String effect = args[0];
+            if (effect.equalsIgnoreCase("sealevel")) {
+                int seaLevel = 62;
 
-	@Override
-	public void runCommand(CommandSender sender, List<String> args) {
-		if (args.size() > 1) {
-			if (args.get(0).equals("effect")) {
-				if (args.get(1).equals("sealevel")) {
-					if (sender instanceof Player) {
-						int seaLevel = 62;
+                if (args.length == 2) {
+                    try {
+                        seaLevel = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException e) {
+                        player.sendMessage(ChatColor.RED + "Invalid Sea Level");
+                        return;
+                    }
+                }
 
-						if (args.size() > 2) {
-							seaLevel = Integer.parseInt(args.get(2));
-						}
+                EffectEngine.getInstance().testSeaLevelRise(player.getLocation().getChunk(), seaLevel);
+                player.sendMessage(ChatColor.GREEN + String.format("Applying sea level rise from y=%d to chunk", seaLevel));
+            }
+        }
+    }
 
-						Player player = (Player) sender;
-						EffectEngine.getInstance().testSeaLevelRise(player.getLocation().getChunk(), seaLevel);
-						sender.sendMessage(ChatColor.GREEN + String.format("Applying sea level rise from y=%d to chunk", seaLevel));
-					}
-				} else {
-					// Catch all command error handling
-					sender.sendMessage(ChatColor.RED + "Did you mean /gw debug effect sealevel");
-				}
-			}
-		} else {
-			sender.sendMessage("/gw debug effect sealevel");
-		}
-	}
+
+
 }
