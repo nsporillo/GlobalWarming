@@ -38,7 +38,6 @@ public class WorldTable extends Table {
 		gWorld.setTemperature(14.0);
 		gWorld.setCarbonValue(0);
 		gWorld.setSize(0);
-		gWorld.setUniqueID(GlobalWarming.getInstance().getRandom().nextLong());
 
 		updateWorld(gWorld);
 

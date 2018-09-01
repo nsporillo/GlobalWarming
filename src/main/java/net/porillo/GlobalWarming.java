@@ -2,8 +2,8 @@ package net.porillo;
 
 import co.aikar.commands.BukkitCommandManager;
 import lombok.Getter;
-import net.porillo.commands.DebugCommand;
-import net.porillo.commands.PrimaryCommand;
+import net.porillo.commands.AdminCommands;
+import net.porillo.commands.GeneralCommands;
 import net.porillo.config.GlobalWarmingConfig;
 import net.porillo.database.ConnectionManager;
 import net.porillo.database.TableManager;
@@ -57,8 +57,8 @@ public class GlobalWarming extends JavaPlugin {
 	private void registerCommands() {
 		commandManager.getCommandContexts().registerIssuerOnlyContext(GPlayer.class, c -> tableManager.getPlayerTable().getPlayers().get(c.getPlayer().getUniqueId()));
 
-		this.commandManager.registerCommand(new DebugCommand());
-		this.commandManager.registerCommand(new PrimaryCommand());
+		this.commandManager.registerCommand(new AdminCommands());
+		this.commandManager.registerCommand(new GeneralCommands());
 	}
 
 	/**
