@@ -57,7 +57,7 @@ public class CO2Listener implements Listener {
 			polluter = playerTable.getOrCreatePlayer(untrackedUUID, true);
 
 			// First create a new furnace object and store it
-			Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
+			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
 			furnace = new Furnace(uniqueId, polluter, location, true);
 
 			// Update all furnace collections
@@ -118,7 +118,7 @@ public class CO2Listener implements Listener {
 			planter = playerTable.getOrCreatePlayer(untrackedUUID, true);
 
 			// First create a new tree object and store it
-			Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
+			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
 			// TODO: Only consider core species blocks as tree size
 			tree = new Tree(uniqueId, planter, location, false, event.getBlocks().size());
 
@@ -132,7 +132,7 @@ public class CO2Listener implements Listener {
 		// Create a new reduction object using the worlds climate engine
 		Reduction reduction = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).treeGrow(tree, event.getSpecies(), event.getBlocks());
 		int carbonScore = planter.getCarbonScore();
-		planter.setCarbonScore((int) (carbonScore - reduction.getReductionValue()));
+		planter.setCarbonScore(carbonScore - reduction.getReductionValue());
 
 		// Queue player update query
 		PlayerUpdateQuery playerUpdateQuery = new PlayerUpdateQuery(planter);

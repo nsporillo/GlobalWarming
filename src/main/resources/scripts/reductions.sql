@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS reductions (
-  uniqueID BIGINT PRIMARY KEY,
-  reductionerId BIGINT NOT NULL,
-  reductionKey BIGINT NOT NULL,
+  uniqueID INT PRIMARY KEY,
+  reductionerId INT NOT NULL,
+  reductionKey INT NOT NULL,
   worldName VARCHAR(255) NOT NULL,
-  value DOUBLE NOT NULL
+  value SMALLINT NOT NULL
 );

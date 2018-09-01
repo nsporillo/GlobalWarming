@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 @Data
@@ -16,7 +18,7 @@ public class GPlayer {
 	/**
 	 * Unique ID in database
 	 */
-	private Long uniqueId;
+	private Integer uniqueId;
 	/**
 	 * All players have a UUID assigned when they first join by CraftBukkit
 	 */
@@ -30,8 +32,7 @@ public class GPlayer {
 	/**
 	 * Numerical "carbon score" value for just this player
 	 */
-	private int carbonScore;
-
+	private Integer carbonScore;
 
 	public Player getPlayer() {
 		return Bukkit.getPlayer(uuid);
@@ -41,4 +42,10 @@ public class GPlayer {
 		getPlayer().sendMessage(msg);
 	}
 
+	public GPlayer(ResultSet rs) throws SQLException {
+		this.uniqueId = rs.getInt(1);
+		this.uuid = UUID.fromString(rs.getString(2));
+		this.firstSeen = rs.getLong(3);
+		this.carbonScore = rs.getInt(4);
+	}
 }

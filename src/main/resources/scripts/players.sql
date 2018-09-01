@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS players (
-  uniqueID BIGINT PRIMARY KEY,
+  uniqueID INT PRIMARY KEY,
   uuid VARCHAR(36) NOT NULL,
-  firstSeen LONG NOT NULL,
-  carbonScore INT NOT NULL
+  firstSeen BIGINT NOT NULL,
+  carbonScore MEDIUMINT UNSIGNED NOT NULL
 );

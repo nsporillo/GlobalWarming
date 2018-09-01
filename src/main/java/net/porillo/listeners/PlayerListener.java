@@ -20,7 +20,7 @@ public class PlayerListener implements Listener {
 		PlayerTable table = gw.getTableManager().getPlayerTable();
 
 		if (!table.getPlayers().containsKey(event.getPlayer().getUniqueId())) {
-			Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
+			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
 			GPlayer player = new GPlayer(uniqueId, event.getPlayer().getUniqueId(), System.currentTimeMillis(), 0);
 
 			table.getPlayers().put(event.getPlayer().getUniqueId(), player);

@@ -26,12 +26,7 @@ public class TreeUpdateQuery extends UpdateQuery {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 		preparedStatement.setBoolean(1, tree.isSapling());
 		preparedStatement.setInt(2, tree.getSize());
-		preparedStatement.setString(3, tree.getUniqueID().toString());
+		preparedStatement.setInt(3, tree.getUniqueID());
 		return preparedStatement;
-	}
-
-	@Override
-	public Long getUniqueID() {
-		return tree.getUniqueID();
 	}
 }

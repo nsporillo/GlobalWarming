@@ -1,19 +1,10 @@
 package net.porillo.database.api;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
 public abstract class InsertQuery implements Query {
 
-	private String table;
-
-	@Override
-	public String getTable() {
-		return table;
-	}
-
-	@Override
-	public String getQueryType() {
-		return "insert";
-	}
+	@Getter private String table;
 }

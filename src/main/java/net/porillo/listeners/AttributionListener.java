@@ -44,13 +44,13 @@ public class AttributionListener implements Listener {
 		Location location = event.getBlockPlaced().getLocation();
 		PlayerTable playerTable = gw.getTableManager().getPlayerTable();
 		GPlayer player = playerTable.getOrCreatePlayer(event.getPlayer().getUniqueId(), false);
+		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
 
 		if (event.getBlockPlaced().getType() == Material.FURNACE) {
 			// Record furnace placement to track GPlayer attribution
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
 
 			// Create new furnace object
-			Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
 			Furnace furnace = new Furnace(uniqueId, player, location, true);
 
 			// Sanity check, if a furnace can be placed at a location which we think is a furnace then error out
@@ -71,7 +71,6 @@ public class AttributionListener implements Listener {
 			TreeTable treeTable = gw.getTableManager().getTreeTable();
 			// Track saplings to give credit to those when their saplings grow
 			// Saplings are trees of size 0
-			Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
 			Tree tree = new Tree(uniqueId, player, location, true, 0);
 
 			if (treeTable.getLocationMap().containsKey(location)) {
@@ -100,16 +99,16 @@ public class AttributionListener implements Listener {
 
 		if (event.getBlock().getType() == Material.FURNACE) {
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
-			Map<GPlayer, HashSet<Long>> playerFurnaceMap = furnaceTable.getPlayerMap();
+			Map<GPlayer, HashSet<Integer>> playerFurnaceMap = furnaceTable.getPlayerMap();
 
 			if (furnaceTable.getLocationMap().containsKey(location)) {
 				// Remove in-memory instances of this furnace
-				final Long uniqueId = furnaceTable.getLocationMap().get(location);
+				final Integer uniqueId = furnaceTable.getLocationMap().get(location);
 				final Furnace furnace = furnaceTable.getFurnaceMap().get(uniqueId);
 				final GPlayer owner = furnace.getOwner();
 
 				// Remove furnace unique id from set of player owned furnaces
-				HashSet<Long> furnaces = playerFurnaceMap.get(owner);
+				HashSet<Integer> furnaces = playerFurnaceMap.get(owner);
 				furnaces.remove(uniqueId);
 				playerFurnaceMap.put(owner, furnaces);
 
@@ -130,15 +129,15 @@ public class AttributionListener implements Listener {
 			}
 		} else if (event.getBlock().getType().name().endsWith("SAPLING")) {
 			TreeTable treeTable = gw.getTableManager().getTreeTable();
-			Map<GPlayer, HashSet<Long>> playerTreeMap = treeTable.getPlayerMap();
+			Map<GPlayer, HashSet<Integer>> playerTreeMap = treeTable.getPlayerMap();
 
 			if (treeTable.getLocationMap().containsKey(location)) {
-				final Long uniqueId = treeTable.getLocationMap().get(location);
+				final Integer uniqueId = treeTable.getLocationMap().get(location);
 				final Tree tree = treeTable.getTreeMap().get(uniqueId);
 				final GPlayer owner = tree.getOwner();
 
 				// Remove tree unique id from set of player owned trees
-				HashSet<Long> trees = playerTreeMap.get(owner);
+				HashSet<Integer> trees = playerTreeMap.get(owner);
 				trees.remove(uniqueId);
 				playerTreeMap.put(owner, trees);
 

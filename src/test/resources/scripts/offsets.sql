@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS offsets (
-  uniqueID BIGINT PRIMARY KEY,
-  creatorId BIGINT NOT NULL,
-  hunterId BIGINT,
+  uniqueID INT PRIMARY KEY,
+  creatorId INT NOT NULL,
+  hunterId INT,
   worldName VARCHAR(255) NOT NULL,
-  logBlocksTarget INT NOT NULL,
-  reward DOUBLE NOT NULL,
-  timeStarted LONG NOT NULL,
-  timeCompleted LONG
+  logBlocksTarget SMALLINT NOT NULL,
+  reward INT NOT NULL,
+  timeStarted BIGINT NOT NULL,
+  timeCompleted BIGINT
 );

@@ -30,8 +30,8 @@ public class TableInsertDeleteTest extends TestBase {
 		new ContributionTable(); // make sure contribution table exists
 
 		// Create a contribution and insert it into the DB
-		final Long uniqueId = random.nextLong();
-		Contribution contribution = new Contribution(uniqueId, random.nextLong(), random.nextLong(), "world", 15.0);
+		final Integer uniqueId = random.nextInt();
+		Contribution contribution = new Contribution(uniqueId, random.nextInt(), random.nextInt(), "world", 15);
 		AsyncDBQueue.getInstance().queueInsertQuery(new ContributionInsertQuery(contribution));
 		AsyncDBQueue.getInstance().writeInsertQueue(connection);
 
@@ -44,15 +44,15 @@ public class TableInsertDeleteTest extends TestBase {
 		// Validate the object is correct
 		while (resultSet.next()) {
 			assertThat("pk mismatch",
-					uniqueId.equals(resultSet.getLong(1)));
+					uniqueId.equals(resultSet.getInt(1)));
 			assertThat("contributor mismatch",
-					contribution.getContributer().equals(resultSet.getLong(2)));
+					contribution.getContributer().equals(resultSet.getInt(2)));
 			assertThat("contribKey mismatch",
-					contribution.getContributionKey().equals(resultSet.getLong(3)));
+					contribution.getContributionKey().equals(resultSet.getInt(3)));
 			assertThat("world mismatch",
 					contribution.getWorldName().equals(resultSet.getString(4)));
 			assertThat("value mismatch",
-					contribution.getContributionValue() == resultSet.getDouble(5));
+					contribution.getContributionValue() == resultSet.getInt(5));
 		}
 
 		// Delete the test object from the database

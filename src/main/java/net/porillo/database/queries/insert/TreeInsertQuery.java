@@ -18,15 +18,15 @@ public class TreeInsertQuery extends InsertQuery {
 
 	@Override
 	public String getSQL() {
-		return "INSERT INTO trees (uniqueID, ownerUUID, worldName, blockX, blockY, blockZ, sapling, size)" +
+		return "INSERT INTO trees (uniqueID, ownerID, worldName, blockX, blockY, blockZ, sapling, size)" +
 				" VALUES (?,?,?,?,?,?,?,?)";
 	}
 
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setLong(1, tree.getUniqueID());
-		preparedStatement.setLong(2, tree.getOwner().getUniqueId());
+		preparedStatement.setInt(1, tree.getUniqueID());
+		preparedStatement.setInt(2, tree.getOwner().getUniqueId());
 		preparedStatement.setString(3, tree.getLocation().getWorld().getName());
 		preparedStatement.setInt(4, tree.getLocation().getBlockX());
 		preparedStatement.setInt(5, tree.getLocation().getBlockY());
@@ -34,10 +34,5 @@ public class TreeInsertQuery extends InsertQuery {
 		preparedStatement.setBoolean(7, tree.isSapling());
 		preparedStatement.setInt(8, tree.getSize());
 		return preparedStatement;
-	}
-
-	@Override
-	public Long getUniqueID() {
-		return tree.getUniqueID();
 	}
 }

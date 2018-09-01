@@ -28,21 +28,16 @@ public class OffsetInsertQuery extends InsertQuery {
 		preparedStatement.setLong(1, offsetBounty.getCreator().getUniqueId());
 
 		if (offsetBounty.getHunter() != null) {
-			preparedStatement.setLong(2, offsetBounty.getHunter().getUniqueId());
+			preparedStatement.setInt(2, offsetBounty.getHunter().getUniqueId());
 		} else {
-			preparedStatement.setLong(2, 0);
+			preparedStatement.setObject(2, null);
 		}
 
 		preparedStatement.setString(3, offsetBounty.getWorld().getWorldName());
 		preparedStatement.setInt(4, offsetBounty.getLogBlocksTarget());
-		preparedStatement.setDouble(5, offsetBounty.getReward());
+		preparedStatement.setInt(5, offsetBounty.getReward());
 		preparedStatement.setLong(6, offsetBounty.getTimeStarted());
 		preparedStatement.setLong(7, offsetBounty.getTimeCompleted());
 		return preparedStatement;
-	}
-
-	@Override
-	public Long getUniqueID() {
-		return offsetBounty.getUniqueId();
 	}
 }
