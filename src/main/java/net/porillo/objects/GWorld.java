@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,4 +53,13 @@ public class GWorld {
 	 * Changes based on the effects of climate change
 	 */
 	private Integer seaLevel;
+
+	public GWorld(ResultSet rs) throws SQLException {
+		this.uniqueID = rs.getInt(1);
+		this.worldName = rs.getString(2);
+		this.firstSeen = rs.getLong(3);
+		this.carbonValue = rs.getInt(4);
+		this.seaLevel = rs.getInt(5);
+		this.size = rs.getInt(6);
+	}
 }

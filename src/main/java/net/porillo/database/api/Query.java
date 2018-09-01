@@ -8,11 +8,7 @@ public interface Query {
 
 	String getTable();
 
-	String getQueryType();
-
 	String getSQL();
-
-	Long getUniqueID();
 
 	PreparedStatement prepareStatement(Connection connection) throws SQLException;
 }

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.command.CommandSender;
 
+import java.sql.ResultSet;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,6 +46,10 @@ public class OffsetBounty {
 	 * Variables to track time 
 	 */
 	private long timeStarted, timeCompleted;
+
+	public OffsetBounty(ResultSet rs) {
+		// TODO Load variables from result set
+	}
 
 	public boolean isAvailable() {
 		return hunter == null;

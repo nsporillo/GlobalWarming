@@ -1,19 +1,11 @@
 package net.porillo.database.api;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
 public abstract class DeleteQuery implements Query {
 
-	private String table;
+	@Getter private String table;
 
-	@Override
-	public String getTable() {
-		return table;
-	}
-
-	@Override
-	public String getQueryType() {
-		return "delete";
-	}
 }

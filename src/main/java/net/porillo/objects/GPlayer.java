@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 @Data
@@ -29,4 +31,11 @@ public class GPlayer {
 	 * Numerical "carbon score" value for just this player
 	 */
 	private Integer carbonScore;
+
+	public GPlayer(ResultSet rs) throws SQLException {
+		this.uniqueId = rs.getInt(1);
+		this.uuid = UUID.fromString(rs.getString(2));
+		this.firstSeen = rs.getLong(3);
+		this.carbonScore = rs.getInt(4);
+	}
 }

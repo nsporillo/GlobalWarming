@@ -6,6 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.bukkit.Location;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -30,4 +33,8 @@ public class Furnace {
 	 */
 	private boolean active;
 
+	public Furnace(ResultSet rs) throws SQLException {
+		this.uniqueID = rs.getInt(1);
+		// TODO: Load rest of fields using result set
+	}
 }

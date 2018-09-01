@@ -18,7 +18,7 @@ public class FurnaceInsertQuery extends InsertQuery {
 
 	@Override
 	public String getSQL() {
-		return "INSERT INTO furnaces (uniqueID, ownerUUID, worldName, blockX, blockY, blockZ, active) " +
+		return "INSERT INTO furnaces (uniqueID, ownerID, worldName, blockX, blockY, blockZ, active) " +
 				"VALUES (?,?,?,?,?,?,?)";
 	}
 

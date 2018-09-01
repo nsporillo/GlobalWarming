@@ -31,7 +31,7 @@ public class WorldClimateEngine {
 	public Reduction treeGrow(Tree tree, TreeType treeType, List<BlockState> blocks) {
 		// TODO: Add ReductionModel
 		// For now, we use a flat reduction rate proportional to number of blocks which grew
-		Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
+		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
 		Reduction reduction = new Reduction();
 		reduction.setUniqueID(uniqueId);
 		reduction.setWorldName(world.getWorldName());
@@ -42,13 +42,13 @@ public class WorldClimateEngine {
 	}
 
 	public Contribution furnaceBurn(Furnace furnace, ItemStack fuel) {
-		Long uniqueId = GlobalWarming.getInstance().getRandom().nextLong();
+		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
 		Contribution contribution = new Contribution();
 		contribution.setUniqueID(uniqueId);
 		contribution.setWorldName(world.getWorldName());
 		contribution.setContributer(furnace.getOwner().getUniqueId());
 		contribution.setContributionKey(furnace.getUniqueID());
-		contribution.setContributionValue(contributionModel.getContribution(fuel.getType()));
+		contribution.setContributionValue((int) contributionModel.getContribution(fuel.getType()));
 		return contribution;
 	}
 
