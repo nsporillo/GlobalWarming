@@ -7,7 +7,6 @@ import net.porillo.objects.GPlayer;
 import org.bukkit.ChatColor;
 
 @CommandAlias("globalwarming|gw")
-@CommandPermission("globalwarming.admin")
 public class AdminCommands extends BaseCommand {
 
     @Subcommand("debug effect")
@@ -23,7 +22,7 @@ public class AdminCommands extends BaseCommand {
 
                 if (args.length == 1) {
                     try {
-                        seaLevel = Integer.parseInt(args[1]);
+                        seaLevel = Integer.parseInt(args[0]);
                     } catch (NumberFormatException e) {
                         gPlayer.sendMsg(ChatColor.RED + "Invalid SeaLevel");
                         return;
