@@ -34,7 +34,6 @@ public class SeaLevelRise extends ClimateEffect<BlockChange> {
 
 					if (aboveBlockType == Material.AIR) {
 						blockChanges.add(new BlockChange(Material.AIR, Material.WATER, x, y + 1, z));
-						break;
 					}
 				}
 			}
