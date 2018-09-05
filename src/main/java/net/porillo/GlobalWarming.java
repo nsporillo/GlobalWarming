@@ -55,6 +55,7 @@ public class GlobalWarming extends JavaPlugin {
 	}
 
 	private void registerCommands() {
+		commandManager.enableUnstableAPI("help");
 		commandManager.getCommandContexts().registerIssuerOnlyContext(GPlayer.class, c -> tableManager.getPlayerTable().getPlayers().get(c.getPlayer().getUniqueId()));
 
 		this.commandManager.registerCommand(new AdminCommands());
