@@ -15,7 +15,7 @@ public class AdminCommands extends BaseCommand {
 
         @Subcommand("sealevel")
         @Syntax("[level]")
-        @Description("Force execute a sealevel effect")
+        @Description("Force execute Sea Level effect")
         public void onSeaLevel(GPlayer gPlayer, String[] args) {
             if (args.length < 2) {
                 int seaLevel = 62;

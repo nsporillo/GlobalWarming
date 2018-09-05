@@ -1,6 +1,7 @@
 package net.porillo.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
 import net.porillo.database.tables.OffsetTable;
@@ -8,6 +9,7 @@ import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandAlias("globalwarming|gw")
@@ -41,6 +43,7 @@ public class GeneralCommands extends BaseCommand {
         @Subcommand("offset")
         @Syntax("[log] [reward]")
         @Description("Set tree-planting bounties to reduce carbon footprint")
+        @Syntax("[log] [reward]")
         @CommandPermission("globalwarming.bounty.offset")
         public void onBountyOffset(GPlayer gPlayer, String[] args) {
             // Validate input
@@ -73,6 +76,7 @@ public class GeneralCommands extends BaseCommand {
         // TODO: Add configurable player max concurrent bounties to prevent bounty hoarding
         @Subcommand("list")
         @Description("Show all current bounties")
+        @Syntax("")
         @CommandPermission("globalwarming.bounty.list")
         public void onBounty(GPlayer gPlayer) {
             OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
@@ -91,4 +95,8 @@ public class GeneralCommands extends BaseCommand {
 
     }
 
+    @HelpCommand
+    public void onHelp(GPlayer gPlayer, CommandHelp help) {
+        help.showHelp();
+    }
 }
