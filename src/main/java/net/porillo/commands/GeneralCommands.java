@@ -9,7 +9,6 @@ import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandAlias("globalwarming|gw")
@@ -41,7 +40,6 @@ public class GeneralCommands extends BaseCommand {
     public class BountyCommand extends BaseCommand {
 
         @Subcommand("offset")
-        @Syntax("[log] [reward]")
         @Description("Set tree-planting bounties to reduce carbon footprint")
         @Syntax("[log] [reward]")
         @CommandPermission("globalwarming.bounty.offset")
