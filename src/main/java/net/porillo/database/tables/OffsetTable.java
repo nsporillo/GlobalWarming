@@ -34,14 +34,15 @@ public class OffsetTable extends Table {
 
 	@Override
 	public void onResultArrival(SelectionResult result) throws SQLException {
-		List<OffsetBounty> offsetBounties = new ArrayList<>();
-		ResultSet rs = result.getResultSet();
-
-		while (rs.next()) {
-			offsetBounties.add(new OffsetBounty(rs));
-		}
-
 		if (result.getTableName().equals(getTableName())) {
+			List<OffsetBounty> offsetBounties = new ArrayList<>();
+			ResultSet rs = result.getResultSet();
+
+			while (rs.next()) {
+				offsetBounties.add(new OffsetBounty(rs));
+			}
+
+
 			new BukkitRunnable() {
 
 				@Override

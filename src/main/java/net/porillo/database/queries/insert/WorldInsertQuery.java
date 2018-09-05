@@ -18,7 +18,7 @@ public class WorldInsertQuery extends InsertQuery {
 
 	@Override
 	public String getSQL() {
-		return "INSERT INTO worlds (uniqueID, worldName, firstSeen, carbonValue, seaLevel, size)" +
+		return "INSERT IGNORE INTO worlds (uniqueID, worldName, firstSeen, carbonValue, seaLevel, size)" +
 				" VALUES (?,?,?,?,?,?)";
 	}
 
