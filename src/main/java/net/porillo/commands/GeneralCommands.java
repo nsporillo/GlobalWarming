@@ -41,6 +41,7 @@ public class GeneralCommands extends BaseCommand {
     public class BountyCommand extends BaseCommand {
 
         @Subcommand("offset")
+        @Syntax("[log] [reward]")
         @Description("Set tree-planting bounties to reduce carbon footprint")
         @Syntax("[log] [reward]")
         @CommandPermission("globalwarming.bounty.offset")
@@ -49,9 +50,12 @@ public class GeneralCommands extends BaseCommand {
             Integer logTarget;
             Integer reward;
 
+            if (args.length != 2) {
+                gPlayer.sendMsg(ChatColor.RED + "Must specify 2 args");
+            }
             try {
                 logTarget = Integer.parseInt(args[0]);
-                reward = Integer.getInteger(args[1]);
+                reward = Integer.parseInt(args[1]);
 
                 if (logTarget <= 0 || reward <= 0) {
                     throw new NumberFormatException();
@@ -74,7 +78,7 @@ public class GeneralCommands extends BaseCommand {
         @Description("Show all current bounties")
         @Syntax("")
         @CommandPermission("globalwarming.bounty.list")
-        public void onBounty(GPlayer gPlayer, String[] args) {
+        public void onBounty(GPlayer gPlayer) {
             OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
             Player player = gPlayer.getPlayer();
 
@@ -95,5 +99,4 @@ public class GeneralCommands extends BaseCommand {
     public void onHelp(GPlayer gPlayer, CommandHelp help) {
         help.showHelp();
     }
-
 }

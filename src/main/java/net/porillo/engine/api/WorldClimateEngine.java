@@ -1,6 +1,7 @@
 package net.porillo.engine.api;
 
 import net.porillo.GlobalWarming;
+import net.porillo.database.tables.WorldTable;
 import net.porillo.engine.models.ContributionModel;
 import net.porillo.engine.models.EntityFitnessModel;
 import net.porillo.engine.models.ScoreTempModel;
@@ -13,15 +14,15 @@ import java.util.List;
 
 public class WorldClimateEngine {
 
-	private GWorld world;
+	private String worldName;
 
 	// Models
 	private ScoreTempModel scoreTempModel;
 	private ContributionModel contributionModel;
 	private EntityFitnessModel entityFitnessModel;
 
-	public WorldClimateEngine(GWorld world) {
-		this.world = world;
+	public WorldClimateEngine(String worldName) {
+		this.worldName = worldName;
 		//TODO: Make each world load it's own model file
 		this.scoreTempModel = new ScoreTempModel();
 		this.contributionModel = new ContributionModel();
@@ -31,28 +32,37 @@ public class WorldClimateEngine {
 	public Reduction treeGrow(Tree tree, TreeType treeType, List<BlockState> blocks) {
 		// TODO: Add ReductionModel
 		// For now, we use a flat reduction rate proportional to number of blocks which grew
-		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
+		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 		Reduction reduction = new Reduction();
 		reduction.setUniqueID(uniqueId);
-		reduction.setWorldName(world.getWorldName());
-		reduction.setReductioner(tree.getOwner().getUniqueId());
+		reduction.setWorldName(worldName);
+		reduction.setReductioner(tree.getOwnerID());
 		reduction.setReductionKey(tree.getUniqueID());
 		reduction.setReductionValue(blocks.size());
 		return reduction;
 	}
 
 	public Contribution furnaceBurn(Furnace furnace, ItemStack fuel) {
-		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
+		if (furnace == null) {
+			GlobalWarming.getInstance().getLogger().severe("Furnace null");
+		}
+
+		if (fuel == null) {
+			GlobalWarming.getInstance().getLogger().severe("Fuel null");
+		}
+
+		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 		Contribution contribution = new Contribution();
 		contribution.setUniqueID(uniqueId);
-		contribution.setWorldName(world.getWorldName());
-		contribution.setContributer(furnace.getOwner().getUniqueId());
+		contribution.setWorldName(worldName);
+		contribution.setContributer(furnace.getOwnerID());
 		contribution.setContributionKey(furnace.getUniqueID());
 		contribution.setContributionValue((int) contributionModel.getContribution(fuel.getType()));
 		return contribution;
 	}
 
 	public Double getTemperature() {
-		return scoreTempModel.getTemperature(world.getCarbonValue());
+		WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
+		return scoreTempModel.getTemperature(worldTable.getWorld(worldName).getCarbonValue());
 	}
 }

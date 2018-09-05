@@ -22,8 +22,12 @@ public class EffectEngine {
 
 	//TODO: Load the list of climate effects from the WorldClimateEngine object
 	// Each world should have their own model file
-	private List<ClimateEffect> effects = new ArrayList<>();
+	private List<ClimateEffect> effects;
 	private double minTemp;
+
+	public EffectEngine() {
+		this.effects = new ArrayList<>();
+	}
 
 	public void processChunk(World world, Chunk chunk) {
 		WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(world.getName());

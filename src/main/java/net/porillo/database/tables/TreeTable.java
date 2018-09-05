@@ -68,14 +68,13 @@ public class TreeTable extends Table {
 
 	@Override
 	public void onResultArrival(SelectionResult result) throws SQLException {
-		List<Tree> treeList = new ArrayList<>();
-		ResultSet rs = result.getResultSet();
-
-		while (rs.next()) {
-			treeList.add(new Tree(rs));
-		}
-
 		if (result.getTableName().equals(getTableName())) {
+			List<Tree> treeList = new ArrayList<>();
+			ResultSet rs = result.getResultSet();
+
+			while (rs.next()) {
+				treeList.add(new Tree(rs));
+			}
 			new BukkitRunnable() {
 
 				@Override

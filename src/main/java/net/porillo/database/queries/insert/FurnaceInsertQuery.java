@@ -26,7 +26,7 @@ public class FurnaceInsertQuery extends InsertQuery {
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 		preparedStatement.setInt(1, furnace.getUniqueID());
-		preparedStatement.setInt(2, furnace.getOwner().getUniqueId());
+		preparedStatement.setInt(2, furnace.getOwnerID());
 		preparedStatement.setString(3, furnace.getLocation().getWorld().getName());
 		preparedStatement.setInt(4, furnace.getLocation().getBlockX());
 		preparedStatement.setInt(5, furnace.getLocation().getBlockY());
