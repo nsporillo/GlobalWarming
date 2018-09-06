@@ -7,6 +7,7 @@ import net.porillo.database.api.DeleteQuery;
 import net.porillo.database.api.InsertQuery;
 import net.porillo.database.api.Query;
 import net.porillo.database.api.UpdateQuery;
+import net.porillo.database.api.select.GeneralSelection;
 import net.porillo.database.api.select.Selection;
 import net.porillo.database.api.select.SelectionListener;
 import net.porillo.database.api.select.SelectionResult;
@@ -97,6 +98,16 @@ public class AsyncDBQueue {
 		this.selectQueue.offer(selection);
 	}
 
+	public void executeGeneralSelection(GeneralSelection selection) {
+		this.listeners.add(selection);
+		this.selectQueue.offer(selection);
+		try {
+			writeQueues();
+		} catch (SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void queueDeleteQuery(DeleteQuery deleteQuery) {
 		this.deleteQueue.offer(deleteQuery);
 	}
@@ -115,18 +126,18 @@ public class AsyncDBQueue {
 
 	private void writeQueues() throws SQLException, ClassNotFoundException {
 		Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
-		writeSelectQueue(connection);
 		writeCreateTableQueue(connection);
 		writeInsertQueue(connection);
 		writeUpdateQueue(connection);
 		writeDeleteQueue(connection);
+		writeSelectQueue(connection);
 	}
 
 	public void writeSelectQueue(Connection connection){
 		for (Selection obj = selectQueue.poll(); obj != null; obj = selectQueue.poll()) {
 			try {
 				ResultSet rs = obj.makeSelection(connection);
-				SelectionResult result = new SelectionResult(obj.getTableName(), rs);
+				SelectionResult result = new SelectionResult(obj.getTableName(), rs, obj.getUuid());
 
 				for (SelectionListener listener : listeners) {
 					listener.onResultArrival(result);

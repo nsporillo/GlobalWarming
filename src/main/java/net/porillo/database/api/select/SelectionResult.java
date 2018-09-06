@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.ResultSet;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -13,4 +14,5 @@ public class SelectionResult {
 
 	private String tableName;
 	private ResultSet resultSet;
+	private UUID uuid;
 }

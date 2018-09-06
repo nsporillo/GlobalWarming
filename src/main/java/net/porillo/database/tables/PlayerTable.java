@@ -17,6 +17,7 @@ public class PlayerTable extends Table {
 
 	@Getter private Map<UUID, GPlayer> players = new HashMap<>();
 	@Getter private Map<Integer, UUID> uuidMap = new HashMap<>();
+	private UUID selectStarId;
 
 	public PlayerTable() {
 		super("players");
@@ -47,12 +48,14 @@ public class PlayerTable extends Table {
 	@Override
 	public Selection makeSelectionQuery() {
 		String sql = "SELECT * FROM players;";
-		return new Selection(getTableName(), sql);
+		Selection selection = new Selection(getTableName(), sql);
+		this.selectStarId = selection.getUuid();
+		return selection;
 	}
 
 	@Override
 	public void onResultArrival(SelectionResult result) throws SQLException {
-		if (result.getTableName().equals(getTableName())) {
+		if (result.getTableName().equals(getTableName()) && this.selectStarId.equals(result.getUuid())) {
 			List<GPlayer> gPlayerList = new ArrayList<>();
 			ResultSet rs = result.getResultSet();
 
@@ -69,9 +72,16 @@ public class PlayerTable extends Table {
 
 				@Override
 				public void run() {
+					GlobalWarming.getInstance().getLogger().info("Loading " + gPlayerList.size() + " gplayers");
+
 					for (GPlayer gPlayer : gPlayerList) {
-						uuidMap.put(gPlayer.getUniqueId(), gPlayer.getUuid());
-						players.put(gPlayer.getUuid(), gPlayer);
+						if (!uuidMap.containsKey(gPlayer.getUniqueId())) {
+							uuidMap.put(gPlayer.getUniqueId(), gPlayer.getUuid());
+						}
+
+						if (!players.containsKey(gPlayer.getUuid())) {
+							players.put(gPlayer.getUuid(), gPlayer);
+						}
 					}
 				}
 			}.runTask(GlobalWarming.getInstance());

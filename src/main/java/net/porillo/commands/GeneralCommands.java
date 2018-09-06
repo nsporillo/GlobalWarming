@@ -4,17 +4,33 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
+import net.porillo.database.api.select.GeneralSelection;
+import net.porillo.database.api.select.SelectionResult;
+import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.OffsetTable;
 import net.porillo.engine.ClimateEngine;
+import net.porillo.engine.models.CarbonIndexModel;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.bukkit.ChatColor.*;
 
 @CommandAlias("globalwarming|gw")
 public class GeneralCommands extends BaseCommand {
+
+	private Map<UUID, Long> lastTopped = new HashMap<>();
+	private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
+	private static final ChatColor[] topHeader = {GOLD, AQUA, LIGHT_PURPLE, AQUA, GOLD, AQUA, LIGHT_PURPLE, AQUA, GOLD,
+			AQUA, LIGHT_PURPLE, AQUA, GOLD};
 
     @Subcommand("score")
     @Description("Get your carbon score")
@@ -34,6 +50,75 @@ public class GeneralCommands extends BaseCommand {
             player.sendMessage(LIGHT_PURPLE + "Your goal is to keep your index above 5");
         }
     }
+
+	@Subcommand("top")
+	@Description("Display the top ten players")
+	@CommandPermission("globalwarming.top")
+	public void onTop(GPlayer gPlayer) {
+		// Prevent players from spamming /gw top (which syncs the database)
+		if (lastTopped.containsKey(gPlayer.getUuid())) {
+			Long last = lastTopped.get(gPlayer.getUuid());
+			long diff = System.currentTimeMillis() - last;
+
+			if (diff < 3000) {
+				gPlayer.sendMsg(RED + "Please wait " + YELLOW + (3000 - diff) / 1000 + RED + " seconds to view top again.");
+			} else {
+				lastTopped.remove(gPlayer.getUuid());
+				onTop(gPlayer);
+			}
+		} else {
+			lastTopped.put(gPlayer.getUuid(), System.currentTimeMillis());
+
+			Player player = Bukkit.getPlayer(gPlayer.getUuid());
+			String worldName = player.getWorld().getName();
+
+			if (ClimateEngine.getInstance().hasClimateEngine(worldName)) {
+				CarbonIndexModel indexModel = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel();
+				final String sql = "SELECT uuid,carbonScore FROM players ORDER BY carbonScore ASC LIMIT 10;";
+
+				GeneralSelection selection = new GeneralSelection("players", sql) {
+					@Override
+					public void onResultArrival(SelectionResult result) throws SQLException {
+						if (this.getUuid().equals(result.getUuid())) {
+							ResultSet resultSet = result.getResultSet();
+							String header = "%s+%s------ %splayer%s ------%s+%s-- %sindex%s --%s+%s-- %sscore%s --%s+";
+							String footer = "%s+%s------------------%s+%s-----------%s+%s-----------%s+";
+							gPlayer.sendMsg(String.format(header, topHeader));
+
+							String row = DARK_PURPLE + "%d " + WHITE + "%s " + GOLD + "+ %s " + GOLD + "+ %s " + GOLD + "+";
+							int i = 1;
+							while (resultSet.next()) {
+								UUID uuid = UUID.fromString(resultSet.getString(1));
+								int score = resultSet.getInt(2);
+								double index = indexModel.getCarbonIndex(score);
+								String playerName;
+
+								if (uuid.equals(untrackedUUID)) {
+									playerName = "Untracked";
+								} else {
+									playerName = Bukkit.getOfflinePlayer(uuid).getName();
+								}
+
+								int pad = i == 10 ? 22 : 23;
+								gPlayer.sendMsg(String.format(row, i++, fixed(playerName, pad),
+										fixed(formatIndex(index), 13),
+										fixed(formatScore(score), 12)));
+							}
+
+							gPlayer.sendMsg(String.format(footer, GOLD, AQUA, GOLD, AQUA, GOLD, AQUA, GOLD));
+						}
+					}
+				};
+				AsyncDBQueue.getInstance().executeGeneralSelection(selection);
+			} else {
+				gPlayer.sendMsg(RED + "This world does not have GlobalWarming enabled.");
+			}
+		}
+	}
+
+	public static String fixed(String text, int length) {
+		return String.format("%-" + length + "." + length + "s", text);
+	}
 
     private String formatIndex(double index) {
         if (index < 3) {
