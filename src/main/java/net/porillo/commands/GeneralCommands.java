@@ -5,11 +5,13 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
 import net.porillo.database.tables.OffsetTable;
+import net.porillo.engine.ClimateEngine;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import static org.bukkit.ChatColor.*;
 
 @CommandAlias("globalwarming|gw")
 public class GeneralCommands extends BaseCommand {
@@ -19,19 +21,45 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("globalwarming.score")
     public void onScore(GPlayer gPlayer) {
         Player player = Bukkit.getPlayer(gPlayer.getUuid());
-        player.sendMessage(ChatColor.LIGHT_PURPLE + "Your current carbon footprint is " + formatScore(gPlayer.getCarbonScore()));
-        player.sendMessage(ChatColor.LIGHT_PURPLE + "Your goal is to keep your score as close to zero as possible!");
+        String worldName = player.getWorld().getName();
+        int score = gPlayer.getCarbonScore();
+
+        if (ClimateEngine.getInstance().hasClimateEngine(worldName)) {
+            double index = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel().getCarbonIndex(score);
+            player.sendMessage(LIGHT_PURPLE + "Your carbon footprint index is " + formatIndex(index));
+            player.sendMessage(LIGHT_PURPLE + "Your current carbon footprint is " + formatScore(gPlayer.getCarbonScore()));
+            player.sendMessage(LIGHT_PURPLE + "Your goal is to keep your index above 5");
+        } else {
+            player.sendMessage(LIGHT_PURPLE + "Your current overall carbon footprint is " + formatScore(gPlayer.getCarbonScore()));
+            player.sendMessage(LIGHT_PURPLE + "Your goal is to keep your index above 5");
+        }
+    }
+
+    private String formatIndex(double index) {
+        if (index < 3) {
+            return RED + String.format("%1.4f", index);
+        } else if (index < 5) {
+            return YELLOW + String.format("%1.4f", index);
+        } else if (index > 5) {
+            return GREEN + String.format("%1.4f", index);
+        } else if (index > 7) {
+            return DARK_AQUA + String.format("%1.4f", index);
+        } else if (index > 9) {
+            return DARK_GREEN + String.format("%1.4f", index);
+        } else {
+            return GRAY + String.format("%1.4f", index);
+        }
     }
 
     // TODO: Make configurable
     // TODO: Add more colors
     private String formatScore(int score) {
         if (score <= 0) {
-            return ChatColor.GREEN + String.valueOf(score);
+            return GREEN + String.valueOf(score);
         } else if (score <= 500) {
-            return ChatColor.YELLOW + String.valueOf(score);
+            return YELLOW + String.valueOf(score);
         } else {
-            return ChatColor.RED + String.valueOf(score);
+            return RED + String.valueOf(score);
         }
     }
 
@@ -49,7 +77,7 @@ public class GeneralCommands extends BaseCommand {
             Integer reward;
 
             if (args.length != 2) {
-                gPlayer.sendMsg(ChatColor.RED + "Must specify 2 args");
+                gPlayer.sendMsg(RED + "Must specify 2 args");
             }
             try {
                 logTarget = Integer.parseInt(args[0]);
@@ -59,7 +87,7 @@ public class GeneralCommands extends BaseCommand {
                     throw new NumberFormatException();
                 }
             } catch (NumberFormatException nfe) {
-                gPlayer.sendMsg(ChatColor.RED + "Error: <trees> and <reward> must be positive integers");
+                gPlayer.sendMsg(RED + "Error: <trees> and <reward> must be positive integers");
                 return;
             }
 
@@ -81,7 +109,7 @@ public class GeneralCommands extends BaseCommand {
             Player player = gPlayer.getPlayer();
 
             int numBounties = offsetTable.getOffsetList().size();
-            gPlayer.sendMsg(ChatColor.GREEN + "Showing " + numBounties + " Tree Planting Bounties");
+            gPlayer.sendMsg(GREEN + "Showing " + numBounties + " Tree Planting Bounties");
 
             // TODO: Paginate if necessary
             for (OffsetBounty bounty : offsetTable.getOffsetList()) {

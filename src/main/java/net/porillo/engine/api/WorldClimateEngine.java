@@ -1,7 +1,9 @@
 package net.porillo.engine.api;
 
+import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.database.tables.WorldTable;
+import net.porillo.engine.models.CarbonIndexModel;
 import net.porillo.engine.models.ContributionModel;
 import net.porillo.engine.models.EntityFitnessModel;
 import net.porillo.engine.models.ScoreTempModel;
@@ -20,6 +22,7 @@ public class WorldClimateEngine {
 	private ScoreTempModel scoreTempModel;
 	private ContributionModel contributionModel;
 	private EntityFitnessModel entityFitnessModel;
+	@Getter private CarbonIndexModel carbonIndexModel;
 
 	public WorldClimateEngine(String worldName) {
 		this.worldName = worldName;
@@ -27,6 +30,7 @@ public class WorldClimateEngine {
 		this.scoreTempModel = new ScoreTempModel();
 		this.contributionModel = new ContributionModel();
 		this.entityFitnessModel = new EntityFitnessModel();
+		this.carbonIndexModel = new CarbonIndexModel();
 	}
 
 	public Reduction treeGrow(Tree tree, TreeType treeType, List<BlockState> blocks) {
