@@ -7,6 +7,7 @@ import net.porillo.database.queries.insert.ReductionInsertQuery;
 import net.porillo.database.queries.insert.TreeInsertQuery;
 import net.porillo.database.queries.update.PlayerUpdateQuery;
 import net.porillo.database.queries.update.TreeUpdateQuery;
+import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.PlayerTable;
@@ -80,10 +81,16 @@ public class CO2Listener implements Listener {
 			gw.getLogger().warning("@ " + location.toString());
 		}
 
-
+		GWorld world = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(worldName);
 		Contribution contrib = worldClimateEngine.furnaceBurn(furnace, event.getFuel());
+
+		// increment polluters carbon score
 		int carbonScore = polluter.getCarbonScore();
 		polluter.setCarbonScore(carbonScore + contrib.getContributionValue());
+
+		// increment worlds carbon score
+		int carbon = world.getCarbonValue();
+		world.setCarbonValue(carbon + contrib.getContributionValue());
 
 		// Queue an update to the player table
 		PlayerUpdateQuery updateQuery = new PlayerUpdateQuery(polluter);
@@ -92,6 +99,10 @@ public class CO2Listener implements Listener {
 		// Queue an insert into the contributions table
 		ContributionInsertQuery insertQuery = new ContributionInsertQuery(contrib);
 		AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
+
+		// Queue an update to the world table
+		WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(world);
+		AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
 	}
 
 	/**
@@ -109,7 +120,6 @@ public class CO2Listener implements Listener {
 
 		WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldName);
 		Location location = event.getLocation();
-		GWorld world = gw.getTableManager().getWorldTable().getWorld(location.getWorld().getName());
 		TreeTable treeTable = GlobalWarming.getInstance().getTableManager().getTreeTable();
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
 		Tree tree;
@@ -122,7 +132,7 @@ public class CO2Listener implements Listener {
 			UUID uuid = playerTable.getUuidMap().get(tree.getOwnerID());
 			planter = playerTable.getPlayers().get(uuid);
 
-			Reduction reduction = ClimateEngine.getInstance().getClimateEngine(world.getWorldName()).treeGrow(tree, event.getSpecies(), event.getBlocks());
+			Reduction reduction = ClimateEngine.getInstance().getClimateEngine(worldName).treeGrow(tree, event.getSpecies(), event.getBlocks());
 			int carbonScore = planter.getCarbonScore();
 			planter.setCarbonScore(carbonScore - reduction.getReductionValue());
 
@@ -147,10 +157,17 @@ public class CO2Listener implements Listener {
 			gw.getLogger().warning("@ " + location.toString());
 		}
 
+		GWorld world = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(worldName);
 		// Create a new reduction object using the worlds climate engine
 		Reduction reduction = worldClimateEngine.treeGrow(tree, event.getSpecies(), event.getBlocks());
+
+		// decrement players carbon score
 		int carbonScore = planter.getCarbonScore();
 		planter.setCarbonScore(carbonScore - reduction.getReductionValue());
+
+		// decrement worlds carbon score
+		int carbon = world.getCarbonValue();
+		world.setCarbonValue(carbon - reduction.getReductionValue());
 
 		// Queue player update query
 		PlayerUpdateQuery playerUpdateQuery = new PlayerUpdateQuery(planter);
@@ -159,6 +176,10 @@ public class CO2Listener implements Listener {
 		// Queue reduction insert query
 		ReductionInsertQuery insertQuery = new ReductionInsertQuery(reduction);
 		AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
+
+		// Queue an update to the world table
+		WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(world);
+		AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
 	}
 
 	// TODO: Track furnace smelts which occur in untracked furnaces

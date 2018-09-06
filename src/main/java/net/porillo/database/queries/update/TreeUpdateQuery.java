@@ -18,7 +18,7 @@ public class TreeUpdateQuery extends UpdateQuery {
 
 	@Override
 	public String getSQL() {
-		return "UPDATE trees SET isSapling = ?, size = ? WHERE uniqueId = ?";
+		return "UPDATE trees SET sapling = ?, size = ? WHERE uniqueId = ?";
 	}
 
 	@Override
