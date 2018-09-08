@@ -22,7 +22,10 @@ public class WorldTable extends Table {
 	public WorldTable() {
 		super("worlds");
 		createIfNotExists();
-		AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+
+		if (AsyncDBQueue.getInstance() != null) {
+			AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+		}
 	}
 
 	public GWorld getWorld(String name) {

@@ -33,7 +33,10 @@ public class TreeTable extends Table {
 	public TreeTable() {
 		super("trees");
 		createIfNotExists();
-		AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+
+		if (AsyncDBQueue.getInstance() != null) {
+			AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+		}
 	}
 
 	/**

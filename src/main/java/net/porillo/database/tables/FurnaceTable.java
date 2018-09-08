@@ -33,7 +33,10 @@ public class FurnaceTable extends Table {
 	public FurnaceTable() {
 		super("furnaces");
 		createIfNotExists();
-		AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+
+		if (AsyncDBQueue.getInstance() != null) {
+			AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+		}
 	}
 
 	/**

@@ -22,7 +22,10 @@ public class PlayerTable extends Table {
 	public PlayerTable() {
 		super("players");
 		createIfNotExists();
-		AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+
+		if (AsyncDBQueue.getInstance() != null) {
+			AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+		}
 	}
 
 	public GPlayer getOrCreatePlayer(UUID uuid, boolean untracked) {
