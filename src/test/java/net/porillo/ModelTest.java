@@ -1,5 +1,6 @@
 package net.porillo;
 
+import net.porillo.engine.models.CarbonIndexModel;
 import net.porillo.engine.models.ContributionModel;
 import net.porillo.engine.models.EntityFitnessModel;
 import net.porillo.engine.models.ScoreTempModel;
@@ -29,6 +30,18 @@ public class ModelTest {
 		// If any of the points aren't monotonically increasing, an exception is thrown
 		for (int i = 1; i < 1000000; i+=1000) {
 			model.getTemperature(i);
+		}
+	}
+
+	public void testScoreIndexModel() {
+		CarbonIndexModel model = new CarbonIndexModel();
+		model.loadModel();
+
+		// Test the interpolator
+		// If any of the points aren't monotonically increasing, an exception is thrown
+		for (int i = -1000000; i < 1000000; i+=1000) {
+			//System.out.println(String.format("%d - %4.3f", i, model.getCarbonIndex(i)));
+			model.getCarbonIndex(i);
 		}
 	}
 }

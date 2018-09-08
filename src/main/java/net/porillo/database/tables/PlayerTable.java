@@ -16,6 +16,8 @@ import java.util.*;
 public class PlayerTable extends Table {
 
 	@Getter private Map<UUID, GPlayer> players = new HashMap<>();
+	@Getter private Map<Integer, UUID> uuidMap = new HashMap<>();
+	private UUID selectStarId;
 
 	public PlayerTable() {
 		super("players");
@@ -28,11 +30,12 @@ public class PlayerTable extends Table {
 			return players.get(uuid);
 		} else {
 			// Create new player object
-			Integer uniqueId = untracked ? 0 : GlobalWarming.getInstance().getRandom().nextInt();
+			Integer uniqueId = untracked ? 0 : GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 			GPlayer gPlayer = new GPlayer(uniqueId, uuid, System.currentTimeMillis(), 0);
 
 			// Store player object
 			players.put(uuid, gPlayer);
+			uuidMap.put(uniqueId, uuid);
 
 			// Queue a player insert
 			PlayerInsertQuery insertQuery = new PlayerInsertQuery(gPlayer);
@@ -45,29 +48,40 @@ public class PlayerTable extends Table {
 	@Override
 	public Selection makeSelectionQuery() {
 		String sql = "SELECT * FROM players;";
-		return new Selection(getTableName(), sql);
+		Selection selection = new Selection(getTableName(), sql);
+		this.selectStarId = selection.getUuid();
+		return selection;
 	}
 
 	@Override
 	public void onResultArrival(SelectionResult result) throws SQLException {
-		List<GPlayer> gPlayerList = new ArrayList<>();
-		ResultSet rs = result.getResultSet();
+		if (result.getTableName().equals(getTableName()) && this.selectStarId.equals(result.getUuid())) {
+			List<GPlayer> gPlayerList = new ArrayList<>();
+			ResultSet rs = result.getResultSet();
 
-		try {
-			while(rs.next()) {
-				//gPlayerList.add(new GPlayer(rs));
+			try {
+				while (rs.next()) {
+					gPlayerList.add(new GPlayer(rs));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 
-		if (result.getTableName().equals(getTableName())) {
-			new BukkitRunnable(){
+
+			new BukkitRunnable() {
 
 				@Override
 				public void run() {
+					GlobalWarming.getInstance().getLogger().info("Loading " + gPlayerList.size() + " gplayers");
+
 					for (GPlayer gPlayer : gPlayerList) {
-						//players.put(gPlayer.getUuid(), gPlayer);
+						if (!uuidMap.containsKey(gPlayer.getUniqueId())) {
+							uuidMap.put(gPlayer.getUniqueId(), gPlayer.getUuid());
+						}
+
+						if (!players.containsKey(gPlayer.getUuid())) {
+							players.put(gPlayer.getUuid(), gPlayer);
+						}
 					}
 				}
 			}.runTask(GlobalWarming.getInstance());

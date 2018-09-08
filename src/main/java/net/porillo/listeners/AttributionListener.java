@@ -9,6 +9,7 @@ import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.database.tables.TreeTable;
+import net.porillo.engine.ClimateEngine;
 import net.porillo.objects.Furnace;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.Tree;
@@ -37,21 +38,28 @@ public class AttributionListener implements Listener {
 	 */
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
+		// Quick and easy return if the block isn't one we care about
 		if (event.getBlockPlaced().getType() != Material.FURNACE && !event.getBlockPlaced().getType().name().endsWith("SAPLING")) {
 			return;
 		}
 
 		Location location = event.getBlockPlaced().getLocation();
+
+		// Don't handle events when there isn't a climate engine for this world
+		if (!ClimateEngine.getInstance().hasClimateEngine(location.getWorld().getName())) {
+			return;
+		}
+
 		PlayerTable playerTable = gw.getTableManager().getPlayerTable();
 		GPlayer player = playerTable.getOrCreatePlayer(event.getPlayer().getUniqueId(), false);
-		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt();
+		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 
 		if (event.getBlockPlaced().getType() == Material.FURNACE) {
 			// Record furnace placement to track GPlayer attribution
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
 
 			// Create new furnace object
-			Furnace furnace = new Furnace(uniqueId, player, location, true);
+			Furnace furnace = new Furnace(uniqueId, player.getUniqueId(), location, true);
 
 			// Sanity check, if a furnace can be placed at a location which we think is a furnace then error out
 			if (furnaceTable.getLocationMap().containsKey(location)) {
@@ -71,7 +79,7 @@ public class AttributionListener implements Listener {
 			TreeTable treeTable = gw.getTableManager().getTreeTable();
 			// Track saplings to give credit to those when their saplings grow
 			// Saplings are trees of size 0
-			Tree tree = new Tree(uniqueId, player, location, true, 0);
+			Tree tree = new Tree(uniqueId, player.getUniqueId(), location, true, 0);
 
 			if (treeTable.getLocationMap().containsKey(location)) {
 				gw.getLogger().severe("Tree placed at location of existing tree!");
@@ -95,7 +103,17 @@ public class AttributionListener implements Listener {
 	 */
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
+		// Quick and easy return if the block isn't one we care about
+		if (event.getBlock().getType() != Material.FURNACE && !event.getBlock().getType().name().endsWith("SAPLING")) {
+			return;
+		}
+
 		Location location = event.getBlock().getLocation();
+
+		// Don't handle events when there isn't a climate engine for this world
+		if (!ClimateEngine.getInstance().hasClimateEngine(location.getWorld().getName())) {
+			return;
+		}
 
 		if (event.getBlock().getType() == Material.FURNACE) {
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();

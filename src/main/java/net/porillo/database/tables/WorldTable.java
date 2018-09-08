@@ -37,9 +37,9 @@ public class WorldTable extends Table {
 		worldMap.put(gWorld.getWorldName(), gWorld);
 	}
 
-	public GWorld insertNewWorld(String name) {
+	public void insertNewWorld(String name) {
 		GWorld gWorld = new GWorld();
-		gWorld.setUniqueID(GlobalWarming.getInstance().getRandom().nextInt());
+		gWorld.setUniqueID(GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE));
 		gWorld.setWorldName(name);
 		gWorld.setFirstSeen(System.currentTimeMillis());
 		gWorld.setTemperature(14.0);
@@ -51,8 +51,6 @@ public class WorldTable extends Table {
 
 		WorldInsertQuery worldInsertQuery = new WorldInsertQuery(gWorld);
 		AsyncDBQueue.getInstance().queueInsertQuery(worldInsertQuery);
-
-		return gWorld;
 	}
 
 	@Override

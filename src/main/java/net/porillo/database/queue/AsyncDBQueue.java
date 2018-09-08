@@ -1,10 +1,13 @@
 package net.porillo.database.queue;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.porillo.GlobalWarming;
 import net.porillo.database.api.DeleteQuery;
 import net.porillo.database.api.InsertQuery;
+import net.porillo.database.api.Query;
 import net.porillo.database.api.UpdateQuery;
+import net.porillo.database.api.select.GeneralSelection;
 import net.porillo.database.api.select.Selection;
 import net.porillo.database.api.select.SelectionListener;
 import net.porillo.database.api.select.SelectionResult;
@@ -60,31 +63,18 @@ public class AsyncDBQueue {
 	@Getter private Queue<DeleteQuery> deleteQueue = new ConcurrentLinkedQueue<>();
 	@Getter private Queue<Selection> selectQueue = new ConcurrentLinkedQueue<>();
 
+	@Getter @Setter private boolean debug;
+
 	private BukkitRunnable queueWriteThread = new BukkitRunnable() {
 
 		@Override
 		public void run() {
 			try {
-				GlobalWarming.getInstance().getLogger().info("Syncing database...");
-
-				if (!createQueue.isEmpty()) {
-					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", createQueue.size(), "table creates."));
+				if (isSyncNeeded()) {
+					GlobalWarming.getInstance().getLogger().info("Syncing database...");
+					writeQueues();
+					GlobalWarming.getInstance().getLogger().info("Finished syncing database.");
 				}
-				if (!insertQueue.isEmpty()) {
-					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", insertQueue.size(), "inserts."));
-				}
-				if (!updateQueue.isEmpty()) {
-					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", updateQueue.size(), "updates."));
-				}
-				if (!deleteQueue.isEmpty()) {
-					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", deleteQueue.size(), "deletes."));
-				}
-				if (!selectQueue.isEmpty()) {
-					GlobalWarming.getInstance().getLogger().info(String.format("Executing %d %s", selectQueue.size(), "selects."));
-				}
-
-				writeQueues();
-				GlobalWarming.getInstance().getLogger().info("Finished syncing database.");
 			} catch (SQLException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -92,7 +82,7 @@ public class AsyncDBQueue {
 	};
 
 	public void scheduleAsyncTask(long interval) {
-		queueWriteThread.runTaskTimerAsynchronously(GlobalWarming.getInstance(), 100L, interval);
+		queueWriteThread.runTaskTimerAsynchronously(GlobalWarming.getInstance(), 0L, interval);
 	}
 
 	public void close() {
@@ -106,6 +96,16 @@ public class AsyncDBQueue {
 	public void queueSelection(Selection selection, Table table) {
 		this.listeners.add(table);
 		this.selectQueue.offer(selection);
+	}
+
+	public void executeGeneralSelection(GeneralSelection selection) {
+		this.listeners.add(selection);
+		this.selectQueue.offer(selection);
+		try {
+			writeQueues();
+		} catch (SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void queueDeleteQuery(DeleteQuery deleteQuery) {
@@ -137,7 +137,7 @@ public class AsyncDBQueue {
 		for (Selection obj = selectQueue.poll(); obj != null; obj = selectQueue.poll()) {
 			try {
 				ResultSet rs = obj.makeSelection(connection);
-				SelectionResult result = new SelectionResult(obj.getTableName(), rs);
+				SelectionResult result = new SelectionResult(obj.getTableName(), rs, obj.getUuid());
 
 				for (SelectionListener listener : listeners) {
 					listener.onResultArrival(result);
@@ -148,48 +148,43 @@ public class AsyncDBQueue {
 		}
 	}
 
+	private void executeStatement(Query query, Connection connection) {
+		try {
+			PreparedStatement statement = query.prepareStatement(connection);
+			if (debug) GlobalWarming.getInstance().getLogger().info(statement.toString());
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void writeDeleteQueue(Connection connection){
-		for (DeleteQuery obj = deleteQueue.poll(); obj != null; obj = deleteQueue.poll()) {
-			try {
-				PreparedStatement statement = obj.prepareStatement(connection);
-				statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		for (DeleteQuery deleteQuery = deleteQueue.poll(); deleteQuery != null; deleteQuery = deleteQueue.poll()) {
+			executeStatement(deleteQuery, connection);
 		}
 	}
 
 	public void writeInsertQueue(Connection connection) {
-		for (InsertQuery obj = insertQueue.poll(); obj != null; obj = insertQueue.poll()) {
-			try {
-				PreparedStatement statement = obj.prepareStatement(connection);
-				statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		for (InsertQuery insertQuery = insertQueue.poll(); insertQuery != null; insertQuery = insertQueue.poll()) {
+			executeStatement(insertQuery, connection);
 		}
 	}
 
 	public void writeCreateTableQueue(Connection connection) {
-		for (CreateTableQuery obj = createQueue.poll(); obj != null; obj = createQueue.poll()) {
-			try {
-				PreparedStatement statement = obj.prepareStatement(connection);
-				statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		for (CreateTableQuery tableQuery = createQueue.poll(); tableQuery != null; tableQuery = createQueue.poll()) {
+			executeStatement(tableQuery, connection);
 		}
 	}
 
 	public void writeUpdateQueue(Connection connection) {
-		for (UpdateQuery obj = updateQueue.poll(); obj != null; obj = updateQueue.poll()) {
-			try {
-				PreparedStatement statement = obj.prepareStatement(connection);
-				statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		for (UpdateQuery updateQuery = updateQueue.poll(); updateQuery != null; updateQuery = updateQueue.poll()) {
+			executeStatement(updateQuery, connection);
 		}
+	}
+
+	public boolean isSyncNeeded() {
+		return !createQueue.isEmpty() || !insertQueue.isEmpty()
+				|| !updateQueue.isEmpty() || !deleteQueue.isEmpty() || !selectQueue.isEmpty();
 	}
 
 	public static AsyncDBQueue getInstance() {

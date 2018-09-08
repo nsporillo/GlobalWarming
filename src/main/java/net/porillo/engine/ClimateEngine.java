@@ -4,6 +4,7 @@ import net.porillo.GlobalWarming;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GWorld;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,18 +14,33 @@ public class ClimateEngine {
 
 	private static ClimateEngine climateEngine;
 
-	private Map<String, WorldClimateEngine> worldClimateEngines = new HashMap<>();
+	private Map<String, WorldClimateEngine> worldClimateEngines;
+
+	public ClimateEngine() {
+		this.worldClimateEngines = new HashMap<>();
+	}
 
 	public void loadWorldClimateEngines(List<String> enabledWorlds) {
 		for (String world : enabledWorlds) {
+			GlobalWarming.getInstance().getLogger().info("Loading Climate Engine for " + world);
+			worldClimateEngines.put(world, new WorldClimateEngine(world));
+
 			WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
+			GWorld gworld = worldTable.getWorld(world);
 
-			GWorld gWorld = worldTable.getWorld(world);
-			if (gWorld == null) {
-				gWorld = worldTable.insertNewWorld(world);
+			// Delayed attempt create the world object if it doesn't currently exist
+			if (gworld == null) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						GWorld gw = worldTable.getWorld(world);
+
+						if (gw == null) {
+							worldTable.insertNewWorld(world);
+						}
+					}
+				}.runTaskLater(GlobalWarming.getInstance(), 40L);
 			}
-
-			worldClimateEngines.put(world, new WorldClimateEngine(gWorld));
 		}
 	}
 
@@ -33,7 +49,7 @@ public class ClimateEngine {
 			return worldClimateEngines.get(worldName);
 		}
 
-		return null;
+		throw new NullPointerException("Climate Engine Not found for World -> " + worldName);
 	}
 
 	public boolean hasClimateEngine(String worldName) {
