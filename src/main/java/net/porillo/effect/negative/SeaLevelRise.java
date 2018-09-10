@@ -1,23 +1,40 @@
 package net.porillo.effect.negative;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.ClimateEffect;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.change.block.BlockChange;
+import net.porillo.engine.ClimateEngine;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 
 import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 
 @ClimateData(type = ClimateEffectType.SEA_LEVEL_RISE)
 public class SeaLevelRise extends ClimateEffect<ChunkSnapshot, BlockChange>  {
 
-	// TODO: Get Sea Level per model
+	private TreeMap<Double, Integer> seaLevels;
+
 	@Override
 	public HashSet<BlockChange> execute(ChunkSnapshot snapshot) {
-		return execute(snapshot, 64);
+		double temp = ClimateEngine.getInstance().getClimateEngine(snapshot.getWorldName()).getTemperature();
+
+		Map.Entry<Double, Integer> ceil = seaLevels.ceilingEntry(temp);
+		Map.Entry<Double, Integer> floor = seaLevels.floorEntry(temp);
+		int result = 0;
+		if (ceil != null && floor != null) {
+			result = Math.abs(temp - floor.getKey()) < Math.abs(temp - ceil.getKey()) ? floor.getValue() : ceil.getValue();
+		} else if (ceil != null || floor != null){
+			result = floor != null ? floor.getValue() : ceil.getValue();
+		}
+
+		return execute(snapshot, result);
 	}
 
 	public HashSet<BlockChange> execute(ChunkSnapshot snapshot, int seaLevel) {
@@ -25,10 +42,11 @@ public class SeaLevelRise extends ClimateEffect<ChunkSnapshot, BlockChange>  {
 		return executor.get();
 	}
 
-	// TODO: Build a HashMap model from json object
 	@Override
 	public void setJsonModel(JsonObject jsonModel) {
 		super.setJsonModel(jsonModel);
+		Gson gson = new Gson();
+		seaLevels = gson.fromJson(jsonModel, new TypeToken<TreeMap<Double, Integer>>(){}.getType());
 	}
 
 	private class SeaLevelRiseExecutor implements Supplier<HashSet<BlockChange>> {

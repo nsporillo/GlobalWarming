@@ -32,7 +32,7 @@ public class EffectEngine {
 				try {
 					ClimateEffect instance = entry.getValue().newInstance();
 					effects.put(entry.getKey(), instance);
-					instance.setJsonModel(data);
+					instance.setJsonModel(data.getAsJsonObject("temp"));
 				} catch (InstantiationException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
@@ -53,7 +53,7 @@ public class EffectEngine {
 
 	public static EffectEngine getInstance() {
 		if (effectEngine == null) {
-			return new EffectEngine();
+			effectEngine = new EffectEngine();
 		}
 
 		return effectEngine;
