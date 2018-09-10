@@ -4,6 +4,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.effect.EffectEngine;
+import net.porillo.effect.api.ClimateEffectType;
+import net.porillo.effect.negative.SeaLevelRise;
 import net.porillo.objects.GPlayer;
 import org.bukkit.ChatColor;
 
@@ -47,7 +49,7 @@ public class AdminCommands extends BaseCommand {
                         }
                     }
 
-                    EffectEngine.getInstance().testSeaLevelRise(gPlayer.getPlayer().getLocation().getChunk(), seaLevel);
+                    EffectEngine.getInstance().getEffect(SeaLevelRise.class, ClimateEffectType.SEA_LEVEL_RISE).execute(gPlayer.getPlayer().getLocation().getChunk().getChunkSnapshot(), seaLevel);
                     gPlayer.sendMsg(ChatColor.GREEN + String.format("Applying sea level rise from y:%d to chunk", seaLevel));
                 } else {
                     gPlayer.sendMsg(ChatColor.RED + "Invalid Args");

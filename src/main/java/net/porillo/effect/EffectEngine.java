@@ -1,62 +1,54 @@
 package net.porillo.effect;
 
-import net.porillo.GlobalWarming;
+import com.google.gson.JsonObject;
 import net.porillo.effect.api.ClimateEffect;
-import net.porillo.effect.api.SyncChunkUpdateTask;
-import net.porillo.effect.api.change.block.BlockChange;
+import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.negative.SeaLevelRise;
-import net.porillo.engine.ClimateEngine;
-import net.porillo.engine.api.WorldClimateEngine;
-import net.porillo.objects.GWorld;
-import org.bukkit.Chunk;
-import org.bukkit.World;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 
 public class EffectEngine {
 
 	private static EffectEngine effectEngine;
 
-	//TODO: Load the list of climate effects from the WorldClimateEngine object
-	// Each world should have their own model file
-	private List<ClimateEffect> effects;
+	private HashMap<ClimateEffectType, ClimateEffect> effects = new HashMap<>();
+	private HashMap<ClimateEffectType, Class<? extends ClimateEffect>> effectClasses = new HashMap<>();
+	private EffectModel model;
 	private double minTemp;
 
 	public EffectEngine() {
-		this.effects = new ArrayList<>();
+		registerClass(SeaLevelRise.class);
+
+		this.model = new EffectModel();
+
+		loadEffects();
 	}
 
-	public void processChunk(World world, Chunk chunk) {
-		WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(world.getName());
+	private void loadEffects() {
+		for (Map.Entry<ClimateEffectType, Class<? extends ClimateEffect>> entry : effectClasses.entrySet()) {
+			if (model.isEnabled(entry.getKey())) {
+				JsonObject data = model.getEffect(entry.getKey());
 
-		if (worldClimateEngine != null) {
-			GWorld gWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(world.getName());
-
-			if (gWorld.getTemperature() >= minTemp) {
-				for (ClimateEffect effect : effects) {
-					double tempDiff = gWorld.getTemperature() - effect.getEffectThreshold();
-
-					if (tempDiff > 0) {
-						if (effect.getEffectName().equals("SeaLevelRise")) {
-							SeaLevelRise seaLevelRise = new SeaLevelRise(chunk.getChunkSnapshot(), gWorld.getSeaLevel());
-							final CompletableFuture<HashSet<BlockChange>> result = CompletableFuture.supplyAsync(seaLevelRise);
-							new SyncChunkUpdateTask(chunk, result).runTaskLater(GlobalWarming.getInstance(), 40L);
-						} else {
-							//TODO: Add all effects
-						}
-					}
+				try {
+					ClimateEffect instance = entry.getValue().newInstance();
+					effects.put(entry.getKey(), instance);
+					instance.setJsonModel(data);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
 				}
 			}
 		}
 	}
 
-	public void testSeaLevelRise(Chunk chunk, int seaLevel) {
-		SeaLevelRise seaLevelRise = new SeaLevelRise(chunk.getChunkSnapshot(), seaLevel);
-		final CompletableFuture<HashSet<BlockChange>> result = CompletableFuture.supplyAsync(seaLevelRise);
-		new SyncChunkUpdateTask(chunk, result).runTaskLater(GlobalWarming.getInstance(), 40L);
+	private void registerClass(Class<? extends ClimateEffect> clazz) {
+		ClimateData climateData = clazz.getDeclaredAnnotation(ClimateData.class);
+		if (climateData != null) {
+			effectClasses.put(climateData.type(), clazz);
+		}
+	}
+
+	public <T extends ClimateEffect> T getEffect(Class<T> clazz, ClimateEffectType effectType) {
+		return clazz.cast(effects.get(effectType));
 	}
 
 	public static EffectEngine getInstance() {
@@ -66,4 +58,5 @@ public class EffectEngine {
 
 		return effectEngine;
 	}
+
 }
