@@ -5,10 +5,16 @@ import net.porillo.GlobalWarming;
 import net.porillo.effect.api.ClimateEffect;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ListenerClimateEffect;
+import net.porillo.effect.api.ScheduleClimateEffect;
+import net.porillo.effect.negative.PermanentSlowness;
 import net.porillo.effect.negative.SeaLevelRise;
+import net.porillo.effect.negative.formation.IceForm;
+import net.porillo.effect.negative.formation.SnowForm;
 import net.porillo.effect.neutral.FarmYield;
 import net.porillo.effect.neutral.MobSpawningRate;
 import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -26,6 +32,9 @@ public class EffectEngine {
 		registerClass(SeaLevelRise.class);
 		registerClass(MobSpawningRate.class);
 		registerClass(FarmYield.class);
+		registerClass(SnowForm.class);
+		registerClass(IceForm.class);
+		registerClass(PermanentSlowness.class);
 
 		this.model = new EffectModel();
 
@@ -49,8 +58,13 @@ public class EffectEngine {
 				if (entry.getValue().getAnnotation(ClimateData.class).provideModel()) {
 					effect.setJsonModel(data.getAsJsonObject("model"));
 				}
-				if (effect instanceof ListenerClimateEffect) {
-					Bukkit.getPluginManager().registerEvents((ListenerClimateEffect) effect, GlobalWarming.getInstance());
+
+				if (effect instanceof Listener) {
+					Bukkit.getPluginManager().registerEvents((Listener) effect, GlobalWarming.getInstance());
+				}
+				if (effect instanceof ScheduleClimateEffect) {
+					ScheduleClimateEffect runnable = (ScheduleClimateEffect) effect;
+					runnable.setTaskId(Bukkit.getScheduler().runTaskTimer(GlobalWarming.getInstance(), runnable, 0, runnable.getPeriod()).getTaskId());
 				}
 			}
 		}
@@ -61,6 +75,19 @@ public class EffectEngine {
 		if (climateData != null) {
 			effectClasses.put(climateData.type(), clazz);
 		}
+	}
+
+	public void unregisterEffect(ClimateEffectType effectType) {
+		ClimateEffect effect = effects.get(effectType);
+		if (effect instanceof Listener) {
+			HandlerList.unregisterAll((ListenerClimateEffect) effect);
+		}
+		if (effect instanceof ScheduleClimateEffect) {
+			Bukkit.getScheduler().cancelTask(((ScheduleClimateEffect) effect).getTaskId());
+		}
+
+		effectClasses.remove(effectType);
+		effects.remove(effectType);
 	}
 
 	public <T extends ClimateEffect> T getEffect(Class<T> clazz, ClimateEffectType effectType) {

@@ -8,11 +8,11 @@ import net.porillo.effect.api.AtomicClimateEffect;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.change.block.BlockChange;
 import net.porillo.engine.ClimateEngine;
+import net.porillo.util.MapUtil;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
@@ -24,17 +24,7 @@ public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange
 	@Override
 	public HashSet<BlockChange> execute(ChunkSnapshot snapshot) {
 		double temp = ClimateEngine.getInstance().getClimateEngine(snapshot.getWorldName()).getTemperature();
-
-		Map.Entry<Double, Integer> ceil = seaLevels.ceilingEntry(temp);
-		Map.Entry<Double, Integer> floor = seaLevels.floorEntry(temp);
-		int result = 0;
-		if (ceil != null && floor != null) {
-			result = Math.abs(temp - floor.getKey()) < Math.abs(temp - ceil.getKey()) ? floor.getValue() : ceil.getValue();
-		} else if (ceil != null || floor != null){
-			result = floor != null ? floor.getValue() : ceil.getValue();
-		}
-
-		return execute(snapshot, result);
+		return execute(snapshot, MapUtil.searchTreeMap(seaLevels, temp));
 	}
 
 	public HashSet<BlockChange> execute(ChunkSnapshot snapshot, int seaLevel) {
@@ -47,6 +37,9 @@ public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange
 		super.setJsonModel(jsonModel);
 		Gson gson = new Gson();
 		seaLevels = gson.fromJson(jsonModel, new TypeToken<TreeMap<Double, Integer>>(){}.getType());
+		if (seaLevels == null) {
+			unregister();
+		}
 	}
 
 	private class SeaLevelRiseExecutor implements Supplier<HashSet<BlockChange>> {
