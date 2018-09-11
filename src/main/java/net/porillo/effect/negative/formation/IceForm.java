@@ -3,6 +3,7 @@ package net.porillo.effect.negative.formation;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import net.porillo.GlobalWarming;
 import net.porillo.effect.api.ListenerClimateEffect;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.util.MapUtil;
@@ -30,7 +31,7 @@ public class IceForm extends ListenerClimateEffect {
     @Override
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
-        this.heightMap = new Gson().fromJson(jsonModel, new TypeToken<TreeMap<Integer, Integer>>(){}.getType());
+        this.heightMap = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<TreeMap<Integer, Integer>>(){}.getType());
         if (this.heightMap == null) {
             unregister();
         }

@@ -1,6 +1,8 @@
 package net.porillo;
 
 import co.aikar.commands.BukkitCommandManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import net.porillo.commands.AdminCommands;
 import net.porillo.commands.GeneralCommands;
@@ -28,12 +30,14 @@ public class GlobalWarming extends JavaPlugin {
 	@Getter private TableManager tableManager;
 	@Getter private Random random;
 	private BukkitCommandManager commandManager;
+	@Getter private Gson gson;
 
 	@Override
 	public void onEnable() {
 		instance = this;
 
 		this.random = new Random();
+		this.gson = new GsonBuilder().setPrettyPrinting().create();
 		this.conf = new GlobalWarmingConfig(this);
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();

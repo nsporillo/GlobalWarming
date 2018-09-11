@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import net.porillo.GlobalWarming;
 import net.porillo.engine.api.Model;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -23,8 +24,8 @@ public class CarbonIndexModel extends Model {
 	private Gson gson;
 
 	public CarbonIndexModel() {
-		super("carbonindexmodel.json");
-		this.gson = new GsonBuilder().setPrettyPrinting().create();
+		super("carbonIndexModel.json");
+		this.gson = GlobalWarming.getInstance().getGson();
 		this.loadModel();
 	}
 

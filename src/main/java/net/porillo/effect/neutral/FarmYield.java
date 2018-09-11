@@ -20,13 +20,7 @@ import java.util.Map;
 @ClimateData(type = ClimateEffectType.FARM_YIELD)
 public class FarmYield extends ListenerClimateEffect {
 
-    private Gson gson;
     private HashMap<Material, Distribution> cropDistribution;
-
-    public FarmYield() {
-        super();
-        this.gson = new Gson();
-    }
 
     @EventHandler
     public void onCropGrow(BlockGrowEvent event) {
@@ -46,7 +40,7 @@ public class FarmYield extends ListenerClimateEffect {
     @Override
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
-        this.cropDistribution = gson.fromJson(jsonModel, new TypeToken<Map<Material, Distribution>>(){}.getType());
+        this.cropDistribution = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<Map<Material, Distribution>>(){}.getType());
         if (cropDistribution == null) {
             unregister();
         }

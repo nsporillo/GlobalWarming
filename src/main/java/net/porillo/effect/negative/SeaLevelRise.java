@@ -3,6 +3,7 @@ package net.porillo.effect.negative;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import net.porillo.GlobalWarming;
 import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.AtomicClimateEffect;
 import net.porillo.effect.api.ClimateEffectType;
@@ -35,8 +36,7 @@ public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange
 	@Override
 	public void setJsonModel(JsonObject jsonModel) {
 		super.setJsonModel(jsonModel);
-		Gson gson = new Gson();
-		seaLevels = gson.fromJson(jsonModel, new TypeToken<TreeMap<Double, Integer>>(){}.getType());
+		seaLevels = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<TreeMap<Double, Integer>>(){}.getType());
 		if (seaLevels == null) {
 			unregister();
 		}
