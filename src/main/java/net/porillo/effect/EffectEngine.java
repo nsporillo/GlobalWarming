@@ -1,10 +1,16 @@
 package net.porillo.effect;
 
 import com.google.gson.JsonObject;
+import net.porillo.GlobalWarming;
 import net.porillo.effect.api.ClimateEffect;
 import net.porillo.effect.api.ClimateEffectType;
+import net.porillo.effect.api.ListenerClimateEffect;
 import net.porillo.effect.negative.SeaLevelRise;
+import net.porillo.effect.neutral.FarmYield;
+import net.porillo.effect.neutral.MobSpawningRate;
+import org.bukkit.Bukkit;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class EffectEngine {
@@ -16,8 +22,10 @@ public class EffectEngine {
 	private EffectModel model;
 	private double minTemp;
 
-	public EffectEngine() {
+	private EffectEngine() {
 		registerClass(SeaLevelRise.class);
+		registerClass(MobSpawningRate.class);
+		registerClass(FarmYield.class);
 
 		this.model = new EffectModel();
 
@@ -29,19 +37,27 @@ public class EffectEngine {
 			if (model.isEnabled(entry.getKey())) {
 				JsonObject data = model.getEffect(entry.getKey());
 
+				ClimateEffect effect;
 				try {
-					ClimateEffect instance = entry.getValue().newInstance();
-					effects.put(entry.getKey(), instance);
-					instance.setJsonModel(data.getAsJsonObject("temp"));
-				} catch (InstantiationException | IllegalAccessException e) {
+					effect = entry.getValue().getConstructor().newInstance();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
+					continue;
+				}
+
+				effects.put(entry.getKey(), effect);
+				if (entry.getValue().getAnnotation(ClimateData.class).provideModel()) {
+					effect.setJsonModel(data.getAsJsonObject("model"));
+				}
+				if (effect instanceof ListenerClimateEffect) {
+					Bukkit.getPluginManager().registerEvents((ListenerClimateEffect) effect, GlobalWarming.getInstance());
 				}
 			}
 		}
 	}
 
 	private void registerClass(Class<? extends ClimateEffect> clazz) {
-		ClimateData climateData = clazz.getDeclaredAnnotation(ClimateData.class);
+		ClimateData climateData = clazz.getAnnotation(ClimateData.class);
 		if (climateData != null) {
 			effectClasses.put(climateData.type(), clazz);
 		}

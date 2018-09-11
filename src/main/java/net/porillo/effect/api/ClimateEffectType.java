@@ -8,6 +8,7 @@ public enum ClimateEffectType {
 	SNOW_MELT,
 	AREA_POTION_CLOUD,
 	FARM_YIELD,
+	MOB_SPAWN_RATE,
 
 	// TODO: Add more
 }

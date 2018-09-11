@@ -10,6 +10,7 @@ import net.porillo.engine.models.ScoreTempModel;
 import net.porillo.objects.*;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class WorldClimateEngine {
 	// Models
 	private ScoreTempModel scoreTempModel;
 	private ContributionModel contributionModel;
-	private EntityFitnessModel entityFitnessModel;
+	@Getter private EntityFitnessModel entityFitnessModel;
 	@Getter private CarbonIndexModel carbonIndexModel;
 
 	public WorldClimateEngine(String worldName) {

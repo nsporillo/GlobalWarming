@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import net.porillo.effect.ClimateData;
-import net.porillo.effect.api.ClimateEffect;
+import net.porillo.effect.api.AtomicClimateEffect;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.change.block.BlockChange;
 import net.porillo.engine.ClimateEngine;
@@ -17,7 +17,7 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 
 @ClimateData(type = ClimateEffectType.SEA_LEVEL_RISE)
-public class SeaLevelRise extends ClimateEffect<ChunkSnapshot, BlockChange>  {
+public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange> {
 
 	private TreeMap<Double, Integer> seaLevels;
 
