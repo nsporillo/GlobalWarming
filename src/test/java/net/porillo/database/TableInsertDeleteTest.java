@@ -4,7 +4,7 @@ import net.porillo.database.queries.insert.ContributionInsertQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.ContributionTable;
 import net.porillo.objects.Contribution;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
@@ -21,7 +21,7 @@ public class TableInsertDeleteTest extends TestBase {
 	private Connection connection;
 	private Random random = new Random();
 
-	@BeforeTest
+	@BeforeClass
 	public void before() throws SQLException, ClassNotFoundException {
 		this.connection = getConnectionManager().openConnection();
 	}

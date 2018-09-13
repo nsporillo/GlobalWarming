@@ -3,7 +3,7 @@ package net.porillo.database;
 import net.porillo.database.queries.other.CreateTableQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.*;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
@@ -16,7 +16,7 @@ public class TableCreationTest extends TestBase {
 
 	private Connection connection;
 
-	@BeforeTest
+	@BeforeClass
 	public void before() throws SQLException, ClassNotFoundException {
 		this.connection = getConnectionManager().openConnection();
 	}
