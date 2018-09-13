@@ -1,9 +1,6 @@
 package net.porillo;
 
-import net.porillo.engine.models.CarbonIndexModel;
-import net.porillo.engine.models.ContributionModel;
-import net.porillo.engine.models.EntityFitnessModel;
-import net.porillo.engine.models.ScoreTempModel;
+import net.porillo.engine.models.*;
 import org.testng.annotations.Test;
 
 @Test
@@ -12,6 +9,11 @@ public class ModelTest {
 	@Test
 	public void testContributionModel() {
 		ContributionModel model = new ContributionModel("");
+	}
+
+	@Test
+	public void testReductionModel() {
+		ReductionModel model = new ReductionModel("");
 	}
 
 	@Test
