@@ -3,6 +3,8 @@ package net.porillo.engine.models;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
+import net.porillo.GlobalWarming;
 import net.porillo.engine.api.Distribution;
 import net.porillo.engine.api.Model;
 import org.bukkit.entity.EntityType;
@@ -12,12 +14,12 @@ import java.util.Map;
 
 public class EntityFitnessModel extends Model {
 
-	private Map<EntityType, Distribution> entityFitnessMap;
+	@Getter private Map<EntityType, Distribution> entityFitnessMap;
 	private Gson gson;
-	
+
 	public EntityFitnessModel() {
 		super("entityFitnessModel.json");
-		this.gson = new GsonBuilder().setPrettyPrinting().create();
+		this.gson = GlobalWarming.getInstance().getGson();
 		this.loadModel();
 	}
 	

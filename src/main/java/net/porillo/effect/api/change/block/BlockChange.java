@@ -1,7 +1,7 @@
 package net.porillo.effect.api.change.block;
 
 import lombok.*;
-import net.porillo.effect.api.change.AtomicChange;
+import net.porillo.effect.api.change.EffectChange;
 import net.porillo.effect.api.change.ChangeType;
 import org.bukkit.Material;
 
@@ -9,7 +9,7 @@ import org.bukkit.Material;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class BlockChange implements AtomicChange {
+public class BlockChange implements EffectChange {
 
 	private final Material oldType;
 	private final Material newType;

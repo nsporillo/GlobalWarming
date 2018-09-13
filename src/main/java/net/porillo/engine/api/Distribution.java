@@ -16,6 +16,9 @@ public class Distribution {
 	}
 
 	public double getValue(double input) {
+		if (splineFunction == null) {
+			splineFunction = new SplineInterpolator().interpolate(temp, fitness);
+		}
 		return splineFunction.value(input);
 	}
 	

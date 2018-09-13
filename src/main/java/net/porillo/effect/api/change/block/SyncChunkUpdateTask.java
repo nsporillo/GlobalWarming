@@ -1,4 +1,4 @@
-package net.porillo.effect.api;
+package net.porillo.effect.api.change.block;
 
 import lombok.AllArgsConstructor;
 import net.porillo.effect.api.change.block.BlockChange;

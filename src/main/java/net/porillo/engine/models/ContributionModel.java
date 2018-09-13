@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import net.porillo.GlobalWarming;
 import net.porillo.engine.api.Model;
 import org.bukkit.Material;
 
@@ -17,7 +18,7 @@ public class ContributionModel extends Model {
 
 	public ContributionModel() {
 		super("contributionModel.json");
-		this.gson = new GsonBuilder().setPrettyPrinting().create();
+		this.gson = GlobalWarming.getInstance().getGson();
 		this.loadModel();
 	}
 
