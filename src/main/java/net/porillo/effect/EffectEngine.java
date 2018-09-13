@@ -16,8 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EffectEngine {
 
@@ -26,7 +26,6 @@ public class EffectEngine {
 	private HashMap<ClimateEffectType, ClimateEffect> effects = new HashMap<>();
 	private HashMap<ClimateEffectType, Class<? extends ClimateEffect>> effectClasses = new HashMap<>();
 	private EffectModel model;
-	private double minTemp;
 
 	private EffectEngine() {
 		registerClass(SeaLevelRise.class);

@@ -39,13 +39,13 @@ public class GlobalWarming extends JavaPlugin {
 
 		this.random = new Random();
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
-		this.conf = new GlobalWarmingConfig(this);
+		this.conf = new GlobalWarmingConfig();
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
-		ClimateEngine.getInstance().loadWorldClimateEngines(this.conf.getEnabledWorlds());
+		ClimateEngine.getInstance().loadWorldClimateEngines();
+		EffectEngine.getInstance();
 		this.commandManager = new BukkitCommandManager(this);
 		registerCommands();
-		EffectEngine.getInstance();
 
 		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);

@@ -1,6 +1,5 @@
 package net.porillo.effect.neutral;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import net.porillo.GlobalWarming;
@@ -24,6 +23,10 @@ public class FarmYield extends ListenerClimateEffect {
 
     @EventHandler
     public void onCropGrow(BlockGrowEvent event) {
+        if (!ClimateEngine.getInstance().isEffectEnabled(event.getBlock().getWorld().getName(), ClimateEffectType.FARM_YIELD)) {
+            return;
+        }
+
         Distribution distribution = cropDistribution.get(event.getBlock().getType());
         if (distribution != null) {
             WorldClimateEngine worldEngine = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName());

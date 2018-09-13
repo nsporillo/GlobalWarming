@@ -1,11 +1,10 @@
 package net.porillo.effect;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import net.porillo.GlobalWarming;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.engine.api.Model;
 
@@ -14,23 +13,20 @@ import java.util.Map;
 
 public class EffectModel extends Model {
 
-    @Getter
-    private Map<ClimateEffectType, JsonObject> effectMap;
-    private Gson gson;
+    @Getter private Map<ClimateEffectType, JsonObject> effectMap;
 
     public EffectModel() {
-        super("effectModel.json");
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        super("","effectModel.json");
         this.loadModel();
     }
 
     @Override
     public void loadModel() {
-        this.effectMap = this.gson.fromJson(super.getContents(), new TypeToken<Map<ClimateEffectType, JsonObject>>(){}.getType());
+        this.effectMap = GlobalWarming.getInstance().getGson()
+                .fromJson(super.getContents(), new TypeToken<Map<ClimateEffectType, JsonObject>>(){}.getType());
 
         if (this.effectMap == null) {
-            this.effectMap = new HashMap<>();
-            throw new RuntimeException("No values found in " + super.getName());
+            throw new RuntimeException("No values found in " + super.getPath());
         }
     }
 

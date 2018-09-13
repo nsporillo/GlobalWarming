@@ -1,106 +1,76 @@
 package net.porillo.engine.api;
 
+import lombok.Getter;
 import net.porillo.GlobalWarming;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Model {
 
-	private String modelName;
+	@Getter private final String worldName;
+	@Getter private final String modelName;
 
-	public Model(String modelName) {
+	private final Path modelsPath;
+
+	public Model(String worldName, String modelName) {
 		this.modelName = modelName;
+		this.worldName = worldName;
+
+		if (GlobalWarming.getInstance() != null) {
+			this.modelsPath = GlobalWarming.getInstance().getDataFolder().toPath().resolve("models");
+		} else {
+			this.modelsPath = Paths.get("src/test/resources/models/");
+		}
 	}
 
 	public Path getPath() {
-		if (GlobalWarming.getInstance() != null) {
-			return GlobalWarming.getInstance().getDataFolder().toPath().resolve("models").resolve(modelName);
-		}
-
-		return Paths.get("src/test/resources/models/").resolve(modelName);
+		return this.modelsPath.resolve(worldName).resolve(modelName);
 	}
 
-	public List<String> getLines() {
-		List<String> modelLines = new ArrayList<>();
+	public String getContents() {
 		createIfNotExists();
-		
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(getPath())))) {
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				modelLines.add(line);
-			}
-		} catch (IOException x) {
-			x.printStackTrace();
+
+		try {
+			return new String(Files.readAllBytes(getPath()));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
-		return modelLines;
+		return "";
 	}
 
-	public void writeLines(List<String> lines) {
+	public void writeContents(String data){
 		clearFileForNewWrite();
-		
+
 		try {
-			Files.write(getPath(), lines, Charset.forName("UTF-8"));
+			Files.write(getPath(), data.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public String getContents() {
-		byte[] content = null;
-		createIfNotExists();
-		
-		try {
-			Path file = getPath();
-			int size = (int) Files.size(file);
-			content = new byte[size];
-			InputStream in = Files.newInputStream(file);
-			int offset = 0;
-
-			while (offset < size) {
-				offset += in.read(content, offset, (size - offset));
-			}
-
-			in.close();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		return new String(content, Charset.forName("UTF-8"));
-	}
-
-	public void writeContents(String data) {
-		clearFileForNewWrite();
-		
-		try (BufferedWriter writer = Files.newBufferedWriter(getPath(), Charset.forName("UTF-8"))) {
-			writer.write(data, 0, data.length());
-		} catch (IOException x) {
-			x.printStackTrace();
-		}
-	}
-	
 	private void createIfNotExists() {
 		Path file = getPath();
-		
+
 		if (!Files.exists(file)) {
 			GlobalWarming.getInstance().getLogger().info("Model " + modelName + " does not exist, creating.");
-			GlobalWarming.getInstance().saveResource("models/" + modelName, false);
-		} 
+
+			try {
+				// Copy resource from JAR to the correct path
+				Files.createDirectories(modelsPath.resolve(worldName));
+				Files.copy(GlobalWarming.getInstance().getResource(String.format("models/%s", modelName)), getPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void clearFileForNewWrite() {
 		Path file = getPath();
-		
+
 		try {
 			if (Files.exists(file)) {
 				Files.delete(file);
@@ -111,10 +81,6 @@ public abstract class Model {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-	}
-
-	public String getName() {
-		return modelName;
 	}
 
 	public abstract void loadModel();

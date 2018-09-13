@@ -40,7 +40,7 @@ public class GeneralCommands extends BaseCommand {
         String worldName = player.getWorld().getName();
         int score = gPlayer.getCarbonScore();
 
-        if (ClimateEngine.getInstance().hasClimateEngine(worldName)) {
+        if (ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
             double index = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel().getCarbonIndex(score);
             player.sendMessage(LIGHT_PURPLE + "Your carbon footprint index is " + formatIndex(index));
             player.sendMessage(LIGHT_PURPLE + "Your current carbon footprint is " + formatScore(gPlayer.getCarbonScore()));
@@ -72,7 +72,7 @@ public class GeneralCommands extends BaseCommand {
 			Player player = Bukkit.getPlayer(gPlayer.getUuid());
 			String worldName = player.getWorld().getName();
 
-			if (ClimateEngine.getInstance().hasClimateEngine(worldName)) {
+			if (ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
 				CarbonIndexModel indexModel = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel();
 				final String sql = "SELECT uuid,carbonScore FROM players ORDER BY carbonScore ASC LIMIT 10;";
 

@@ -1,47 +1,30 @@
 package net.porillo.engine.models;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
-import net.porillo.GlobalWarming;
+import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.Model;
 import org.bukkit.Material;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ContributionModel extends Model {
 
 	@Getter private Map<Material, Double> contributionMap;
-	private Gson gson;
 
-	public ContributionModel() {
-		super("contributionModel.json");
-		this.gson = GlobalWarming.getInstance().getGson();
+	public ContributionModel(String worldName) {
+		super(worldName, "contributionModel.json");
 		this.loadModel();
 	}
 
 	@Override
 	public void loadModel() {
-		this.contributionMap = this.gson.fromJson(super.getContents(), new TypeToken<Map<Material, Double>>(){}.getType());
-		
+		this.contributionMap = ClimateEngine.getInstance().getGson()
+				.fromJson(super.getContents(), new TypeToken<Map<Material, Double>>() {}.getType());
+
 		if (this.contributionMap == null) {
-			this.contributionMap = new HashMap<>();
-			throw new RuntimeException("No values found in " + super.getName());
+			throw new RuntimeException("No values found in " + super.getPath());
 		}
-	}
-	
-	public void generateTestModel() {
-		Map<Material, Double> sampleMap = new HashMap<>();
-		
-		for (Material material : Material.values()) {
-			if (material.isFuel() && !material.isLegacy()) {
-				sampleMap.put(material, 2.0);
-			}
-		}
-		
-		super.writeContents(this.gson.toJson(sampleMap));
 	}
 
 	public double getContribution(Material fuelType) {
@@ -50,9 +33,5 @@ public class ContributionModel extends Model {
 		} else {
 			throw new NullPointerException("No contribution defined in the model for '" + fuelType.name() + "'");
 		}
-	}
-	
-	public static void main(String[] args) {
-		new ContributionModel().generateTestModel();
 	}
 }

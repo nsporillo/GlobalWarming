@@ -19,6 +19,9 @@ public class SnowForm extends ListenerClimateEffect {
 
     @EventHandler
     public void blockFormEvent(BlockFormEvent event) {
+        if (!ClimateEngine.getInstance().isEffectEnabled(event.getBlock().getWorld().getName(), ClimateEffectType.SNOW_FORMATION)) {
+            return;
+        }
         if (event.getNewState().getType() == Material.SNOW) {
             double temp = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName()).getTemperature();
 

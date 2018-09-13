@@ -19,6 +19,10 @@ public class IceForm extends ListenerClimateEffect {
 
     @EventHandler
     public void blockFormEvent(BlockFormEvent event) {
+        if (!ClimateEngine.getInstance().isEffectEnabled(event.getBlock().getWorld().getName(), ClimateEffectType.ICE_FORMATION)) {
+            return;
+        }
+
         if (event.getNewState().getType() == Material.ICE) {
             double temp = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName()).getTemperature();
 

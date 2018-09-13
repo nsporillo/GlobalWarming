@@ -6,6 +6,7 @@ import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ScheduleClimateEffect;
 import net.porillo.engine.ClimateEngine;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,13 +34,21 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        updatePlayerSlowness(event.getPlayer());
+        if (ClimateEngine.getInstance().getClimateEngine(event.getPlayer().getWorld().getName())
+                .isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
+            updatePlayerSlowness(event.getPlayer());
+        }
     }
 
     @Override
     public void run() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            updatePlayerSlowness(player);
+        for (World world : Bukkit.getWorlds()) {
+            if (ClimateEngine.getInstance().getClimateEngine(world.getName())
+                    .isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
+                for (Player player : world.getPlayers()) {
+                    updatePlayerSlowness(player);
+                }
+            }
         }
     }
 

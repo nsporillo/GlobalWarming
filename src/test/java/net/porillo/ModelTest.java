@@ -11,20 +11,17 @@ public class ModelTest {
 
 	@Test
 	public void testContributionModel() {
-		ContributionModel model = new ContributionModel();
-		model.loadModel();
+		ContributionModel model = new ContributionModel("");
 	}
 
 	@Test
 	public void testEntityFitnessModel() {
-		EntityFitnessModel model = new EntityFitnessModel();
-		model.loadModel();
+		EntityFitnessModel model = new EntityFitnessModel("");
 	}
 
 	@Test
 	public void testScoreTempModel() {
-		ScoreTempModel model = new ScoreTempModel();
-		model.loadModel();
+		ScoreTempModel model = new ScoreTempModel("");
 
 		// Test the interpolator
 		// If any of the points aren't monotonically increasing, an exception is thrown
@@ -34,7 +31,7 @@ public class ModelTest {
 	}
 
 	public void testScoreIndexModel() {
-		CarbonIndexModel model = new CarbonIndexModel();
+		CarbonIndexModel model = new CarbonIndexModel("");
 		model.loadModel();
 
 		// Test the interpolator
