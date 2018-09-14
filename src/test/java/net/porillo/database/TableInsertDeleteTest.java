@@ -4,7 +4,6 @@ import net.porillo.database.queries.insert.ContributionInsertQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.ContributionTable;
 import net.porillo.objects.Contribution;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
@@ -16,17 +15,12 @@ import java.util.Random;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Test
-public class TableInsertDeleteTest extends TestBase {
+public class TableInsertDeleteTest {
 
-	private Connection connection;
 	private Random random = new Random();
 
-	@BeforeClass
-	public void before() throws SQLException, ClassNotFoundException {
-		this.connection = getConnectionManager().openConnection();
-	}
-
 	public void testContributionTable() throws SQLException, ClassNotFoundException {
+		Connection connection = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests").openConnection();
 		new ContributionTable(); // make sure contribution table exists
 
 		// Create a contribution and insert it into the DB

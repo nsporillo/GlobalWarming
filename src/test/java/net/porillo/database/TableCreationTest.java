@@ -3,7 +3,6 @@ package net.porillo.database;
 import net.porillo.database.queries.other.CreateTableQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
@@ -12,14 +11,8 @@ import java.sql.SQLException;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Test
-public class TableCreationTest extends TestBase {
+public class TableCreationTest {
 
-	private Connection connection;
-
-	@BeforeClass
-	public void before() throws SQLException, ClassNotFoundException {
-		this.connection = getConnectionManager().openConnection();
-	}
 
 	@Test
 	public void testPlayerTable() throws SQLException, ClassNotFoundException {
@@ -72,8 +65,9 @@ public class TableCreationTest extends TestBase {
 
 	private void dropTable(String table) {
 		try {
+			Connection connection = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests").openConnection();
 			connection.createStatement().executeUpdate("DROP TABLE IF EXISTS " + table);
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
@@ -86,6 +80,7 @@ public class TableCreationTest extends TestBase {
 		CreateTableQuery createTableQuery = AsyncDBQueue.getInstance().getCreateQueue().peek();
 		assertThat("CreateQueue contains wrong table", createTableQuery.getTable().equals(table));
 
+		Connection connection = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests").openConnection();
 		// Since this is just a test, write the db queue on the same thread
 		AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 
