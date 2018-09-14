@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
+import net.porillo.config.Lang;
 import net.porillo.database.api.select.GeneralSelection;
 import net.porillo.database.api.select.SelectionResult;
 import net.porillo.database.queue.AsyncDBQueue;
@@ -42,12 +43,12 @@ public class GeneralCommands extends BaseCommand {
 
         if (ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
             double index = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel().getCarbonIndex(score);
-            player.sendMessage(LIGHT_PURPLE + "Your carbon footprint index is " + formatIndex(index));
-            player.sendMessage(LIGHT_PURPLE + "Your current carbon footprint is " + formatScore(gPlayer.getCarbonScore()));
-            player.sendMessage(LIGHT_PURPLE + "Your goal is to keep your index above 5");
+            gPlayer.sendMsg(Lang.SCORE_INDEX, formatIndex(index));
+            gPlayer.sendMsg(Lang.SCORE_CARBON, formatScore(gPlayer.getCarbonScore()));
+            gPlayer.sendMsg(Lang.SCORE_GOAL);
         } else {
-            player.sendMessage(LIGHT_PURPLE + "Your current overall carbon footprint is " + formatScore(gPlayer.getCarbonScore()));
-            player.sendMessage(LIGHT_PURPLE + "Your goal is to keep your index above 5");
+            gPlayer.sendMsg(Lang.SCORE_OVERALL, formatScore(gPlayer.getCarbonScore()));
+            gPlayer.sendMsg(Lang.SCORE_GOAL);
         }
     }
 

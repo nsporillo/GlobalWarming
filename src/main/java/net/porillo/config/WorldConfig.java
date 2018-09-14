@@ -15,8 +15,8 @@ public class WorldConfig extends ConfigLoader {
 	@Getter private Set<ClimateEffectType> enabledEffects;
 	@Getter private String association;
 
-	public WorldConfig( String world) {
-		super(world + ".yml");
+	public WorldConfig(String world) {
+		super(world + ".yml", "world.yml");
 		super.saveIfNotExist();
 		this.world = world;
 		super.load();
@@ -40,7 +40,6 @@ public class WorldConfig extends ConfigLoader {
 	@Override
 	protected void reload() {
 		this.enabledEffects.clear();
-		super.rereadFromDisk();
-		super.load();
+		super.reload();
 	}
 }

@@ -1,12 +1,15 @@
 package net.porillo;
 
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.MessageKeys;
+import co.aikar.locales.MessageKeyProvider;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import net.porillo.commands.AdminCommands;
 import net.porillo.commands.GeneralCommands;
 import net.porillo.config.GlobalWarmingConfig;
+import net.porillo.config.Lang;
 import net.porillo.database.ConnectionManager;
 import net.porillo.database.TableManager;
 import net.porillo.database.queue.AsyncDBQueue;
@@ -20,6 +23,7 @@ import net.porillo.objects.GPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Locale;
 import java.util.Random;
 
 public class GlobalWarming extends JavaPlugin {
@@ -37,6 +41,7 @@ public class GlobalWarming extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 
+		Lang.init();
 		this.random = new Random();
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
 		this.conf = new GlobalWarmingConfig();

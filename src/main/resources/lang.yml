@@ -1,0 +1,9 @@
+locale: en-US
+lang:
+  GENERIC:
+    PERMISSION: "&cInsufficient Permissions"
+  SCORE:
+    GOAL: "&dYour goal is to keep your index above 5"
+    INDEX: "&dYour carbon footprint index is {0}"
+    CARBON: "&dYour current carbon footprint is {0}"
+    OVERALL: "&dYour overall current carbon footprint is {0}"
