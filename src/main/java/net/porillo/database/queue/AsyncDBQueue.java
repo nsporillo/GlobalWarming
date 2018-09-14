@@ -59,7 +59,7 @@ public class AsyncDBQueue {
 	 */
 	@Getter private Queue<CreateTableQuery> createQueue = new ConcurrentLinkedQueue<>();
 	@Getter private Queue<InsertQuery> insertQueue = new ConcurrentLinkedQueue<>();
-	@Getter private Queue<UpdateQuery> updateQueue = new ConcurrentLinkedQueue<>();
+	@Getter private ConcurrentHashQueue<UpdateQuery<?>> updateQueue = new ConcurrentHashQueue<>();
 	@Getter private Queue<DeleteQuery> deleteQueue = new ConcurrentLinkedQueue<>();
 	@Getter private Queue<Selection> selectQueue = new ConcurrentLinkedQueue<>();
 
