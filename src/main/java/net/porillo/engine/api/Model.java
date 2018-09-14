@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.porillo.GlobalWarming;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,7 +14,7 @@ public abstract class Model {
 	@Getter private final String worldName;
 	@Getter private final String modelName;
 
-	private final Path modelsPath;
+	private Path modelsPath;
 
 	public Model(String worldName, String modelName) {
 		this.modelName = modelName;
@@ -22,7 +23,11 @@ public abstract class Model {
 		if (GlobalWarming.getInstance() != null) {
 			this.modelsPath = GlobalWarming.getInstance().getDataFolder().toPath().resolve("models");
 		} else {
-			this.modelsPath = Paths.get("src/test/resources/models/");
+			try {
+				this.modelsPath =  Paths.get(getClass().getResource("/models").toURI());
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

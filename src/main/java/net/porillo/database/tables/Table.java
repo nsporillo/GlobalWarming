@@ -11,6 +11,7 @@ import net.porillo.database.queue.AsyncDBQueue;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,9 +35,14 @@ public abstract class Table implements SelectionListener {
 				GlobalWarming.getInstance().saveResource("scripts/" + tableName + ".sql", false);
 			}
 			return GlobalWarming.getInstance().getDataFolder().toPath().resolve("scripts").resolve(tableName + ".sql");
+		} else {
+			try {
+				return Paths.get(getClass().getResource("/scripts").toURI()).resolve(tableName + ".sql");
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			return null;
 		}
-		// For testing only. Plugin instance should never be null.
-		return Paths.get("src/test/resources/scripts").resolve(tableName + ".sql");
 	}
 
 	private void copyFromResource() {
