@@ -40,4 +40,22 @@ public class Contribution {
 		this.worldName = rs.getString(4);
 		this.contributionValue = rs.getInt(5);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		Contribution that = (Contribution) o;
+
+		return uniqueID.equals(that.uniqueID);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + uniqueID.hashCode();
+		return result;
+	}
 }

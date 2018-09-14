@@ -48,4 +48,22 @@ public class GPlayer {
 		this.firstSeen = rs.getLong(3);
 		this.carbonScore = rs.getInt(4);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		GPlayer gPlayer = (GPlayer) o;
+
+		return uniqueId.equals(gPlayer.uniqueId);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + uniqueId.hashCode();
+		return result;
+	}
 }

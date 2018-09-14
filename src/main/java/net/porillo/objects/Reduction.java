@@ -29,4 +29,22 @@ public class Reduction {
 	 * Calculated emissions reduction value
 	 */
 	private Integer reductionValue;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		Reduction reduction = (Reduction) o;
+
+		return uniqueID.equals(reduction.uniqueID);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + uniqueID.hashCode();
+		return result;
+	}
 }
