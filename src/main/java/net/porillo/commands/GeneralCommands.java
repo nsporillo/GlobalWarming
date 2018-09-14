@@ -4,8 +4,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
-import net.porillo.database.api.select.GeneralSelection;
-import net.porillo.database.api.select.SelectionResult;
+import net.porillo.database.api.SelectCallback;
+import net.porillo.database.queries.select.TopPlayersQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.OffsetTable;
 import net.porillo.engine.ClimateEngine;
@@ -16,8 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -74,42 +72,34 @@ public class GeneralCommands extends BaseCommand {
 
 			if (ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
 				CarbonIndexModel indexModel = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel();
-				final String sql = "SELECT uuid,carbonScore FROM players ORDER BY carbonScore ASC LIMIT 10;";
 
-				GeneralSelection selection = new GeneralSelection("players", sql) {
-					@Override
-					public void onResultArrival(SelectionResult result) throws SQLException {
-						if (this.getUuid().equals(result.getUuid())) {
-							ResultSet resultSet = result.getResultSet();
-							String header = "%s+%s------ %splayer%s ------%s+%s-- %sindex%s --%s+%s-- %sscore%s --%s+";
-							String footer = "%s+%s------------------%s+%s-----------%s+%s-----------%s+";
-							gPlayer.sendMsg(String.format(header, topHeader));
+				AsyncDBQueue.getInstance().queueSelectQuery(new TopPlayersQuery("players", (SelectCallback<Object[]>) returnList -> {
+					String header = "%s+%s------ %splayer%s ------%s+%s-- %sindex%s --%s+%s-- %sscore%s --%s+";
+					String footer = "%s+%s------------------%s+%s-----------%s+%s-----------%s+";
+					gPlayer.sendMsg(String.format(header, topHeader));
 
-							String row = DARK_PURPLE + "%d " + WHITE + "%s " + GOLD + "+ %s " + GOLD + "+ %s " + GOLD + "+";
-							int i = 1;
-							while (resultSet.next()) {
-								UUID uuid = UUID.fromString(resultSet.getString(1));
-								int score = resultSet.getInt(2);
-								double index = indexModel.getCarbonIndex(score);
-								String playerName;
+					String row = DARK_PURPLE + "%d " + WHITE + "%s " + GOLD + "+ %s " + GOLD + "+ %s " + GOLD + "+";
+					int i = 1;
+					for (Object[] result : returnList) {
+						UUID uuid = UUID.fromString((String) result[0]);
+						int score = (int) result[1];
+						double index = indexModel.getCarbonIndex(score);
+						String playerName;
 
-								if (uuid.equals(untrackedUUID)) {
-									playerName = "Untracked";
-								} else {
-									playerName = Bukkit.getOfflinePlayer(uuid).getName();
-								}
-
-								int pad = i == 10 ? 22 : 23;
-								gPlayer.sendMsg(String.format(row, i++, fixed(playerName, pad),
-										fixed(formatIndex(index), 13),
-										fixed(formatScore(score), 12)));
-							}
-
-							gPlayer.sendMsg(String.format(footer, GOLD, AQUA, GOLD, AQUA, GOLD, AQUA, GOLD));
+						if (uuid.equals(untrackedUUID)) {
+							playerName = "Untracked";
+						} else {
+							playerName = Bukkit.getOfflinePlayer(uuid).getName();
 						}
+
+						int pad = i == 10 ? 22 : 23;
+						gPlayer.sendMsg(String.format(row, i++, fixed(playerName, pad),
+								fixed(formatIndex(index), 13),
+								fixed(formatScore(score), 12)));
 					}
-				};
-				AsyncDBQueue.getInstance().executeGeneralSelection(selection);
+
+					gPlayer.sendMsg(String.format(footer, GOLD, AQUA, GOLD, AQUA, GOLD, AQUA, GOLD));
+				}));
 			} else {
 				gPlayer.sendMsg(RED + "This world does not have GlobalWarming enabled.");
 			}
@@ -199,7 +189,7 @@ public class GeneralCommands extends BaseCommand {
             // TODO: Paginate if necessary
             for (OffsetBounty bounty : offsetTable.getOffsetList()) {
                 if (bounty.isAvailable()) {
-                    bounty.showPlayerDetails(player);
+                    //bounty.showPlayerDetails(player);
                 }
             }
         }

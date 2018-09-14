@@ -3,8 +3,6 @@ package net.porillo.database.tables;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import net.porillo.database.api.select.Selection;
-import net.porillo.database.api.select.SelectionListener;
 import net.porillo.database.queries.other.CreateTableQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 
@@ -17,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @AllArgsConstructor
-public abstract class Table implements SelectionListener {
+public abstract class Table {
 
 	@Getter private String tableName;
 
@@ -25,8 +23,6 @@ public abstract class Table implements SelectionListener {
 		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), loadSQLFromFile());
 		AsyncDBQueue.getInstance().queueCreateQuery(createTableQuery);
 	}
-
-	public abstract Selection makeSelectionQuery();
 
 	public Path getPath() {
 		if (GlobalWarming.getInstance() != null) {

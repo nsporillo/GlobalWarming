@@ -3,7 +3,6 @@ package net.porillo.database;
 import net.porillo.database.queries.insert.WorldInsertQuery;
 import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
-import net.porillo.database.tables.WorldTable;
 import net.porillo.objects.GWorld;
 import org.testng.annotations.Test;
 
@@ -22,8 +21,7 @@ public class TableUpdateTest {
 
 	@Test
 	public void testWorldUpdate() throws SQLException, ClassNotFoundException {
-		Connection connection = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests").openConnection();
-		new WorldTable(); // make sure world table exists
+		Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 		AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 
 		// Create a world and insert it into the DB
