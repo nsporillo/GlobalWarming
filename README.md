@@ -22,7 +22,7 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 + Observe the [Prisoner's Dilemma](https://en.wikipedia.org/wiki/Prisoner%27s_dilemma#In_environmental_studies) first hand! 
 + Players are best off when they co-operate and agree to reduce their emissions
 + However, each individual player typically believes they are better off for themselves to emit as much as they wish. 
-+ Avoiding a [Tragedy of the Commons](https://en.wikipedia.org/wiki/Tragedy_of_the_commons) might be fun! If the players dont play nice and end up dealing with the consequences, they might decide to make an agreement to fix the planet. 
++ Avoiding a [Tragedy of the Commons](https://en.wikipedia.org/wiki/Tragedy_of_the_commons) might be fun! If the players don't play nice and end up dealing with the consequences, they might decide to make an agreement to fix the planet. 
 
 ## Mechanics 
 + Every furnace burn causes a "Contribution" to emissions with an associated numerical value (based on the model)
