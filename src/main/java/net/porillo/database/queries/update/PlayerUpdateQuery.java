@@ -7,13 +7,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class PlayerUpdateQuery extends UpdateQuery {
-
-	private GPlayer gPlayer;
+public class PlayerUpdateQuery extends UpdateQuery<GPlayer> {
 
 	public PlayerUpdateQuery(GPlayer gPlayer) {
-		super("players");
-		this.gPlayer = gPlayer;
+		super("players", gPlayer);
+
 	}
 
 	@Override
@@ -24,8 +22,8 @@ public class PlayerUpdateQuery extends UpdateQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setInt(1, gPlayer.getCarbonScore());
-		preparedStatement.setInt(2, gPlayer.getUniqueId());
+		preparedStatement.setInt(1, getObject().getCarbonScore());
+		preparedStatement.setInt(2, getObject().getUniqueId());
 		return preparedStatement;
 	}
 }

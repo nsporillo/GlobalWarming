@@ -3,24 +3,13 @@ package net.porillo.database.queue;
 import lombok.Getter;
 import lombok.Setter;
 import net.porillo.GlobalWarming;
-import net.porillo.database.api.DeleteQuery;
-import net.porillo.database.api.InsertQuery;
-import net.porillo.database.api.Query;
-import net.porillo.database.api.UpdateQuery;
-import net.porillo.database.api.select.GeneralSelection;
-import net.porillo.database.api.select.Selection;
-import net.porillo.database.api.select.SelectionListener;
-import net.porillo.database.api.select.SelectionResult;
+import net.porillo.database.api.*;
 import net.porillo.database.queries.other.CreateTableQuery;
-import net.porillo.database.tables.Table;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -52,16 +41,11 @@ public class AsyncDBQueue {
 
 	private static AsyncDBQueue instance;
 
-	@Getter private List<SelectionListener> listeners = new ArrayList<>();
-	/**
-	 * Each query type has it's own queue
-	 * Allows for simplistic query batching
-	 */
 	@Getter private Queue<CreateTableQuery> createQueue = new ConcurrentLinkedQueue<>();
 	@Getter private Queue<InsertQuery> insertQueue = new ConcurrentLinkedQueue<>();
-	@Getter private Queue<UpdateQuery> updateQueue = new ConcurrentLinkedQueue<>();
+	@Getter private ConcurrentHashQueue<UpdateQuery<?>> updateQueue = new ConcurrentHashQueue<>();
 	@Getter private Queue<DeleteQuery> deleteQueue = new ConcurrentLinkedQueue<>();
-	@Getter private Queue<Selection> selectQueue = new ConcurrentLinkedQueue<>();
+	@Getter private Queue<SelectQuery<?,?>> selectQueue = new ConcurrentLinkedQueue<>();
 
 	@Getter @Setter private boolean debug;
 
@@ -93,19 +77,8 @@ public class AsyncDBQueue {
 		queueWriteThread.runTaskAsynchronously(GlobalWarming.getInstance());
 	}
 
-	public void queueSelection(Selection selection, Table table) {
-		this.listeners.add(table);
-		this.selectQueue.offer(selection);
-	}
-
-	public void executeGeneralSelection(GeneralSelection selection) {
-		this.listeners.add(selection);
-		this.selectQueue.offer(selection);
-		try {
-			writeQueues();
-		} catch (SQLException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	public void queueSelectQuery(SelectQuery selectQuery) {
+		this.selectQueue.offer(selectQuery);
 	}
 
 	public void queueDeleteQuery(DeleteQuery deleteQuery) {
@@ -134,14 +107,10 @@ public class AsyncDBQueue {
 	}
 
 	public void writeSelectQueue(Connection connection){
-		for (Selection obj = selectQueue.poll(); obj != null; obj = selectQueue.poll()) {
+		for (SelectQuery<?,?> obj = selectQueue.poll(); obj != null; obj = selectQueue.poll()) {
 			try {
-				ResultSet rs = obj.makeSelection(connection);
-				SelectionResult result = new SelectionResult(obj.getTableName(), rs, obj.getUuid());
-
-				for (SelectionListener listener : listeners) {
-					listener.onResultArrival(result);
-				}
+				// Executes query, transforms ResultSet into List of objects, and calls back
+				obj.execute(connection);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

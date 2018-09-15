@@ -7,13 +7,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class FurnaceUpdateQuery extends UpdateQuery {
-
-	private Furnace furnace;
+public class FurnaceUpdateQuery extends UpdateQuery<Furnace> {
 
 	public FurnaceUpdateQuery(Furnace furnace) {
-		super("furnaces");
-		this.furnace = furnace;
+		super("furnaces", furnace);
 	}
 
 	@Override
@@ -24,8 +21,8 @@ public class FurnaceUpdateQuery extends UpdateQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setBoolean(1, furnace.isActive());
-		preparedStatement.setInt(2, furnace.getUniqueID());
+		preparedStatement.setBoolean(1, getObject().isActive());
+		preparedStatement.setInt(2, getObject().getUniqueID());
 		return preparedStatement;
 	}
 }

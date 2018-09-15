@@ -1,11 +1,17 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="DatabaseTests" verbose="1" >
-    <test name="TableCreation" >
+<suite name="GlobalWarming Tests" verbose="1">
+    <test name="Model Tests">
+        <classes>
+            <class name="net.porillo.ModelTest"/>
+        </classes>
+    </test>
+    <test name="Database Tests">
         <classes>
             <class name="net.porillo.database.TableCreationTest"/>
-            <class name="net.porillo.database.TableInsertDeleteTest"/>
-            <class name="net.porillo.ModelTest"/>
+            <class name="net.porillo.database.TableInsertTest"/>
+            <class name="net.porillo.database.TableUpdateTest"/>
+            <class name="net.porillo.database.TableSelectTest"/>
         </classes>
     </test>
 </suite>
