@@ -12,7 +12,7 @@ public abstract class ConfigLoader {
     public String fileName;
     private File configFile;
 
-    ConfigLoader(String fileName) {
+    ConfigLoader(String fileName, String resource) {
         this.fileName = fileName;
         File dataFolder = GlobalWarming.getInstance().getDataFolder();
         configFile = new File(dataFolder, File.separator + fileName);
@@ -28,14 +28,14 @@ public abstract class ConfigLoader {
                 e.printStackTrace();
             }
 
-            if (fileName.equals("config.yml")) {
-                writeConfig(GlobalWarming.getInstance().getResource("config.yml"));
-            } else {
-                writeConfig(GlobalWarming.getInstance().getResource("world.yml"));
-            }
+            writeConfig(GlobalWarming.getInstance().getResource(resource));
         }
 
         conf = YamlConfiguration.loadConfiguration(configFile);
+    }
+
+    ConfigLoader(String fileName) {
+        this(fileName, fileName);
     }
 
     private void addDefaults() {
@@ -54,7 +54,10 @@ public abstract class ConfigLoader {
 
     protected abstract void loadKeys();
 
-    protected abstract void reload();
+    protected void reload() {
+        rereadFromDisk();
+        load();
+    }
 
     void rereadFromDisk() {
         conf = YamlConfiguration.loadConfiguration(configFile);

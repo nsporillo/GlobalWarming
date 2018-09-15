@@ -30,10 +30,4 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		return new ConnectionManager(host, port, database, username, password);
 	}
 
-	@Override
-	protected void reload() {
-		// clear memory
-		super.rereadFromDisk();
-		super.load();
-	}
 } 
