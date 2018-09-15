@@ -2,19 +2,21 @@ package net.porillo.database.tables;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import net.porillo.database.api.select.Selection;
-import net.porillo.database.api.select.SelectionResult;
+import net.porillo.database.api.SelectCallback;
+import net.porillo.database.queries.select.FurnaceSelectQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.Furnace;
 import net.porillo.objects.GPlayer;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
-public class FurnaceTable extends Table {
+public class FurnaceTable extends Table implements SelectCallback<Furnace> {
 
 	/**
 	 * Single source of truth for Furnace objects
@@ -33,7 +35,9 @@ public class FurnaceTable extends Table {
 	public FurnaceTable() {
 		super("furnaces");
 		createIfNotExists();
-		AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+
+		FurnaceSelectQuery selectQuery = new FurnaceSelectQuery(this);
+		AsyncDBQueue.getInstance().queueSelectQuery(selectQuery);
 	}
 
 	/**
@@ -61,30 +65,22 @@ public class FurnaceTable extends Table {
 	}
 
 	@Override
-	public Selection makeSelectionQuery() {
-		String sql = "SELECT * FROM furnaces WHERE active=true;";
-		return new Selection(getTableName(), sql);
-	}
-
-	@Override
-	public void onResultArrival(SelectionResult result) throws SQLException {
-		if (result.getTableName().equals(getTableName())) {
-			List<Furnace> furnaceList = new ArrayList<>();
-			ResultSet rs = result.getResultSet();
-
-			while (rs.next()) {
-				furnaceList.add(new Furnace(rs));
-			}
-
+	public void onSelectionCompletion(List<Furnace> returnList) throws SQLException {
+		//synchronized (this) {
+		//	while()
+		//}
+		if (GlobalWarming.getInstance() != null) {
 			new BukkitRunnable() {
 
 				@Override
 				public void run() {
-					for (Furnace furnace : furnaceList) {
+					for (Furnace furnace : returnList) {
 						updateFurnace(furnace);
 					}
 				}
 			}.runTask(GlobalWarming.getInstance());
+		} else {
+			System.out.println("Selection returned " + returnList.size() + " furnaces.");
 		}
 	}
 }

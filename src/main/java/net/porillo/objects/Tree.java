@@ -38,4 +38,22 @@ public class Tree {
 		UUID ownerUUID = playerTable.getUuidMap().get(uniqueID);
 		return playerTable.getPlayers().get(ownerUUID);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		Tree tree = (Tree) o;
+
+		return uniqueID.equals(tree.uniqueID);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + uniqueID.hashCode();
+		return result;
+	}
 }

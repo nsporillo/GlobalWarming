@@ -1,8 +1,8 @@
 package net.porillo.config;
 
+import net.porillo.GlobalWarming;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 
 import java.io.*;
 
@@ -10,13 +10,11 @@ public abstract class ConfigLoader {
 
     public FileConfiguration conf;
     public String fileName;
-    public Plugin plugin;
     private File configFile;
 
-    ConfigLoader(Plugin plugin, String fileName) {
-        this.plugin = plugin;
+    ConfigLoader(String fileName, String resource) {
         this.fileName = fileName;
-        File dataFolder = plugin.getDataFolder();
+        File dataFolder = GlobalWarming.getInstance().getDataFolder();
         configFile = new File(dataFolder, File.separator + fileName);
 
         if (!configFile.exists()) {
@@ -30,10 +28,14 @@ public abstract class ConfigLoader {
                 e.printStackTrace();
             }
 
-            writeConfig(plugin.getResource("config.yml"));
+            writeConfig(GlobalWarming.getInstance().getResource(resource));
         }
 
         conf = YamlConfiguration.loadConfiguration(configFile);
+    }
+
+    ConfigLoader(String fileName) {
+        this(fileName, fileName);
     }
 
     private void addDefaults() {
@@ -43,7 +45,7 @@ public abstract class ConfigLoader {
 
     void load() {
         if (!configFile.exists()) {
-            plugin.getDataFolder().mkdir();
+            GlobalWarming.getInstance().getDataFolder().mkdir();
             saveConfig();
         }
         addDefaults();
@@ -52,7 +54,10 @@ public abstract class ConfigLoader {
 
     protected abstract void loadKeys();
 
-    protected abstract void reload();
+    protected void reload() {
+        rereadFromDisk();
+        load();
+    }
 
     void rereadFromDisk() {
         conf = YamlConfiguration.loadConfiguration(configFile);
@@ -68,9 +73,9 @@ public abstract class ConfigLoader {
 
     void saveIfNotExist() {
         if (!configFile.exists())
-            if (plugin.getResource(fileName) != null) {
-                plugin.getLogger().info("Saving " + fileName + " to disk");
-                plugin.saveResource(fileName, false);
+            if (GlobalWarming.getInstance().getResource(fileName) != null) {
+                GlobalWarming.getInstance().getLogger().info("Saving " + fileName + " to disk");
+                GlobalWarming.getInstance().saveResource(fileName, false);
             }
         rereadFromDisk();
     }

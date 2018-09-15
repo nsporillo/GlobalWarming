@@ -1,0 +1,12 @@
+enabled: true
+association: world
+enabledEffects:
+    - SEA_LEVEL_RISE
+    - ICE_MELT
+    - SNOW_MELT
+    - ICE_FORMATION
+    - SNOW_FORMATION
+    - AREA_POTION_CLOUD
+    - FARM_YIELD
+    - MOB_SPAWN_RATE
+    - PERMANENT_SLOWNESS

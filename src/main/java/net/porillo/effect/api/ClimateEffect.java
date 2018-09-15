@@ -1,24 +1,37 @@
 package net.porillo.effect.api;
 
+import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.porillo.effect.api.change.AtomicChange;
+import net.porillo.effect.ClimateData;
+import net.porillo.effect.EffectEngine;
 
-import java.util.HashSet;
-import java.util.function.Supplier;
-
-@NoArgsConstructor
 @AllArgsConstructor
-public abstract class ClimateEffect<Change extends AtomicChange> implements Supplier<HashSet<Change>> {
+public abstract class ClimateEffect {
 
-	/**
-	 * ClimateEffects are meant to be serialized/deserialized from the worlds climate model file
-	 * So sub class fields will be transient, we want only generalized information here
-	 *
-	 * Sub classes are instantiated for every chunk for instance, so each instance will have it's own data
-	 */
-	@Getter @Setter private String effectName;
-	@Getter @Setter private Double effectThreshold;
+	@Setter private JsonObject jsonModel;
+	private ClimateData climateData;
+
+	public ClimateEffect() {
+		this.climateData = getClass().getAnnotation(ClimateData.class);
+	}
+
+	public String getName() {
+		if (climateData != null) {
+			return climateData.type().name();
+		}
+		return "";
+	}
+
+	public ClimateEffectType getType() {
+		if (climateData != null) {
+			return climateData.type();
+		}
+		return ClimateEffectType.NONE;
+	}
+
+	public void unregister() {
+		EffectEngine.getInstance().unregisterEffect(getType());
+	}
+
 }

@@ -2,27 +2,30 @@ package net.porillo.database.tables;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import net.porillo.database.api.select.Selection;
-import net.porillo.database.api.select.SelectionResult;
+import net.porillo.database.api.SelectCallback;
 import net.porillo.database.queries.insert.PlayerInsertQuery;
+import net.porillo.database.queries.select.PlayerSelectQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.GPlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-public class PlayerTable extends Table {
+public class PlayerTable extends Table implements SelectCallback<GPlayer> {
 
 	@Getter private Map<UUID, GPlayer> players = new HashMap<>();
 	@Getter private Map<Integer, UUID> uuidMap = new HashMap<>();
-	private UUID selectStarId;
 
 	public PlayerTable() {
 		super("players");
 		createIfNotExists();
-		AsyncDBQueue.getInstance().queueSelection(makeSelectionQuery(), this);
+
+		PlayerSelectQuery selectQuery = new PlayerSelectQuery(this);
+		AsyncDBQueue.getInstance().queueSelectQuery(selectQuery);
 	}
 
 	public GPlayer getOrCreatePlayer(UUID uuid, boolean untracked) {
@@ -46,35 +49,15 @@ public class PlayerTable extends Table {
 	}
 
 	@Override
-	public Selection makeSelectionQuery() {
-		String sql = "SELECT * FROM players;";
-		Selection selection = new Selection(getTableName(), sql);
-		this.selectStarId = selection.getUuid();
-		return selection;
-	}
-
-	@Override
-	public void onResultArrival(SelectionResult result) throws SQLException {
-		if (result.getTableName().equals(getTableName()) && this.selectStarId.equals(result.getUuid())) {
-			List<GPlayer> gPlayerList = new ArrayList<>();
-			ResultSet rs = result.getResultSet();
-
-			try {
-				while (rs.next()) {
-					gPlayerList.add(new GPlayer(rs));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-
+	public void onSelectionCompletion(List<GPlayer> returnList) throws SQLException {
+		if (GlobalWarming.getInstance() != null) {
 			new BukkitRunnable() {
 
 				@Override
 				public void run() {
-					GlobalWarming.getInstance().getLogger().info("Loading " + gPlayerList.size() + " gplayers");
+					GlobalWarming.getInstance().getLogger().info("Loading " + returnList.size() + " players...");
 
-					for (GPlayer gPlayer : gPlayerList) {
+					for (GPlayer gPlayer : returnList) {
 						if (!uuidMap.containsKey(gPlayer.getUniqueId())) {
 							uuidMap.put(gPlayer.getUniqueId(), gPlayer.getUuid());
 						}
@@ -85,6 +68,8 @@ public class PlayerTable extends Table {
 					}
 				}
 			}.runTask(GlobalWarming.getInstance());
+		} else {
+			System.out.println("Selection returned " + returnList.size() + " players.");
 		}
 	}
 }

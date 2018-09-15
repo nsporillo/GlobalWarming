@@ -1,6 +1,6 @@
 package net.porillo.effect.api.change;
 
-public interface AtomicChange {
+public interface EffectChange<ChangeType> {
 
 	//TODO: Do more useful stuff with this interface
 	// Perhaps we might want to consider logging all atomic changes

@@ -2,7 +2,6 @@ package net.porillo.objects;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.porillo.GlobalWarming;
 import net.porillo.database.tables.PlayerTable;
@@ -15,7 +14,6 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode
 @AllArgsConstructor
 public class Furnace {
 
@@ -49,5 +47,23 @@ public class Furnace {
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
 		UUID ownerUUID = playerTable.getUuidMap().get(uniqueID);
 		return playerTable.getPlayers().get(ownerUUID);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		Furnace furnace = (Furnace) o;
+
+		return uniqueID.equals(furnace.uniqueID);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + uniqueID.hashCode();
+		return result;
 	}
 }

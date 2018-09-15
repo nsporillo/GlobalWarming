@@ -2,17 +2,17 @@ package net.porillo.database.tables;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import net.porillo.database.api.select.Selection;
-import net.porillo.database.api.select.SelectionResult;
+import net.porillo.database.api.SelectCallback;
+import net.porillo.database.queries.select.OffsetSelectQuery;
+import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.OffsetBounty;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OffsetTable extends Table {
+public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
 
 	/**
 	 * In memory storage of all available OffsetBounty
@@ -24,32 +24,23 @@ public class OffsetTable extends Table {
 	public OffsetTable() {
 		super("offsets");
 		createIfNotExists();
+
+		OffsetSelectQuery selectQuery = new OffsetSelectQuery(this);
+		AsyncDBQueue.getInstance().queueSelectQuery(selectQuery);
 	}
 
 	@Override
-	public Selection makeSelectionQuery() {
-		String sql = "SELECT * FROM offsets WHERE hunter IS NULL;";
-		return new Selection(getTableName(), sql);
-	}
-
-	@Override
-	public void onResultArrival(SelectionResult result) throws SQLException {
-		if (result.getTableName().equals(getTableName())) {
-			List<OffsetBounty> offsetBounties = new ArrayList<>();
-			ResultSet rs = result.getResultSet();
-
-			while (rs.next()) {
-				offsetBounties.add(new OffsetBounty(rs));
-			}
-
-
+	public void onSelectionCompletion(List<OffsetBounty> returnList) throws SQLException {
+		if (GlobalWarming.getInstance() != null) {
 			new BukkitRunnable() {
 
 				@Override
 				public void run() {
-					offsetList.addAll(offsetBounties);
+					offsetList.addAll(returnList);
 				}
 			}.runTask(GlobalWarming.getInstance());
+		} else {
+			System.out.println("Selection returned " + returnList.size() + " offsets.");
 		}
 	}
 }

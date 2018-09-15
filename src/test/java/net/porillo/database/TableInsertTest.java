@@ -1,10 +1,12 @@
 package net.porillo.database;
 
 import net.porillo.database.queries.insert.ContributionInsertQuery;
+import net.porillo.database.queries.insert.PlayerInsertQuery;
+import net.porillo.database.queries.insert.WorldInsertQuery;
 import net.porillo.database.queue.AsyncDBQueue;
-import net.porillo.database.tables.ContributionTable;
 import net.porillo.objects.Contribution;
-import org.testng.annotations.BeforeTest;
+import net.porillo.objects.GPlayer;
+import net.porillo.objects.GWorld;
 import org.testng.annotations.Test;
 
 import java.sql.Connection;
@@ -16,22 +18,41 @@ import java.util.Random;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Test
-public class TableInsertDeleteTest extends TestBase {
+public class TableInsertTest {
 
-	private Connection connection;
-	private Random random = new Random();
+	@Test
+	public void testWorldInserts() throws SQLException, ClassNotFoundException {
+		Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 
-	@BeforeTest
-	public void before() throws SQLException, ClassNotFoundException {
-		this.connection = getConnectionManager().openConnection();
+		for (int i = 0; i < 30; i++) {
+			GWorld gWorld = TestUtility.getInstance().nextRandomWorld();
+			AsyncDBQueue.getInstance().queueInsertQuery(new WorldInsertQuery(gWorld));
+		}
+
+		AsyncDBQueue.getInstance().writeInsertQueue(connection);
 	}
 
-	public void testContributionTable() throws SQLException, ClassNotFoundException {
-		new ContributionTable(); // make sure contribution table exists
+	@Test
+	public void testPlayerInserts() throws SQLException, ClassNotFoundException {
+		Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 
+		for (int i = 0; i < 300; i++) {
+			GPlayer gPlayer = TestUtility.getInstance().nextRandomPlayer();
+			AsyncDBQueue.getInstance().queueInsertQuery(new PlayerInsertQuery(gPlayer));
+		}
+
+		AsyncDBQueue.getInstance().writeInsertQueue(connection);
+	}
+
+	@Test
+	public void testContributionTable() throws SQLException, ClassNotFoundException {
+		Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
+
+		Random random = TestUtility.getInstance().getRandom();
 		// Create a contribution and insert it into the DB
-		final Integer uniqueId = random.nextInt();
-		Contribution contribution = new Contribution(uniqueId, random.nextInt(), random.nextInt(), "world", 15);
+		final Integer uniqueId = random.nextInt(Integer.MAX_VALUE);
+		Contribution contribution =
+				new Contribution(uniqueId, random.nextInt(Integer.MAX_VALUE), random.nextInt(Integer.MAX_VALUE), "world", 15);
 		AsyncDBQueue.getInstance().queueInsertQuery(new ContributionInsertQuery(contribution));
 		AsyncDBQueue.getInstance().writeInsertQueue(connection);
 
@@ -54,12 +75,6 @@ public class TableInsertDeleteTest extends TestBase {
 			assertThat("value mismatch",
 					contribution.getContributionValue() == resultSet.getInt(5));
 		}
-
-		// Delete the test object from the database
-		String delete = "DELETE FROM contributions WHERE uniqueID = ?";
-		PreparedStatement deleteStatement = connection.prepareStatement(delete);
-		deleteStatement.setLong(1, uniqueId);
-		deleteStatement.execute();
 	}
 
 	// TODO: Add tests for all other tables

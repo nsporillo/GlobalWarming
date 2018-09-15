@@ -45,8 +45,8 @@ public class AttributionListener implements Listener {
 
 		Location location = event.getBlockPlaced().getLocation();
 
-		// Don't handle events when there isn't a climate engine for this world
-		if (!ClimateEngine.getInstance().hasClimateEngine(location.getWorld().getName())) {
+		// Don't handle events in worlds if it's disabled
+		if (!ClimateEngine.getInstance().getClimateEngine(event.getPlayer().getWorld().getName()).isEnabled()) {
 			return;
 		}
 
@@ -110,8 +110,8 @@ public class AttributionListener implements Listener {
 
 		Location location = event.getBlock().getLocation();
 
-		// Don't handle events when there isn't a climate engine for this world
-		if (!ClimateEngine.getInstance().hasClimateEngine(location.getWorld().getName())) {
+		// Don't handle events in worlds if it's disabled
+		if (!ClimateEngine.getInstance().getClimateEngine(event.getPlayer().getWorld().getName()).isEnabled()) {
 			return;
 		}
 

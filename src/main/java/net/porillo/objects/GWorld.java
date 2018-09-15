@@ -62,4 +62,22 @@ public class GWorld {
 		this.seaLevel = rs.getInt(5);
 		this.size = rs.getInt(6);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		GWorld gWorld = (GWorld) o;
+
+		return uniqueID.equals(gWorld.uniqueID);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + uniqueID.hashCode();
+		return result;
+	}
 }

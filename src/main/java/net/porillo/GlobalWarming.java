@@ -1,13 +1,19 @@
 package net.porillo;
 
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.MessageKeys;
+import co.aikar.locales.MessageKeyProvider;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import net.porillo.commands.AdminCommands;
 import net.porillo.commands.GeneralCommands;
 import net.porillo.config.GlobalWarmingConfig;
+import net.porillo.config.Lang;
 import net.porillo.database.ConnectionManager;
 import net.porillo.database.TableManager;
 import net.porillo.database.queue.AsyncDBQueue;
+import net.porillo.effect.EffectEngine;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.listeners.AttributionListener;
 import net.porillo.listeners.CO2Listener;
@@ -17,6 +23,7 @@ import net.porillo.objects.GPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Locale;
 import java.util.Random;
 
 public class GlobalWarming extends JavaPlugin {
@@ -28,16 +35,20 @@ public class GlobalWarming extends JavaPlugin {
 	@Getter private TableManager tableManager;
 	@Getter private Random random;
 	private BukkitCommandManager commandManager;
+	@Getter private Gson gson;
 
 	@Override
 	public void onEnable() {
 		instance = this;
 
+		Lang.init();
 		this.random = new Random();
-		this.conf = new GlobalWarmingConfig(this);
+		this.gson = new GsonBuilder().setPrettyPrinting().create();
+		this.conf = new GlobalWarmingConfig();
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
-		ClimateEngine.getInstance().loadWorldClimateEngines(this.conf.getEnabledWorlds());
+		ClimateEngine.getInstance().loadWorldClimateEngines();
+		EffectEngine.getInstance();
 		this.commandManager = new BukkitCommandManager(this);
 		registerCommands();
 

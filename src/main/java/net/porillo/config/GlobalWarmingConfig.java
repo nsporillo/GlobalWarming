@@ -1,10 +1,6 @@
 package net.porillo.config;
 
-import lombok.Getter;
 import net.porillo.database.ConnectionManager;
-import org.bukkit.plugin.Plugin;
-
-import java.util.List;
 
 public class GlobalWarmingConfig extends ConfigLoader {
 
@@ -13,10 +9,9 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	private String database;
 	private String username, password;
 	public int updateInterval;
-    @Getter private List<String> enabledWorlds;
 
-	public GlobalWarmingConfig(Plugin plugin) {
-		super(plugin, "config.yml");
+	public GlobalWarmingConfig() {
+		super("config.yml");
 		super.saveIfNotExist();
 		super.load();
 	}
@@ -29,17 +24,10 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		this.username = conf.getString("database.username");
 		this.password = conf.getString("database.password");
 		this.updateInterval = conf.getInt("database.update-interval", 300);
-		this.enabledWorlds = conf.getStringList("worlds");
 	}
 
 	public ConnectionManager makeConnectionManager() {
 		return new ConnectionManager(host, port, database, username, password);
 	}
 
-	@Override
-	protected void reload() {
-		// clear memory
-		super.rereadFromDisk();
-		super.load();
-	}
 } 

@@ -7,13 +7,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class TreeUpdateQuery extends UpdateQuery {
-
-	private Tree tree;
+public class TreeUpdateQuery extends UpdateQuery<Tree> {
 
 	public TreeUpdateQuery(Tree tree) {
-		super("trees");
-		this.tree = tree;
+		super("trees", tree);
 	}
 
 	@Override
@@ -24,9 +21,9 @@ public class TreeUpdateQuery extends UpdateQuery {
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setBoolean(1, tree.isSapling());
-		preparedStatement.setInt(2, tree.getSize());
-		preparedStatement.setInt(3, tree.getUniqueID());
+		preparedStatement.setBoolean(1, getObject().isSapling());
+		preparedStatement.setInt(2, getObject().getSize());
+		preparedStatement.setInt(3, getObject().getUniqueID());
 		return preparedStatement;
 	}
 }

@@ -44,7 +44,8 @@ public class CO2Listener implements Listener {
 	public void onFurnaceSmelt(FurnaceBurnEvent event) {
 		String worldName = event.getBlock().getWorld().getName();
 
-		if (!ClimateEngine.getInstance().hasClimateEngine(worldName)) {
+		// Don't handle events in worlds if it's disabled
+		if (!ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
 			return;
 		}
 
@@ -81,7 +82,9 @@ public class CO2Listener implements Listener {
 			gw.getLogger().warning("@ " + location.toString());
 		}
 
-		GWorld world = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(worldName);
+		// Update the carbon score in the associated world
+		String associatedWorld = worldClimateEngine.getConfig().getAssociation();
+		GWorld world = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorld);
 		Contribution contrib = worldClimateEngine.furnaceBurn(furnace, event.getFuel());
 
 		// increment polluters carbon score
@@ -114,7 +117,8 @@ public class CO2Listener implements Listener {
 	public void onStructureGrow(StructureGrowEvent event) {
 		String worldName = event.getLocation().getWorld().getName();
 
-		if (!ClimateEngine.getInstance().hasClimateEngine(worldName)) {
+		// Don't handle events in worlds if it's disabled
+		if (!ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
 			return;
 		}
 
@@ -157,7 +161,9 @@ public class CO2Listener implements Listener {
 			gw.getLogger().warning("@ " + location.toString());
 		}
 
-		GWorld world = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(worldName);
+		// Update the carbon score in the associated world
+		String associatedWorld = worldClimateEngine.getConfig().getAssociation();
+		GWorld world = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorld);
 		// Create a new reduction object using the worlds climate engine
 		Reduction reduction = worldClimateEngine.treeGrow(tree, event.getSpecies(), event.getBlocks());
 

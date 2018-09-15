@@ -3,7 +3,6 @@ package net.porillo.objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bukkit.command.CommandSender;
 
 import java.sql.ResultSet;
 
@@ -55,8 +54,21 @@ public class OffsetBounty {
 		return hunter == null;
 	}
 
-	public void showPlayerDetails(CommandSender sender) {
-		// TODO: Make bounty links clickable
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
 
+		OffsetBounty bounty = (OffsetBounty) o;
+
+		return uniqueId.equals(bounty.uniqueId);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + uniqueId.hashCode();
+		return result;
 	}
 }

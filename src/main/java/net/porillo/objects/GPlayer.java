@@ -3,6 +3,7 @@ package net.porillo.objects;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.porillo.config.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -34,6 +35,13 @@ public class GPlayer {
 	 */
 	private Integer carbonScore;
 
+	public GPlayer(ResultSet rs) throws SQLException {
+		this.uniqueId = rs.getInt(1);
+		this.uuid = UUID.fromString(rs.getString(2));
+		this.firstSeen = rs.getLong(3);
+		this.carbonScore = rs.getInt(4);
+	}
+
 	public Player getPlayer() {
 		return Bukkit.getPlayer(uuid);
 	}
@@ -42,10 +50,29 @@ public class GPlayer {
 		getPlayer().sendMessage(msg);
 	}
 
-	public GPlayer(ResultSet rs) throws SQLException {
-		this.uniqueId = rs.getInt(1);
-		this.uuid = UUID.fromString(rs.getString(2));
-		this.firstSeen = rs.getLong(3);
-		this.carbonScore = rs.getInt(4);
+	public void sendMsg(Lang lang) {
+		sendMsg(lang.get());
+	}
+
+	public void sendMsg(Lang lang, Object... args) {
+		sendMsg(lang.get(args));
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		GPlayer gPlayer = (GPlayer) o;
+
+		return uniqueId.equals(gPlayer.uniqueId);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + uniqueId.hashCode();
+		return result;
 	}
 }
