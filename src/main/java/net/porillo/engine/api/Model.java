@@ -2,6 +2,10 @@ package net.porillo.engine.api;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
+import net.porillo.effect.EffectModel;
+import net.porillo.engine.models.*;
+import net.porillo.objects.Contribution;
+import net.porillo.objects.Reduction;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -89,4 +93,14 @@ public abstract class Model {
 	}
 
 	public abstract void loadModel();
+
+	public enum ModelType {
+		CARBON_INDEX,
+		CONTRIBUTION,
+		EFFECT,
+		ENTITY_FITNESS,
+		REDUCTION,
+		SCORE_TEMP;
+	}
+
 }

@@ -14,7 +14,9 @@ import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WorldClimateEngine {
 
@@ -23,28 +25,30 @@ public class WorldClimateEngine {
 	@Getter private WorldConfig config;
 
 	// Models
-	private ScoreTempModel scoreTempModel;
-	private ContributionModel contributionModel;
-	private ReductionModel reductionModel;
-	@Getter private EntityFitnessModel entityFitnessModel;
-	@Getter private CarbonIndexModel carbonIndexModel;
+	@Getter
+	private Map<Model.ModelType, Model> models;
 
 	public WorldClimateEngine(WorldConfig config) {
 		this.worldName = config.getWorld();
 		this.config = config;
 		// Worlds load their own model file
-		this.scoreTempModel = new ScoreTempModel(worldName);
-		this.contributionModel = new ContributionModel(worldName);
-		this.reductionModel = new ReductionModel(worldName);
-		this.entityFitnessModel = new EntityFitnessModel(worldName);
-		this.carbonIndexModel = new CarbonIndexModel(worldName);
+		models = new HashMap<>();
+		models.put(Model.ModelType.SCORE_TEMP, new ScoreTempModel(worldName));
+		models.put(Model.ModelType.CONTRIBUTION, new ContributionModel(worldName));
+		models.put(Model.ModelType.REDUCTION, new ReductionModel(worldName));
+		models.put(Model.ModelType.ENTITY_FITNESS, new EntityFitnessModel(worldName));
+		models.put(Model.ModelType.CARBON_INDEX, new CarbonIndexModel(worldName));
+	}
+
+	public <T extends Model> T getModel(Class<T> clazz, Model.ModelType modelType) {
+		return clazz.cast(models.get(modelType));
 	}
 
 	public Reduction treeGrow(Tree tree, TreeType treeType, List<BlockState> blocks) {
 		int reductionValue = 0;
 
 		for (BlockState bs : blocks) {
-			reductionValue += reductionModel.getReduction(bs.getType());
+			reductionValue += getModel(ReductionModel.class, Model.ModelType.REDUCTION).getReduction(bs.getType());
 		}
 
 		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
@@ -72,13 +76,13 @@ public class WorldClimateEngine {
 		contribution.setWorldName(worldName);
 		contribution.setContributer(furnace.getOwnerID());
 		contribution.setContributionKey(furnace.getUniqueID());
-		contribution.setContributionValue((int) contributionModel.getContribution(fuel.getType()));
+		contribution.setContributionValue((int) getModel(ContributionModel.class, Model.ModelType.CONTRIBUTION).getContribution(fuel.getType()));
 		return contribution;
 	}
 
 	public Double getTemperature() {
 		WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
-		return scoreTempModel.getTemperature(worldTable.getWorld(worldName).getCarbonValue());
+		return getModel(ScoreTempModel.class, Model.ModelType.SCORE_TEMP).getTemperature(worldTable.getWorld(worldName).getCarbonValue());
 	}
 
 	public boolean isEffectEnabled(ClimateEffectType type) {

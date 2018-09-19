@@ -3,12 +3,17 @@ package net.porillo.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
+import net.porillo.config.GlobalWarmingConfig;
+import net.porillo.config.Lang;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.effect.EffectEngine;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.change.block.BlockChange;
 import net.porillo.effect.api.change.block.SyncChunkUpdateTask;
 import net.porillo.effect.negative.SeaLevelRise;
+import net.porillo.engine.ClimateEngine;
+import net.porillo.engine.api.Model;
+import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,6 +24,90 @@ import java.util.function.Supplier;
 
 @CommandAlias("globalwarming|gw")
 public class AdminCommands extends BaseCommand {
+
+    @Subcommand("reload")
+    @CommandPermission("globalwarming.admin.reload")
+    public class ReloadCommands extends BaseCommand {
+
+        @Subcommand("config")
+        @CommandCompletion("@config")
+        @Description("Reload all configs or a specific one")
+        public void reloadConfig(GPlayer gPlayer, String[] args) {
+            if (args.length == 0) {
+                // Reload all Config
+                Lang.init();
+                GlobalWarming.getInstance().getConf().load();
+                gPlayer.sendMsg(Lang.ADMIN_RELOAD_SUCCESS, "all configs");
+            } else {
+                String configName = args[0];
+                switch (configName) {
+                    case "lang":
+                        Lang.init();
+                        break;
+                    case "config":
+                        GlobalWarming.getInstance().getConf().load();
+                        break;
+                    default:
+                        gPlayer.sendMsg(Lang.ADMIN_RELOAD_INVALID_CONFIG);
+                        return;
+                }
+                gPlayer.sendMsg(Lang.ADMIN_RELOAD_SUCCESS, configName);
+            }
+        }
+
+        @Subcommand("model")
+        @CommandCompletion("@model")
+        @Description("Reload all models or a specific one")
+        public void reloadModel (GPlayer gPlayer, String[] args){
+            WorldClimateEngine climateEngine;
+            try {
+                climateEngine = ClimateEngine.getInstance().getClimateEngine(gPlayer.getPlayer().getWorld().getName());
+            } catch (NullPointerException e) {
+                gPlayer.sendMsg(Lang.ADMIN_RELOAD_INVALID_WORLD);
+                return;
+            }
+
+            if (args.length == 0) {
+                for (Model model : climateEngine.getModels().values()) {
+                    model.loadModel();
+                }
+                gPlayer.sendMsg(Lang.ADMIN_RELOAD_SUCCESS, "all models");
+            } else {
+                String name = args[0];
+
+                for (Model model : climateEngine.getModels().values()) {
+                    if (model.getModelName().replace(".json", "").equalsIgnoreCase(name)) {
+                        model.loadModel();
+                        gPlayer.sendMsg(Lang.ADMIN_RELOAD_SUCCESS, name);
+                        return;
+                    }
+                }
+                gPlayer.sendMsg(Lang.ADMIN_RELOAD_INVALID_MODEL);
+            }
+        }
+
+        @Default
+        @Subcommand("all")
+        @Description("Reload all configs and models")
+        public void reloadAll(GPlayer gPlayer) {
+            // Models
+            try {
+                WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(gPlayer.getPlayer().getWorld().getName());
+                for (Model model : climateEngine.getModels().values()) {
+                    model.loadModel();
+                }
+            } catch (NullPointerException e) {
+                gPlayer.sendMsg(Lang.ADMIN_RELOAD_INVALID_WORLD);
+            }
+
+            // Config
+            Lang.init();
+            GlobalWarming.getInstance().getConf().load();
+
+            gPlayer.sendMsg(Lang.ADMIN_RELOAD_SUCCESS, "all");
+        }
+
+    }
 
     @Subcommand("debug")
     @CommandPermission("globalwarming.admin.debug")

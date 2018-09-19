@@ -11,6 +11,7 @@ import net.porillo.database.queries.select.TopPlayersQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.OffsetTable;
 import net.porillo.engine.ClimateEngine;
+import net.porillo.engine.api.Model;
 import net.porillo.engine.models.CarbonIndexModel;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
@@ -41,7 +42,7 @@ public class GeneralCommands extends BaseCommand {
         int score = gPlayer.getCarbonScore();
 
         if (ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
-            double index = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel().getCarbonIndex(score);
+            double index = ClimateEngine.getInstance().getClimateEngine(worldName).getModel(CarbonIndexModel.class, Model.ModelType.CARBON_INDEX).getCarbonIndex(score);
             gPlayer.sendMsg(Lang.SCORE_INDEX, formatIndex(index));
             gPlayer.sendMsg(Lang.SCORE_CARBON, formatScore(gPlayer.getCarbonScore()));
             gPlayer.sendMsg(Lang.SCORE_GOAL);
@@ -73,7 +74,7 @@ public class GeneralCommands extends BaseCommand {
 			String worldName = player.getWorld().getName();
 
 			if (ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
-				CarbonIndexModel indexModel = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel();
+				CarbonIndexModel indexModel = ClimateEngine.getInstance().getClimateEngine(worldName).getModel(CarbonIndexModel.class, Model.ModelType.CARBON_INDEX);
 
 				AsyncDBQueue.getInstance().queueSelectQuery(new TopPlayersQuery("players", (SelectCallback<Object[]>) returnList -> {
 					String header = "%s+%s------ %splayer%s ------%s+%s-- %sindex%s --%s+%s-- %sscore%s --%s+";

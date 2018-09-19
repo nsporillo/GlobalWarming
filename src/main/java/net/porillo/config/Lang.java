@@ -11,6 +11,11 @@ public enum Lang {
 
     GENERIC_PERMISSION("&cInsufficient Permissions"),
 
+    ADMIN_RELOAD_INVALID_CONFIG("&cInvalid Config"),
+    ADMIN_RELOAD_INVALID_MODEL("&cInvalid Model"),
+    ADMIN_RELOAD_INVALID_WORLD("&cNo Climate Engine for this world"),
+    ADMIN_RELOAD_SUCCESS("&aSuccessfully reloaded &d{0}"),
+
     SCORE_GOAL("&dYour goal is to keep your index above 5"),
     SCORE_INDEX("&dYour carbon footprint index is {0}"),
     SCORE_CARBON("&dYour current carbon footprint is {0}"),

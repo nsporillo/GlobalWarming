@@ -6,7 +6,9 @@ import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ListenerClimateEffect;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.Distribution;
+import net.porillo.engine.api.Model;
 import net.porillo.engine.api.WorldClimateEngine;
+import net.porillo.engine.models.EntityFitnessModel;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
@@ -21,7 +23,7 @@ public class MobSpawningRate extends ListenerClimateEffect {
             return;
         }
 
-        Distribution distribution = worldEngine.getEntityFitnessModel().getEntityFitnessMap().get(event.getEntityType());
+        Distribution distribution = worldEngine.getModel(EntityFitnessModel.class, Model.ModelType.ENTITY_FITNESS).getEntityFitnessMap().get(event.getEntityType());
         if (distribution != null) {
             double temp = worldEngine.getTemperature();
             double chance = distribution.getValue(temp);

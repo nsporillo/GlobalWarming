@@ -43,7 +43,7 @@ public abstract class ConfigLoader {
         saveConfig();
     }
 
-    void load() {
+    public void load() {
         if (!configFile.exists()) {
             GlobalWarming.getInstance().getDataFolder().mkdir();
             saveConfig();

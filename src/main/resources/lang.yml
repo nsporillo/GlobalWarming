@@ -7,3 +7,10 @@ lang:
     INDEX: "&dYour carbon footprint index is {0}"
     CARBON: "&dYour current carbon footprint is {0}"
     OVERALL: "&dYour overall current carbon footprint is {0}"
+  ADMIN:
+    RELOAD:
+      INVALID:
+        CONFIG: "&cInvalid Config"
+        MODEL: "&cInvalid Model"
+        WORLD: "&cNo Climate Engine for this world"
+      SUCCESS: "&aSuccessfully reloaded &d{0}"
