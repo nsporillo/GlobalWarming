@@ -59,7 +59,7 @@ public class CO2Listener implements Listener {
 		if (furnaceTable.getLocationMap().containsKey(location)) {
 			furnace = furnaceTable.getFurnaceMap().get(furnaceTable.getLocationMap().get(location));
 			UUID uuid = playerTable.getUuidMap().get(furnace.getOwnerID());
-			polluter = playerTable.getOrCreatePlayer(uuid, false);
+			polluter = playerTable.getPlayers().get(uuid);
 		} else {
 			/*
 			 * This might happen if a player has a redstone hopper setup that feeds untracked furnaces
@@ -88,16 +88,20 @@ public class CO2Listener implements Listener {
 		Contribution contrib = worldClimateEngine.furnaceBurn(furnace, event.getFuel());
 
 		// increment polluters carbon score
-		int carbonScore = polluter.getCarbonScore();
-		polluter.setCarbonScore(carbonScore + contrib.getContributionValue());
+		if (polluter != null) {
+			int carbonScore = polluter.getCarbonScore();
+			polluter.setCarbonScore(carbonScore + contrib.getContributionValue());
+		}
 
 		// increment worlds carbon score
 		int carbon = world.getCarbonValue();
 		world.setCarbonValue(carbon + contrib.getContributionValue());
 
 		// Queue an update to the player table
-		PlayerUpdateQuery updateQuery = new PlayerUpdateQuery(polluter);
-		AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+		if (polluter != null) {
+			PlayerUpdateQuery updateQuery = new PlayerUpdateQuery(polluter);
+			AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+		}
 
 		// Queue an insert into the contributions table
 		ContributionInsertQuery insertQuery = new ContributionInsertQuery(contrib);

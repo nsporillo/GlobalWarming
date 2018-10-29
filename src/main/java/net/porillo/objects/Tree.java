@@ -35,7 +35,7 @@ public class Tree {
 
 	public GPlayer getOwner() {
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
-		UUID ownerUUID = playerTable.getUuidMap().get(uniqueID);
+		UUID ownerUUID = playerTable.getUuidMap().get(ownerID);
 		return playerTable.getPlayers().get(ownerUUID);
 	}
 
