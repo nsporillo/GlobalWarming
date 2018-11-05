@@ -11,6 +11,31 @@ lang:
     LOW: "&fGlobal CO2 levels are too low: &6increase furnace emissions"
     BALANCED: "Global CO2 levels are in balance"
     HIGH: "&fGlobal CO2 levels are too high: &6plant new saplings\n&fOr see: &6/gw help&f to create a bounty"
+  NOTIFICATION:
+    DEFAULT:
+      LOW: "§fSteve says: %sno more trees, it's time to build!"
+      OK: "§fSteve says: %sour world is in great shape!"
+      HIGH: "§fSteve says: %slet's plant more trees!"
+    FARM:
+      LOW: "§fFarmers: %slow CO2 is hurting our %s crops"
+      OK: "§fFarmers: %shaving bumper crops this year"
+      HIGH: "§fFarmers: %shigh CO2 is hurting our %s crops"
+    ICE:
+      LOW: "§fScientists: %slow CO2 is affecting ice conditions"
+      OK: "§fScientists: %sexpect normal ice conditions this year"
+      HIGH: "§fScientists: %shigh CO2 is affecting ice conditions"
+    MOB:
+      LOW: "§fZoologists: %slow CO2 is affecting %s populations"
+      OK: "§fZoologists: %sconditions are ideal!"
+      HIGH: "§fZoologists: %shigh CO2 is affecting %s populations"
+    SEALEVEL:
+      LOW: "§fScientists: %slow CO2, worried about sea levels!"
+      OK: "§fScientists: %snot concerned about sea levels!"
+      HIGH: "§fScientists: %shigh CO2, observed ice caps melting!"
+    SNOW:
+      LOW: "§fScientists: %slow CO2 is affecting snow conditions"
+      OK: "§fScientists: %sexpect normal snow conditions this year"
+      HIGH: "§fScientists: %shigh CO2 is affecting snow conditions"
   WIKI:
     ADDED: "&fThe &6GlobalWarming wiki&f was added to your inventory"
     NAME: "&fGlobalWarming Wiki"

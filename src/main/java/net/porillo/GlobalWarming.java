@@ -18,6 +18,7 @@ import net.porillo.listeners.CO2Listener;
 import net.porillo.listeners.PlayerListener;
 import net.porillo.listeners.WorldListener;
 import net.porillo.objects.GPlayer;
+import net.porillo.util.CO2Notifications;
 import net.porillo.util.GScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,8 +35,8 @@ public class GlobalWarming extends JavaPlugin {
 	@Getter private Random random;
 	private BukkitCommandManager commandManager;
 	@Getter private Gson gson;
-	@Getter	private GScoreboard scoreboard;
-
+    @Getter	private GScoreboard scoreboard;
+    @Getter	private CO2Notifications notifications;
 
 	@Override
 	public void onEnable() {
@@ -51,6 +52,7 @@ public class GlobalWarming extends JavaPlugin {
 		EffectEngine.getInstance();
 		this.commandManager = new BukkitCommandManager(this);
 		this.scoreboard = new GScoreboard();
+		this.notifications = new CO2Notifications();
 		registerCommands();
 
 		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);

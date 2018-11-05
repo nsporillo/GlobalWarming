@@ -32,6 +32,8 @@ public class GeneralCommands extends BaseCommand {
 	private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
 	private static final ChatColor[] topHeader = {GOLD, AQUA, LIGHT_PURPLE, AQUA, GOLD, AQUA, LIGHT_PURPLE, AQUA, GOLD,
 			AQUA, LIGHT_PURPLE, AQUA, GOLD};
+    public static final double LOW_TEMPERATURE_UBOUND = 13.75;
+    public static final double HIGH_TEMPERATURE_LBOUND = 14.25;
 
     @Subcommand("score")
     @Description("Get your carbon score")
@@ -53,9 +55,9 @@ public class GeneralCommands extends BaseCommand {
                       formatTemperature(temperature));
 
                 //Guidance based on the global temperature:
-                if (temperature < 13.75) {
+                if (temperature < LOW_TEMPERATURE_UBOUND) {
                     gPlayer.sendMsg(Lang.TEMPERATURE_LOW);
-                } else if (temperature < 14.25) {
+                } else if (temperature < HIGH_TEMPERATURE_LBOUND) {
                     gPlayer.sendMsg(Lang.TEMPERATURE_BALANCED);
                 } else {
                     gPlayer.sendMsg(Lang.TEMPERATURE_HIGH);

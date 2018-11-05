@@ -14,10 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -26,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *  - Players request score updates when their carbon scores change
  *  - Duplicate requests are ignored (one request per player)
  *  - Scoreboard updates happen only when requests are available, clearing the queue
- *  - These updates happen within a second of the request (10 ticks)
+ *  - These updates happen within a second of the request (20 ticks)
  *
  * Notes:
  *  - Player's scores are tied to their associated-world, not the current one
@@ -37,7 +34,7 @@ public class GScoreboard {
     private Map<String, Scoreboard> scoreboards;
     private ConcurrentLinkedQueue<UUID> requestQueue;
     private static final String GLOBAL_WARMING = "GlobalWarming";
-    private static final long UPDATE_TICKS = 10;
+    private static final long SCOREBOARD_INTERVAL_TICKS = 20;
 
     public GScoreboard() {
         //One scoreboard per world:
@@ -242,29 +239,27 @@ public class GScoreboard {
 
     /**
      * Update the scoreboard if requests are available
-     * - Updates are processed within a second (10 ticks)
+     * - Updates are processed within a second (20 ticks)
      */
     private void debounceScoreUpdates() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
               GlobalWarming.getInstance(),
-              new Runnable() {
-                  public void run() {
-                      //Make a copy of the update and clear the old update:
-                      // - Synchronized to temporarily prevent threaded additions
-                      Queue<UUID> players = null;
-                      synchronized (this) {
-                          if (!requestQueue.isEmpty()) {
-                              players = new ConcurrentLinkedQueue<>(requestQueue);
-                              requestQueue.clear();
-                          }
-                      }
-
-                      //Process scores for any players in the update:
-                      if (players != null && !players.isEmpty()) {
-                          updateGlobalScores();
-                          updatePlayerScores(players);
+              () -> {
+                  //Make a copy of the update and clear the old update:
+                  // - Synchronized to temporarily prevent threaded additions
+                  Queue<UUID> players = null;
+                  synchronized (this) {
+                      if (!requestQueue.isEmpty()) {
+                          players = new ConcurrentLinkedQueue<>(requestQueue);
+                          requestQueue.clear();
                       }
                   }
-              }, 0L, UPDATE_TICKS);
+
+                  //Process scores for any players in the update:
+                  if (players != null && !players.isEmpty()) {
+                      updateGlobalScores();
+                      updatePlayerScores(players);
+                  }
+              }, 0L, SCOREBOARD_INTERVAL_TICKS);
     }
 }
