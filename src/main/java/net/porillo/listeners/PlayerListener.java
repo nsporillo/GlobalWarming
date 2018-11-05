@@ -38,6 +38,7 @@ public class PlayerListener implements Listener {
 			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 			gPlayer = new GPlayer(uniqueId, event.getPlayer().getUniqueId(), System.currentTimeMillis(), 0);
 			table.getPlayers().put(event.getPlayer().getUniqueId(), gPlayer);
+			table.getUuidMap().put(uniqueId, event.getPlayer().getUniqueId());
 			AsyncDBQueue.getInstance().queueInsertQuery(new PlayerInsertQuery(gPlayer));
 		}
 
