@@ -8,14 +8,25 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.text.MessageFormat;
 
 public enum Lang {
-
-    GENERIC_PERMISSION("&cInsufficient Permissions"),
-
-    SCORE_GOAL("&dYour goal is to keep your index above 5"),
-    SCORE_INDEX("&dYour carbon footprint index is {0}"),
-    SCORE_CARBON("&dYour current carbon footprint is {0}"),
-    SCORE_OVERALL("&dYour overall current carbon footprint is {0}")
-    ;
+    /**
+     * See lang.yml for translations
+     */
+    GENERIC_PERMISSION(""),
+    ENGINE_DISABLED(""),
+    SCORE_CHAT(""),
+    SCORE_TEMPERATURE(""),
+    TEMPERATURE_BALANCED(""),
+    TEMPERATURE_HIGH(""),
+    TEMPERATURE_LOW(""),
+    WIKI_ADDED(""),
+    WIKI_NAME(""),
+    WIKI_AUTHOR(""),
+    WIKI_LORE(""),
+    WIKI_INTRODUCTION(""),
+    WIKI_SCORES(""),
+    WIKI_EFFECTS(""),
+    WIKI_BOUNTY(""),
+    WIKI_OTHER("");
 
     private String def;
     private static LangConfig langConfig;

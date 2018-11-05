@@ -7,3 +7,22 @@ commands:
     globalwarming:
       aliases: gw
       description: The main command for GlobalWarming
+permissions:
+  globalwarming.bounty:
+    default: true
+  globalwarming.bounty.offset:
+    default: true
+  globalwarming.bounty.list:
+    default: true
+  globalwarming.help:
+    default: true
+  globalwarming.score:
+    default: true
+  globalwarming.scoreboard:
+    default: true
+  globalwarming.scoreboard.show:
+    default: true
+  globalwarming.scoreboard.hide:
+    default: true
+  globalwarming.top:
+    default: true
