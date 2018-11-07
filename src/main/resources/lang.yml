@@ -1,9 +1,87 @@
 locale: en-US
 lang:
   GENERIC:
-    PERMISSION: "&cInsufficient Permissions"
+    PERMISSION: "&cInsufficient permissions for GlobalWarming command"
+  ENGINE:
+    DISABLED: "&cGlobalWarming is not enabled for this world"
   SCORE:
-    GOAL: "&dYour goal is to keep your index above 5"
-    INDEX: "&dYour carbon footprint index is {0}"
-    CARBON: "&dYour current carbon footprint is {0}"
-    OVERALL: "&dYour overall current carbon footprint is {0}"
+    CHAT: "&fYour carbon footprint: {0}&f, global temperature: {1}&f°C"
+    TEMPERATURE: "&fGlobal Temp: %s%s&f°C"
+  TEMPERATURE:
+    LOW: "&fGlobal CO2 levels are too low: &6increase furnace emissions"
+    BALANCED: "Global CO2 levels are in balance"
+    HIGH: "&fGlobal CO2 levels are too high: &6plant new saplings\n&fOr see: &6/gw help&f to create a bounty"
+  NOTIFICATION:
+    DEFAULT:
+      LOW: "§fSteve says: %sno more trees, it's time to build!"
+      OK: "§fSteve says: %sour world is in great shape!"
+      HIGH: "§fSteve says: %slet's plant more trees!"
+    FARM:
+      LOW: "§fFarmers: %slow CO2 is hurting our %s crops"
+      OK: "§fFarmers: %shaving bumper crops this year"
+      HIGH: "§fFarmers: %shigh CO2 is hurting our %s crops"
+    ICE:
+      LOW: "§fScientists: %slow CO2 is affecting ice conditions"
+      OK: "§fScientists: %sexpect normal ice conditions this year"
+      HIGH: "§fScientists: %shigh CO2 is affecting ice conditions"
+    MOB:
+      LOW: "§fZoologists: %slow CO2 is affecting %s populations"
+      OK: "§fZoologists: %sconditions are ideal!"
+      HIGH: "§fZoologists: %shigh CO2 is affecting %s populations"
+    SEALEVEL:
+      LOW: "§fScientists: %slow CO2, worried about sea levels!"
+      OK: "§fScientists: %snot concerned about sea levels!"
+      HIGH: "§fScientists: %shigh CO2, observed ice caps melting!"
+    SNOW:
+      LOW: "§fScientists: %slow CO2 is affecting snow conditions"
+      OK: "§fScientists: %sexpect normal snow conditions this year"
+      HIGH: "§fScientists: %shigh CO2 is affecting snow conditions"
+  WIKI:
+    ADDED: "&fThe &6GlobalWarming wiki&f was added to your inventory"
+    NAME: "&fGlobalWarming Wiki"
+    AUTHOR: "Team GW"
+    LORE: "&8Gameplay and instructions"
+    INTRODUCTION: |
+      §0GOAL:§8
+      Prevent global warming by offsetting furnace emissions
+
+      §0GAMEPLAY:§8
+       - §6Furnaces§8 emit CO2 when smelting
+       - §6Saplings§8 absorb CO2 while growing
+
+      §0CHALLENGE:§8
+      Work together to maintain CO2 levels
+    SCORES: |
+      §0PLAYER SCORES:§8
+      Each player has a carbon footprint score
+      Your footprint is §60§8 when your CO2 emissions are balanced
+
+      §0GLOBAL TEMPERATURE:§8
+      Player scores combine to affect the global climate:
+       - §614.0C§8 is the goal
+    EFFECTS: |
+      §0GLOBAL WARMING:§8
+      CO2 levels affect global temperature:
+       - §6Too high:§8 heat is trapped
+       - §6Too low:§8 too much heat can escape
+
+      §0EFFECTS:§8
+       - Sea level
+       - Ice / snow
+       - Farm yields
+       - Mob counts
+       - Player movement
+    BOUNTY: |
+      §0BOUNTY COMMANDS:§8
+       - §6/gw bounty offset [trees] [reward]:§8 pay other players to plant trees on your behalf, improving your carbon score and the global climate
+
+       - §6/gw bounty list:§8 show active bounties
+    OTHER: |
+      §0OTHER COMMANDS:§8
+       - §6/gw score:§8 carbon footprint and temperature information
+
+       - §6/gw scoreboard:§8 show or hide
+
+       - §6/gw top:§8 worst-polluters list
+
+       - §6/gw help:§8 command list

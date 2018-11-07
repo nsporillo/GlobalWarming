@@ -2,6 +2,7 @@ package net.porillo.effect.negative.formation;
 
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.ClimateEffectType;
@@ -15,7 +16,7 @@ import org.bukkit.event.block.BlockFormEvent;
 @ClimateData(type = ClimateEffectType.SNOW_FORMATION)
 public class SnowForm extends ListenerClimateEffect {
 
-    private Distribution heightMap;
+    @Getter private Distribution heightMap;
 
     @EventHandler
     public void blockFormEvent(BlockFormEvent event) {

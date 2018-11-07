@@ -2,6 +2,7 @@ package net.porillo.effect.api;
 
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
 import net.porillo.effect.ClimateData;
 import net.porillo.effect.EffectEngine;
@@ -9,6 +10,7 @@ import net.porillo.effect.EffectEngine;
 @AllArgsConstructor
 public abstract class ClimateEffect {
 
+	@Getter
 	@Setter private JsonObject jsonModel;
 	private ClimateData climateData;
 

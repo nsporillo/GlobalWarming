@@ -42,14 +42,13 @@ public class CO2Listener implements Listener {
 	 */
 	@EventHandler
 	public void onFurnaceSmelt(FurnaceBurnEvent event) {
-		String worldName = event.getBlock().getWorld().getName();
-
 		// Don't handle events in worlds if it's disabled
-		if (!ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
+		String eventWorldName = event.getBlock().getWorld().getName();
+		if (!ClimateEngine.getInstance().isClimateEngineEnabled(eventWorldName)) {
 			return;
 		}
 
-		WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldName);
+		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
 		Location location = event.getBlock().getLocation();
 		FurnaceTable furnaceTable = GlobalWarming.getInstance().getTableManager().getFurnaceTable();
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
@@ -59,13 +58,23 @@ public class CO2Listener implements Listener {
 		if (furnaceTable.getLocationMap().containsKey(location)) {
 			furnace = furnaceTable.getFurnaceMap().get(furnaceTable.getLocationMap().get(location));
 			UUID uuid = playerTable.getUuidMap().get(furnace.getOwnerID());
+
+			// Exit if the player's associated-world climate engine is disabled:
 			polluter = playerTable.getPlayers().get(uuid);
+			if (!ClimateEngine.getInstance().isAssociatedEngineEnabled(polluter)) {
+				return;
+			}
 		} else {
 			/*
 			 * This might happen if a player has a redstone hopper setup that feeds untracked furnaces
 			 * In this case, just consider it to be untracked emissions.
 			 */
+
+			// Exit if the player's associated-world climate engine is disabled:
 			polluter = playerTable.getOrCreatePlayer(untrackedUUID, true);
+			if (!ClimateEngine.getInstance().isAssociatedEngineEnabled(polluter)) {
+				return;
+			}
 
 			// First create a new furnace object and store it
 			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
@@ -83,32 +92,31 @@ public class CO2Listener implements Listener {
 		}
 
 		// Update the carbon score in the associated world
-		String associatedWorld = worldClimateEngine.getConfig().getAssociation();
-		GWorld world = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorld);
-		Contribution contrib = worldClimateEngine.furnaceBurn(furnace, event.getFuel());
+		String associatedWorldName = eventClimateEngine.getConfig().getAssociation();
+		GWorld associatedWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorldName);
+		Contribution contrib = eventClimateEngine.furnaceBurn(furnace, event.getFuel());
 
 		// increment polluters carbon score
-		if (polluter != null) {
-			int carbonScore = polluter.getCarbonScore();
-			polluter.setCarbonScore(carbonScore + contrib.getContributionValue());
-		}
+		int carbonScore = polluter.getCarbonScore();
+		polluter.setCarbonScore(carbonScore + contrib.getContributionValue());
+
+		//Update the scoreboard:
+		gw.getScoreboard().update(polluter.getUuid());
 
 		// increment worlds carbon score
-		int carbon = world.getCarbonValue();
-		world.setCarbonValue(carbon + contrib.getContributionValue());
+		int carbon = associatedWorld.getCarbonValue();
+		associatedWorld.setCarbonValue(carbon + contrib.getContributionValue());
 
 		// Queue an update to the player table
-		if (polluter != null) {
-			PlayerUpdateQuery updateQuery = new PlayerUpdateQuery(polluter);
-			AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
-		}
+		PlayerUpdateQuery updateQuery = new PlayerUpdateQuery(polluter);
+		AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
 
 		// Queue an insert into the contributions table
 		ContributionInsertQuery insertQuery = new ContributionInsertQuery(contrib);
 		AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
 
 		// Queue an update to the world table
-		WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(world);
+		WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(associatedWorld);
 		AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
 	}
 
@@ -119,14 +127,13 @@ public class CO2Listener implements Listener {
 	 */
 	@EventHandler
 	public void onStructureGrow(StructureGrowEvent event) {
-		String worldName = event.getLocation().getWorld().getName();
-
 		// Don't handle events in worlds if it's disabled
-		if (!ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
+		String eventWorldName = event.getLocation().getWorld().getName();
+		if (!ClimateEngine.getInstance().isClimateEngineEnabled(eventWorldName)) {
 			return;
 		}
 
-		WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldName);
+		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
 		Location location = event.getLocation();
 		TreeTable treeTable = GlobalWarming.getInstance().getTableManager().getTreeTable();
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
@@ -138,20 +145,24 @@ public class CO2Listener implements Listener {
 		if (treeTable.getLocationMap().containsKey(location)) {
 			tree = treeTable.getTreeMap().get(treeTable.getLocationMap().get(location));
 			UUID uuid = playerTable.getUuidMap().get(tree.getOwnerID());
+
+			// Exit if the player's associated-world climate engine is disabled:
 			planter = playerTable.getPlayers().get(uuid);
-
-			Reduction reduction = ClimateEngine.getInstance().getClimateEngine(worldName).treeGrow(tree, event.getSpecies(), event.getBlocks());
-			int carbonScore = planter.getCarbonScore();
-			planter.setCarbonScore(carbonScore - reduction.getReductionValue());
-
-			tree.setSapling(false);
-			tree.setSize(event.getBlocks().size()); // TODO: Only consider core species blocks as tree size
+			if (!ClimateEngine.getInstance().isAssociatedEngineEnabled(planter)) {
+				return;
+			}
 
 			// Queue tree update query
+			tree.setSapling(false);
+			tree.setSize(event.getBlocks().size()); // TODO: Only consider core species blocks as tree size
 			TreeUpdateQuery treeUpdateQuery = new TreeUpdateQuery(tree);
 			AsyncDBQueue.getInstance().queueUpdateQuery(treeUpdateQuery);
 		} else {
+			// Exit if the player's associated-world climate engine is disabled:
 			planter = playerTable.getOrCreatePlayer(untrackedUUID, true);
+			if (!ClimateEngine.getInstance().isAssociatedEngineEnabled(planter)) {
+				return;
+			}
 
 			// First create a new tree object and store it
 			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
@@ -161,23 +172,27 @@ public class CO2Listener implements Listener {
 			TreeInsertQuery insertQuery = new TreeInsertQuery(tree);
 			AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
 
-			gw.getLogger().warning("Untracked structure grow occured:");
+			gw.getLogger().warning("Untracked structure grow occurred:");
 			gw.getLogger().warning("@ " + location.toString());
 		}
 
 		// Update the carbon score in the associated world
-		String associatedWorld = worldClimateEngine.getConfig().getAssociation();
-		GWorld world = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorld);
+		String associatedWorldName = eventClimateEngine.getConfig().getAssociation();
+		GWorld associatedWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorldName);
+
 		// Create a new reduction object using the worlds climate engine
-		Reduction reduction = worldClimateEngine.treeGrow(tree, event.getSpecies(), event.getBlocks());
+		Reduction reduction = eventClimateEngine.treeGrow(tree, event.getSpecies(), event.getBlocks());
 
 		// decrement players carbon score
 		int carbonScore = planter.getCarbonScore();
 		planter.setCarbonScore(carbonScore - reduction.getReductionValue());
 
+		//Update the scoreboard:
+		gw.getScoreboard().update(planter.getUuid());
+
 		// decrement worlds carbon score
-		int carbon = world.getCarbonValue();
-		world.setCarbonValue(carbon - reduction.getReductionValue());
+		int carbon = associatedWorld.getCarbonValue();
+		associatedWorld.setCarbonValue(carbon - reduction.getReductionValue());
 
 		// Queue player update query
 		PlayerUpdateQuery playerUpdateQuery = new PlayerUpdateQuery(planter);
@@ -188,7 +203,7 @@ public class CO2Listener implements Listener {
 		AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
 
 		// Queue an update to the world table
-		WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(world);
+		WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(associatedWorld);
 		AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
 	}
 

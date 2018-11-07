@@ -2,6 +2,7 @@ package net.porillo.effect.neutral;
 
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.ClimateEffectType;
@@ -19,6 +20,7 @@ import java.util.Map;
 @ClimateData(type = ClimateEffectType.FARM_YIELD)
 public class FarmYield extends ListenerClimateEffect {
 
+    @Getter
     private HashMap<Material, Distribution> cropDistribution;
 
     @EventHandler

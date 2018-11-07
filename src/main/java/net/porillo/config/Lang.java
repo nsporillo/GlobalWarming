@@ -8,14 +8,43 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.text.MessageFormat;
 
 public enum Lang {
-
-    GENERIC_PERMISSION("&cInsufficient Permissions"),
-
-    SCORE_GOAL("&dYour goal is to keep your index above 5"),
-    SCORE_INDEX("&dYour carbon footprint index is {0}"),
-    SCORE_CARBON("&dYour current carbon footprint is {0}"),
-    SCORE_OVERALL("&dYour overall current carbon footprint is {0}")
-    ;
+    /**
+     * See lang.yml for translations
+     */
+    ENGINE_DISABLED(""),
+    GENERIC_PERMISSION(""),
+    NOTIFICATION_DEFAULT_LOW(""),
+    NOTIFICATION_DEFAULT_OK(""),
+    NOTIFICATION_DEFAULT_HIGH(""),
+    NOTIFICATION_FARM_LOW(""),
+    NOTIFICATION_FARM_OK(""),
+    NOTIFICATION_FARM_HIGH(""),
+    NOTIFICATION_ICE_LOW(""),
+    NOTIFICATION_ICE_OK(""),
+    NOTIFICATION_ICE_HIGH(""),
+    NOTIFICATION_MOB_LOW(""),
+    NOTIFICATION_MOB_OK(""),
+    NOTIFICATION_MOB_HIGH(""),
+    NOTIFICATION_SEALEVEL_LOW(""),
+    NOTIFICATION_SEALEVEL_OK(""),
+    NOTIFICATION_SEALEVEL_HIGH(""),
+    NOTIFICATION_SNOW_LOW(""),
+    NOTIFICATION_SNOW_OK(""),
+    NOTIFICATION_SNOW_HIGH(""),
+    SCORE_CHAT(""),
+    SCORE_TEMPERATURE(""),
+    TEMPERATURE_BALANCED(""),
+    TEMPERATURE_HIGH(""),
+    TEMPERATURE_LOW(""),
+    WIKI_ADDED(""),
+    WIKI_NAME(""),
+    WIKI_AUTHOR(""),
+    WIKI_LORE(""),
+    WIKI_INTRODUCTION(""),
+    WIKI_SCORES(""),
+    WIKI_EFFECTS(""),
+    WIKI_BOUNTY(""),
+    WIKI_OTHER("");
 
     private String def;
     private static LangConfig langConfig;

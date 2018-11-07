@@ -2,6 +2,7 @@ package net.porillo.engine.models;
 
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import net.porillo.GlobalWarming;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.Model;
 import org.bukkit.Material;
@@ -31,7 +32,8 @@ public class ReductionModel extends Model {
 		if (reductionMap.containsKey(block)) {
 			return reductionMap.get(block);
 		} else {
-			throw new NullPointerException("No reduction defined in the model for '" + block.name() + "'");
+			GlobalWarming.getInstance().getLogger().warning("No reduction defined in the model for '" + block.name() + "'");
+			return 0;
 		}
 	}
 }
