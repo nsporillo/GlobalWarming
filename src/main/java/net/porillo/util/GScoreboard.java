@@ -143,8 +143,8 @@ public class GScoreboard {
      * - One unique request per player only
      */
     public void update(UUID playerId) {
-        if (!requestQueue.contains(playerId)) {
-            synchronized (this) {
+        synchronized (this) {
+            if (!requestQueue.contains(playerId)) {
                 requestQueue.add(playerId);
             }
         }

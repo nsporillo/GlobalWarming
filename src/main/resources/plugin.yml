@@ -18,11 +18,13 @@ permissions:
     default: true
   globalwarming.score:
     default: true
-  globalwarming.scoreboard:
+  globalwarming.score.show:
     default: true
-  globalwarming.scoreboard.show:
-    default: true
-  globalwarming.scoreboard.hide:
+  globalwarming.score.hide:
     default: true
   globalwarming.top:
+    default: true
+  globalwarming.top.polluter:
+    default: true
+  globalwarming.top.planter:
     default: true

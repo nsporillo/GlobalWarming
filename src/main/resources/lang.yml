@@ -2,6 +2,7 @@ locale: en-US
 lang:
   GENERIC:
     PERMISSION: "&cInsufficient permissions for GlobalWarming command"
+    SPAM: "&7&OToo many requests at once"
   ENGINE:
     DISABLED: "&cGlobalWarming is not enabled for this world"
   SCORE:
@@ -36,6 +37,13 @@ lang:
       LOW: "§fScientists: %slow CO2 is affecting snow conditions"
       OK: "§fScientists: %sexpect normal snow conditions this year"
       HIGH: "§fScientists: %shigh CO2 is affecting snow conditions"
+  TOPTABLE:
+    PLAYER: "PLAYER"
+    INDEX: "INDEX"
+    SCORE: "SCORE"
+    POLLUTERS: "TOP 10 POLLUTERS"
+    PLANTERS: "TOP 10 TREE PLANTERS"
+    ERROR: "§4Error creating top worst polluter table"
   WIKI:
     ADDED: "&fThe &6GlobalWarming wiki&f was added to your inventory"
     NAME: "&fGlobalWarming Wiki"
@@ -78,10 +86,8 @@ lang:
        - §6/gw bounty list:§8 show active bounties
     OTHER: |
       §0OTHER COMMANDS:§8
-       - §6/gw score:§8 carbon footprint and temperature information
+       - §6/gw score [show | hide]:§8 access carbon footprint information or modify scoreboard visibility
 
-       - §6/gw scoreboard:§8 show or hide
-
-       - §6/gw top:§8 worst-polluters list
+       - §6/gw top [polluter | planter]:§8 top ten player lists
 
        - §6/gw help:§8 command list
