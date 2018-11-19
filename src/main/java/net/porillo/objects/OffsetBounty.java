@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Data
 @NoArgsConstructor
@@ -19,19 +20,19 @@ public class OffsetBounty {
 	/**
 	 * The player who created this carbon offset bounty
 	 */
-	private GPlayer creator;
+	private Integer creatorId;
 	/**
 	 * The player who is fulfilling this carbon offset bounty
 	 * Null if the bounty is available to be picked up.
 	 */
 	// TODO: Consider allowing multiple players to participate
 	// in someone's bounty, and the reward be split evenly
-	private GPlayer hunter;
+	private Integer hunterId;
 
 	/**
 	 * World this offset bounty must be completed in
 	 */
-	private GWorld world;
+	private String worldName;
 	/**
 	 * The required number of log blocks that need to be 
 	 * grown by the hunter before this bounty is completed
@@ -46,12 +47,15 @@ public class OffsetBounty {
 	 */
 	private long timeStarted, timeCompleted;
 
-	public OffsetBounty(ResultSet rs) {
-		// TODO Load variables from result set
-	}
-
-	public boolean isAvailable() {
-		return hunter == null;
+	public OffsetBounty(ResultSet rs)  throws SQLException {
+		this.uniqueId = rs.getInt(1);
+		this.creatorId = rs.getInt(2);
+		this.hunterId = rs.getInt(3);
+		this.worldName = rs.getString(4);
+		this.logBlocksTarget = rs.getInt(5);
+		this.reward = rs.getInt(6);
+		this.timeStarted = rs.getLong(7);
+		this.timeCompleted = rs.getLong(8);
 	}
 
 	@Override

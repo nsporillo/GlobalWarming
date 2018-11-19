@@ -23,6 +23,7 @@ import net.porillo.util.GScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Connection;
 import java.util.*;
 
 public class GlobalWarming extends JavaPlugin {
@@ -48,6 +49,15 @@ public class GlobalWarming extends JavaPlugin {
 		this.conf = new GlobalWarmingConfig();
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
+
+		try {
+			//Load all the table data immediately:
+			Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
+			AsyncDBQueue.getInstance().writeSelectQueue(connection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		ClimateEngine.getInstance().loadWorldClimateEngines();
 		EffectEngine.getInstance();
 		this.commandManager = new BukkitCommandManager(this);

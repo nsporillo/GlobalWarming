@@ -1,6 +1,8 @@
 package net.porillo.listeners;
 
 import net.porillo.GlobalWarming;
+import net.porillo.commands.GeneralCommands;
+import net.porillo.config.Lang;
 import net.porillo.database.queries.insert.ContributionInsertQuery;
 import net.porillo.database.queries.insert.FurnaceInsertQuery;
 import net.porillo.database.queries.insert.ReductionInsertQuery;
@@ -10,6 +12,7 @@ import net.porillo.database.queries.update.TreeUpdateQuery;
 import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.FurnaceTable;
+import net.porillo.database.tables.OffsetTable;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.database.tables.TreeTable;
 import net.porillo.engine.ClimateEngine;
@@ -186,6 +189,17 @@ public class CO2Listener implements Listener {
 		// decrement players carbon score
 		int carbonScore = planter.getCarbonScore();
 		planter.setCarbonScore(carbonScore - reduction.getReductionValue());
+
+		//Update bounties:
+		OffsetTable offsetTable = gw.getTableManager().getOffsetTable();
+		OffsetBounty bounty = offsetTable.update(planter, event.getBlocks().size());
+		if (bounty != null && bounty.getTimeCompleted() != 0) {
+			GeneralCommands.notifyBounty(
+				bounty,
+				planter,
+				String.format(Lang.BOUNTY_COMPLETEDBY.get(), planter.getPlayer().getName()),
+				String.format(Lang.BOUNTY_COMPLETED.get(), bounty.getReward()));
+		}
 
 		//Update the scoreboard:
 		gw.getScoreboard().update(planter.getUuid());

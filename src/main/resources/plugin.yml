@@ -10,9 +10,13 @@ commands:
 permissions:
   globalwarming.bounty:
     default: true
-  globalwarming.bounty.offset:
+  globalwarming.bounty.create:
     default: true
   globalwarming.bounty.list:
+    default: true
+  globalwarming.bounty.join:
+    default: true
+  globalwarming.bounty.cancel:
     default: true
   globalwarming.help:
     default: true

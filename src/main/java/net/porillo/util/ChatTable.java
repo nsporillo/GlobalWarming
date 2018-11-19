@@ -1,6 +1,8 @@
 package net.porillo.util;
 
 import lombok.Setter;
+import net.porillo.config.Lang;
+import net.porillo.objects.GPlayer;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class ChatTable {
     private List<String> headers;
     private List<Integer> headerWidth;
     private List<List<String>> body;
-    @Setter private ChatColor defaultColor;
+    @Setter private ChatColor gridColor;
     private ChatColor textColor[];
     private Character decoration[];
     private Character delimiter[];
@@ -48,7 +50,7 @@ public class ChatTable {
         headerWidth = new ArrayList<>();
         body = new ArrayList<>();
 
-        defaultColor = ChatColor.WHITE;
+        gridColor = ChatColor.WHITE;
 
         textColor = new ChatColor[2];
         textColor[Section.HEADER.get()] = ChatColor.WHITE;
@@ -59,8 +61,8 @@ public class ChatTable {
         decoration[Section.BODY.get()] = ' ';
 
         delimiter = new Character[2];
-        delimiter[Section.HEADER.get()] = ' ';
-        delimiter[Section.BODY.get()] = ' ';
+        delimiter[Section.HEADER.get()] = '+';
+        delimiter[Section.BODY.get()] = '|';
 
         twoPixelPad = new Character[2];
         twoPixelPad[Section.HEADER.get()] = '\u00B7';
@@ -286,7 +288,7 @@ public class ChatTable {
               "%s%s%s",
               textColor[section.get()],
               formattedValue,
-              defaultColor);
+              gridColor);
 
         return pad(formattedValue, columnPixels, section, align);
     }
@@ -294,10 +296,12 @@ public class ChatTable {
     @Override
     public String toString() {
         //Delimiters:
+        int delimiterWidth;
         int headerDelimiterWidth = charWidth.get(delimiter[Section.HEADER.get()]);
         int bodyDelimiterWidth = charWidth.get(delimiter[Section.BODY.get()]);
         String delimiters[] = new String[2];
         if (headerDelimiterWidth > bodyDelimiterWidth) {
+            delimiterWidth = headerDelimiterWidth;
             delimiters[Section.HEADER.get()] = delimiter[Section.HEADER.get()].toString();
             delimiters[Section.BODY.get()] = pad(
                   delimiter[Section.BODY.get()].toString(),
@@ -305,6 +309,7 @@ public class ChatTable {
                   Section.BODY,
                   Alignment.CENTER);
         } else {
+            delimiterWidth = bodyDelimiterWidth;
             delimiters[Section.HEADER.get()] = pad(
                   delimiter[Section.HEADER.get()].toString(),
                   bodyDelimiterWidth,
@@ -316,38 +321,59 @@ public class ChatTable {
 
         //Header:
         StringBuilder tableBuilder = new StringBuilder();
-        tableBuilder.append(defaultColor);
+        tableBuilder.append(gridColor);
         tableBuilder.append(delimiters[Section.HEADER.get()]);
         tableBuilder.append(String.join(delimiters[Section.HEADER.get()], headers));
         tableBuilder.append(delimiters[Section.HEADER.get()]);
 
         //Title (uses full header width to center):
+        int tableWidth = getPixelWidth(tableBuilder.toString());
         if (title.length() > 0) {
-            int tableWidth = getPixelWidth(tableBuilder.toString());
             String formattedValue = String.format(
                   "%s%s%s",
                   textColor[Section.HEADER.get()],
                   title,
-                  defaultColor);
+                  gridColor);
 
             tableBuilder.insert(0, String.format(
                   "\n%s%s\n",
-                  defaultColor,
+                  gridColor,
                   pad(formattedValue, tableWidth, Section.HEADER, Alignment.CENTER)));
         }
 
         //Body:
-        for (List<String> row : body) {
+        if (body.size() == 0) {
+            //No data:
+            String formattedValue = String.format(
+                  "%s%s%s",
+                  textColor[Section.BODY.get()],
+                  Lang.TABLE_EMPTY.get(),
+                  gridColor);
+
             tableBuilder.append("\n");
-            tableBuilder.append(defaultColor);
+            tableBuilder.append(gridColor);
             tableBuilder.append(delimiters[Section.BODY.get()]);
-            tableBuilder.append(String.join(delimiters[Section.BODY.get()], row));
+            tableBuilder.append(pad(
+                  formattedValue,
+                  tableWidth - delimiterWidth * 2,
+                  Section.BODY,
+                  Alignment.CENTER));
+
             tableBuilder.append(delimiters[Section.BODY.get()]);
+        } else {
+            //Row data:
+            for (List<String> row : body) {
+                tableBuilder.append("\n");
+                tableBuilder.append(gridColor);
+                tableBuilder.append(delimiters[Section.BODY.get()]);
+                tableBuilder.append(String.join(delimiters[Section.BODY.get()], row));
+                tableBuilder.append(delimiters[Section.BODY.get()]);
+            }
         }
 
         //Footer:
         tableBuilder.append("\n");
-        tableBuilder.append(defaultColor);
+        tableBuilder.append(gridColor);
         tableBuilder.append(delimiters[Section.HEADER.get()]);
         List<String> footers = new ArrayList<>();
         for (int width: headerWidth) {
@@ -356,8 +382,46 @@ public class ChatTable {
 
         tableBuilder.append(String.join(delimiters[Section.HEADER.get()], footers));
         tableBuilder.append(delimiters[Section.HEADER.get()]);
-        tableBuilder.append("\n\n");
+        tableBuilder.append("\n");
 
         return tableBuilder.toString();
+    }
+
+    /**
+     * Replaces each token with a clickable-event, while converting the
+     * surrounding text to JSON (for use as a tellraw command)
+     */
+    public String toJson(GPlayer gPlayer, String clickToken, String command, List<Integer> uniqueIds) {
+        String table = toString();
+        String[] textBlocks = table.split(String.format("(%s§\\w)", clickToken));
+        StringBuilder jsonBuilder = new StringBuilder();
+        for (String textBlock : textBlocks) {
+            //JSON separator:
+            if (jsonBuilder.length() > 0) {
+                jsonBuilder.append(",");
+            }
+
+            //Text block:
+            jsonBuilder.append(String.format(
+                  "{\"text\":\"%s\"}",
+                  textBlock));
+
+            //Click block:
+            if (uniqueIds.size() > 0) {
+                int id = uniqueIds.remove(0);
+                jsonBuilder.append(String.format(
+                      ", {\"text\":\"%s\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"%s %d\"}}",
+                      clickToken,
+                      command,
+                      id));
+            }
+        }
+
+        //Tellraw command:
+        // - Note: escaping newlines prior to execution
+        return String.format(
+              "tellraw %s [%s]",
+              gPlayer.getPlayer().getName(),
+              jsonBuilder.toString().replace("\n", "\\n"));
     }
 }
