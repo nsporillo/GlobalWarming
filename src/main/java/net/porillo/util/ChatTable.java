@@ -393,7 +393,7 @@ public class ChatTable {
      */
     public String toJson(GPlayer gPlayer, String clickToken, String command, List<Integer> uniqueIds) {
         String table = toString();
-        String[] textBlocks = table.split(String.format("(%s§\\w)", clickToken));
+        String[] textBlocks = table.split(String.format("%s\\b", clickToken));
         StringBuilder jsonBuilder = new StringBuilder();
         for (String textBlock : textBlocks) {
             //JSON separator:
