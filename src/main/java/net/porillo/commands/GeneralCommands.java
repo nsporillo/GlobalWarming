@@ -21,9 +21,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -557,27 +554,29 @@ public class GeneralCommands extends BaseCommand {
             chatTable.addHeader(Lang.TOPTABLE_SCORE.get(), 75);
 
             try {
-                Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
-                PreparedStatement statement = connection.prepareStatement(String.format(
-                      "SELECT uuid, carbonScore FROM players ORDER BY carbonScore %s LIMIT 10",
-                      isPolluterList
-                            ? "DESC"
-                            : "ASC"));
+                PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
+                List<GPlayer> players = new ArrayList<>(playerTable.getPlayers().values());
+                players.sort(Comparator.comparing(GPlayer::getCarbonScore));
+                if (isPolluterList) {
+                    Collections.reverse(players);
+                }
 
-                ResultSet result = statement.executeQuery();
-                while (result.next()) {
+                int rowCount = 0;
+                for (GPlayer player : players) {
                     List<String> row = new ArrayList<>();
-                    UUID uuid = UUID.fromString(result.getString(1));
-                    if (uuid.equals(untrackedUUID)) {
+                    if (player.getUuid().equals(untrackedUUID)) {
                         continue;
                     }
 
-                    int score = result.getInt(2);
+                    int score = player.getCarbonScore();
                     double index = indexModel.getCarbonIndex(score);
-                    row.add(Bukkit.getOfflinePlayer(uuid).getName());
+                    row.add(Bukkit.getOfflinePlayer(player.getUuid()).getName());
                     row.add(formatIndex(index, score));
                     row.add(formatScore(score));
                     chatTable.addRow(row);
+                    if (++rowCount == 10) {
+                        break;
+                    }
                 }
 
                 gPlayer.sendMsg(chatTable.toString());
