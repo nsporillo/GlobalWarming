@@ -20,11 +20,12 @@ public class ReductionModel extends Model {
 
 	@Override
 	public void loadModel() {
-		this.reductionMap = ClimateEngine.getInstance().getGson()
-				.fromJson(super.getContents(), new TypeToken<Map<Material, Double>>() {}.getType());
+		this.reductionMap = ClimateEngine.getInstance().getGson().fromJson(
+			super.getContents(),
+			new TypeToken<Map<Material, Double>>() {}.getType());
 
 		if (this.reductionMap == null) {
-			throw new RuntimeException("No values found in " + super.getPath());
+			throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));
 		}
 	}
 
@@ -32,7 +33,7 @@ public class ReductionModel extends Model {
 		if (reductionMap.containsKey(block)) {
 			return reductionMap.get(block);
 		} else {
-			GlobalWarming.getInstance().getLogger().warning("No reduction defined in the model for '" + block.name() + "'");
+			GlobalWarming.getInstance().getLogger().warning(String.format("No reduction defined in the model for: [%s]", block.name()));
 			return 0;
 		}
 	}

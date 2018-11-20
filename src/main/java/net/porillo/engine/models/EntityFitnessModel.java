@@ -11,20 +11,22 @@ import java.util.Map;
 
 public class EntityFitnessModel extends Model {
 
-	@Getter private Map<EntityType, Distribution> entityFitnessMap;
+	@Getter
+	private Map<EntityType, Distribution> entityFitnessMap;
 
 	public EntityFitnessModel(String worldName) {
-		super(worldName,"entityFitnessModel.json");
+		super(worldName, "entityFitnessModel.json");
 		this.loadModel();
 	}
-	
+
 	@Override
 	public void loadModel() {
-		this.entityFitnessMap = ClimateEngine.getInstance().getGson()
-				.fromJson(super.getContents(), new TypeToken<Map<EntityType, Distribution>>(){}.getType());
+		this.entityFitnessMap = ClimateEngine.getInstance().getGson().fromJson(
+			super.getContents(),
+			new TypeToken<Map<EntityType, Distribution>>() {}.getType());
 
 		if (this.entityFitnessMap == null) {
-			throw new RuntimeException("No values found in " + super.getPath());
+			throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));
 		}
 	}
 }

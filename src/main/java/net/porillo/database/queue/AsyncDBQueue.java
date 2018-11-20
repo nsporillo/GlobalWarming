@@ -50,7 +50,6 @@ public class AsyncDBQueue {
 	@Getter @Setter private boolean debug;
 
 	private BukkitRunnable queueWriteThread = new BukkitRunnable() {
-
 		@Override
 		public void run() {
 			try {

@@ -33,7 +33,7 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
 		return null;
 	}
 
-	public void updateWorld(GWorld gWorld) {
+	private void updateWorld(GWorld gWorld) {
 		worldMap.put(gWorld.getWorldName(), gWorld);
 	}
 
@@ -57,7 +57,6 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
 	public void onSelectionCompletion(List<GWorld> returnList) throws SQLException {
 		if (GlobalWarming.getInstance() != null) {
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
 					for (GWorld world : returnList) {
@@ -66,7 +65,7 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
 				}
 			}.runTask(GlobalWarming.getInstance());
 		} else {
-			System.out.println("Selection returned " + returnList.size() + " worlds.");
+			System.out.printf("Selection returned %d worlds.%n", returnList.size());
 		}
 	}
 }

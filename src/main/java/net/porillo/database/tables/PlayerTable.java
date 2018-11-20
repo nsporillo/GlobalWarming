@@ -52,11 +52,9 @@ public class PlayerTable extends Table implements SelectCallback<GPlayer> {
 	public void onSelectionCompletion(List<GPlayer> returnList) throws SQLException {
 		if (GlobalWarming.getInstance() != null) {
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
-					GlobalWarming.getInstance().getLogger().info("Loading " + returnList.size() + " players...");
-
+					GlobalWarming.getInstance().getLogger().info(String.format("Loading %d players...", returnList.size()));
 					for (GPlayer gPlayer : returnList) {
 						if (!uuidMap.containsKey(gPlayer.getUniqueId())) {
 							uuidMap.put(gPlayer.getUniqueId(), gPlayer.getUuid());
@@ -69,7 +67,7 @@ public class PlayerTable extends Table implements SelectCallback<GPlayer> {
 				}
 			}.runTask(GlobalWarming.getInstance());
 		} else {
-			System.out.println("Selection returned " + returnList.size() + " players.");
+			System.out.printf("Selection returned %d players.%n", returnList.size());
 		}
 	}
 }

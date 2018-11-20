@@ -23,7 +23,7 @@ public class ContributionModel extends Model {
 				.fromJson(super.getContents(), new TypeToken<Map<Material, Double>>() {}.getType());
 
 		if (this.contributionMap == null) {
-			throw new RuntimeException("No values found in " + super.getPath());
+			throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));
 		}
 	}
 
@@ -31,7 +31,7 @@ public class ContributionModel extends Model {
 		if (contributionMap.containsKey(fuelType)) {
 			return contributionMap.get(fuelType);
 		} else {
-			throw new NullPointerException("No contribution defined in the model for '" + fuelType.name() + "'");
+			throw new NullPointerException(String.format("No contribution defined in the model for: [%s]", fuelType.name()));
 		}
 	}
 }

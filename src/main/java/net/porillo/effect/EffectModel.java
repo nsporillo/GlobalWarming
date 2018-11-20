@@ -26,7 +26,7 @@ public class EffectModel extends Model {
                 .fromJson(super.getContents(), new TypeToken<Map<ClimateEffectType, JsonObject>>(){}.getType());
 
         if (this.effectMap == null) {
-            throw new RuntimeException("No values found in " + super.getPath());
+            throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));
         }
     }
 
@@ -61,5 +61,4 @@ public class EffectModel extends Model {
         }
         return effects;
     }
-
 }

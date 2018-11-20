@@ -17,7 +17,8 @@ import java.nio.file.Paths;
 @AllArgsConstructor
 public abstract class Table {
 
-	@Getter private String tableName;
+	@Getter
+	private String tableName;
 
 	public void createIfNotExists() {
 		CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), loadSQLFromFile());
@@ -26,43 +27,45 @@ public abstract class Table {
 
 	public Path getPath() {
 		if (GlobalWarming.getInstance() != null) {
-			Path path = GlobalWarming.getInstance().getDataFolder().toPath().resolve("scripts").resolve(tableName + ".sql");
+			Path path = GlobalWarming.getInstance().getDataFolder().toPath().resolve("scripts").resolve(String.format("%s.sql", tableName));
 			if (!Files.exists(path)) {
-				GlobalWarming.getInstance().saveResource("scripts/" + tableName + ".sql", false);
+				GlobalWarming.getInstance().saveResource(String.format("scripts/%s.sql", tableName), false);
 			}
-			return GlobalWarming.getInstance().getDataFolder().toPath().resolve("scripts").resolve(tableName + ".sql");
+			return GlobalWarming.getInstance().getDataFolder().toPath().resolve("scripts").resolve(String.format("%s.sql", tableName));
 		} else {
 			try {
-				return Paths.get(getClass().getResource("/scripts").toURI()).resolve(tableName + ".sql");
+				return Paths.get(getClass().getResource("/scripts").toURI()).resolve(String.format("%s.sql", tableName));
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
+
 			return null;
 		}
 	}
 
 	private void copyFromResource() {
 		Path file = getPath();
-
-		if (!Files.exists(file)) {
-			GlobalWarming.getInstance().getLogger().info("Script " + tableName + ".sql" + " does not exist, creating.");
-			GlobalWarming.getInstance().saveResource("scripts/" + tableName + ".sql", false);
+		if (file == null || !Files.exists(file)) {
+			GlobalWarming.getInstance().getLogger().info(String.format("Script: [%s.sql] does not exist, creating", tableName));
+			GlobalWarming.getInstance().saveResource(String.format("scripts/%s.sql", tableName), false);
 		}
 	}
 
 	public String loadSQLFromFile() {
 		this.copyFromResource();
 		StringBuilder builder = new StringBuilder();
-
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(getPath())))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (!line.startsWith("--")) {
-					builder.append(line);
+		Path path = getPath();
+		if (path != null) {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(path)))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (!line.startsWith("--")) {
+						builder.append(line);
+					}
 				}
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
 			}
-		} catch (NullPointerException | IOException ex) {
-			ex.printStackTrace();
 		}
 
 		return builder.toString();

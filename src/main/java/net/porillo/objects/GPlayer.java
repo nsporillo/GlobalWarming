@@ -65,7 +65,6 @@ public class GPlayer {
 		if (!super.equals(o)) return false;
 
 		GPlayer gPlayer = (GPlayer) o;
-
 		return uniqueId.equals(gPlayer.uniqueId);
 	}
 

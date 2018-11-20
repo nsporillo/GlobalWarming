@@ -34,7 +34,7 @@ public class GScoreboard {
     private Map<String, Scoreboard> scoreboards;
     private ConcurrentLinkedQueue<UUID> requestQueue;
     private static final String GLOBAL_WARMING = "GlobalWarming";
-    private static final long SCOREBOARD_INTERVAL_TICKS = 20;
+    private static final long SCOREBOARD_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getScoreboardInterval();
 
     public GScoreboard() {
         //One scoreboard per world:

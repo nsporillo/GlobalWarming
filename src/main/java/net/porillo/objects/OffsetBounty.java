@@ -24,9 +24,10 @@ public class OffsetBounty {
 	/**
 	 * The player who is fulfilling this carbon offset bounty
 	 * Null if the bounty is available to be picked up.
+	 *
+	 * TODO: Consider allowing multiple players to participate
+	 * TODO: in someone's bounty, and the reward be split evenly
 	 */
-	// TODO: Consider allowing multiple players to participate
-	// in someone's bounty, and the reward be split evenly
 	private Integer hunterId;
 
 	/**

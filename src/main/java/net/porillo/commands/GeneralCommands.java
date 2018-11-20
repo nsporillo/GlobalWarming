@@ -19,7 +19,6 @@ import net.porillo.util.ChatTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -28,11 +27,11 @@ import static org.bukkit.ChatColor.*;
 
 @CommandAlias("globalwarming|gw")
 public class GeneralCommands extends BaseCommand {
-    private static final long SPAM_INTERVAL_TICKS = 60;
+    private static final long SPAM_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getSpamInterval();
     private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
-    public static final double LOW_TEMPERATURE_UBOUND = 13.75;
-    public static final double HIGH_TEMPERATURE_LBOUND = 14.25;
-    private static final int MAX_BOUNTIES_CREATED_PER_PLAYER = 5;
+    public static final double LOW_TEMPERATURE_UBOUND = GlobalWarming.getInstance().getConf().getLowTemperatureUBound();
+    public static final double HIGH_TEMPERATURE_LBOUND = GlobalWarming.getInstance().getConf().getHighTemperatureLBound();
+    private static final int MAX_BOUNTIES_CREATED_PER_PLAYER = GlobalWarming.getInstance().getConf().getMaxBounties();
     private List<UUID> playerRequestList;
 
     public GeneralCommands() {
@@ -71,16 +70,6 @@ public class GeneralCommands extends BaseCommand {
                           Lang.GENERIC_INVALIDARGS.get(),
                           "[tree-blocks:integer] [reward:integer]"));
                 }
-            }
-        }
-
-        @Subcommand("list")
-        @Description("Display all active bounties")
-        @Syntax("")
-        @CommandPermission("globalwarming.bounty.list")
-        public void onBountyList(GPlayer gPlayer) {
-            if (isCommandAllowed(gPlayer)) {
-                showBounties(gPlayer);
             }
         }
 
@@ -206,6 +195,16 @@ public class GeneralCommands extends BaseCommand {
             if (isCommandAllowed(gPlayer)) {
                 showTopTen(gPlayer, false);
             }
+        }
+    }
+
+    @Subcommand("gatech")
+    @Description("Get the GATECH survey code")
+    @Syntax("")
+    @CommandPermission("globalwarming.gatech")
+    public void onGatech(GPlayer gPlayer) {
+        if (isCommandAllowed(gPlayer)) {
+            gPlayer.sendMsg("8675309");
         }
     }
 
@@ -358,7 +357,7 @@ public class GeneralCommands extends BaseCommand {
     /**
      * TODO: Add economy integration
      */
-    private static void createBounty(@NotNull GPlayer gPlayer, int treeBlocks, int reward) {
+    private static void createBounty(GPlayer gPlayer, int treeBlocks, int reward) {
         OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
         if (offsetTable.getIncompleteBountyCount(gPlayer) >= MAX_BOUNTIES_CREATED_PER_PLAYER) {
             gPlayer.sendMsg(Lang.BOUNTY_MAXCREATED);
@@ -391,7 +390,7 @@ public class GeneralCommands extends BaseCommand {
     /**
      * Show all active bounties in the player's associated world
      */
-    private static void showBounties(@NotNull GPlayer gPlayer) {
+    private static void showBounties(GPlayer gPlayer) {
         String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
         ChatTable chatTable = new ChatTable(Lang.BOUNTY_TITLE.get());
         chatTable.setGridColor(ChatColor.BLUE);
@@ -459,7 +458,7 @@ public class GeneralCommands extends BaseCommand {
      * - Players are limited to joining one bounty
      * - Bounties are limited to one hunter
      */
-    private static void joinBounty(@NotNull GPlayer gPlayer, int bountyId) {
+    private static void joinBounty(GPlayer gPlayer, int bountyId) {
         try {
             //Local and database update:
             OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
@@ -511,7 +510,7 @@ public class GeneralCommands extends BaseCommand {
     /**
      * Show the player's carbon score as a chat message
      */
-    private static void showCarbonScore(@NotNull GPlayer gPlayer) {
+    private static void showCarbonScore(GPlayer gPlayer) {
         Player player = gPlayer.getPlayer();
         if (player != null) {
             //Do not show scored for worlds with disabled climate-engines:
@@ -544,7 +543,7 @@ public class GeneralCommands extends BaseCommand {
     /**
      * Show the top 10 polluters or planters as a chat message
      */
-    private static void showTopTen(@NotNull GPlayer gPlayer, boolean isPolluterList) {
+    private static void showTopTen(GPlayer gPlayer, boolean isPolluterList) {
         if (ClimateEngine.getInstance().isAssociatedEngineEnabled(gPlayer)) {
             CarbonIndexModel indexModel = ClimateEngine.getInstance().getAssociatedClimateEngine(gPlayer.getPlayer()).getCarbonIndexModel();
             ChatTable chatTable = new ChatTable(isPolluterList ? Lang.TOPTABLE_POLLUTERS.get() : Lang.TOPTABLE_PLANTERS.get());

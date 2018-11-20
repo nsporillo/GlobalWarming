@@ -33,6 +33,7 @@ public enum Lang {
     BOUNTY_ABANDONEDBY(""),
     BOUNTY_CANCELLED(""),
     ENGINE_DISABLED(""),
+    ENGINE_NOTFOUND(""),
     GENERIC_PERMISSION(""),
     GENERIC_INVALIDARGS(""),
     GENERIC_SPAM(""),
@@ -117,7 +118,7 @@ public enum Lang {
             super.saveIfNotExist();
             super.load();
 
-            GlobalWarming.getInstance().getLogger().info("Lang Loaded: " + locale);
+            GlobalWarming.getInstance().getLogger().info(String.format("Lang loaded: [%s]", locale));
         }
 
         private ConfigurationSection getLangConf() {

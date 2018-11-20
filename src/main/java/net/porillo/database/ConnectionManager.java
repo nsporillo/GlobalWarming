@@ -29,11 +29,16 @@ public class ConnectionManager {
 			if (connection != null && !connection.isClosed()) {
 				return connection;
 			}
+
 			Class.forName("com.mysql.jdbc.Driver");
-			String connectionString = "jdbc:mysql://" + this.host + ":" + this.port + "/"
-					+ this.database + "?user=" + this.username + "&password=" + this.password +
-					"&allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&useUnicode=true" +
-					"&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+			String connectionString = String.format(
+				"jdbc:mysql://%s:%d/%s?user=%s&password=%s&allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+				this.host,
+				this.port,
+				this.database,
+				this.username,
+				this.password);
+
 			connection = DriverManager.getConnection(connectionString);
 			return connection;
 		}

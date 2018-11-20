@@ -70,7 +70,7 @@ public class GlobalWarming extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
-		AsyncDBQueue.getInstance().scheduleAsyncTask(conf.updateInterval * 20L);
+		AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
 	}
 
 	@Override

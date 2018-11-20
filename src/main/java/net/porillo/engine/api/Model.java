@@ -11,8 +11,10 @@ import java.nio.file.Paths;
 
 public abstract class Model {
 
-	@Getter private final String worldName;
-	@Getter private final String modelName;
+	@Getter
+	private final String worldName;
+	@Getter
+	private final String modelName;
 
 	private Path modelsPath;
 
@@ -24,7 +26,7 @@ public abstract class Model {
 			this.modelsPath = GlobalWarming.getInstance().getDataFolder().toPath().resolve("models");
 		} else {
 			try {
-				this.modelsPath =  Paths.get(getClass().getResource("/models").toURI());
+				this.modelsPath = Paths.get(getClass().getResource("/models").toURI());
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
@@ -47,7 +49,7 @@ public abstract class Model {
 		return "";
 	}
 
-	public void writeContents(String data){
+	public void writeContents(String data) {
 		clearFileForNewWrite();
 
 		try {
@@ -59,9 +61,8 @@ public abstract class Model {
 
 	private void createIfNotExists() {
 		Path file = getPath();
-
 		if (!Files.exists(file)) {
-			GlobalWarming.getInstance().getLogger().info("Model " + modelName + " does not exist, creating.");
+			GlobalWarming.getInstance().getLogger().info(String.format("Model: [%s] does not exist, creating.", modelName));
 
 			try {
 				// Copy resource from JAR to the correct path
@@ -75,7 +76,6 @@ public abstract class Model {
 
 	private void clearFileForNewWrite() {
 		Path file = getPath();
-
 		try {
 			if (Files.exists(file)) {
 				Files.delete(file);

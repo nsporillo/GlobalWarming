@@ -14,7 +14,7 @@ public class TableManager {
 	@Getter private TreeTable treeTable;
 	@Getter private OffsetTable offsetTable;
 
-	// Tables that currently dont load any data from the DB
+	// Tables that currently don't load any data from the DB
 	@Getter private ReductionTable reductionTable;
 	@Getter private ContributionTable contributionTable;
 

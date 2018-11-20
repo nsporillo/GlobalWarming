@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import net.porillo.GlobalWarming;
+import net.porillo.config.Lang;
 import net.porillo.config.WorldConfig;
 import net.porillo.database.tables.WorldTable;
-import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
@@ -29,7 +29,6 @@ public class ClimateEngine {
 
 	public ClimateEngine() {
 		this.worldClimateEngines = new HashMap<>();
-
 		if (GlobalWarming.getInstance() != null) {
 			this.gson = GlobalWarming.getInstance().getGson();
 		} else {
@@ -49,17 +48,16 @@ public class ClimateEngine {
 			final String world = config.getWorld();
 
 			if (config.isEnabled()) {
-				GlobalWarming.getInstance().getLogger().info("Loading Climate Engine for " + world);
+				GlobalWarming.getInstance().getLogger().info(String.format("Loading climate engine for: [%s]", world));
 			} else {
-				GlobalWarming.getInstance().getLogger().info(String.format("World '%s' found, but is disabled.", world));
+				GlobalWarming.getInstance().getLogger().info(String.format("World: [%s] found, but is disabled", world));
 			}
 
 			worldClimateEngines.put(world, new WorldClimateEngine(config));
 
+			// Delayed attempt create the world object if it doesn't currently exist
 			WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
 			GWorld gworld = worldTable.getWorld(world);
-
-			// Delayed attempt create the world object if it doesn't currently exist
 			if (gworld == null) {
 				new BukkitRunnable() {
 					@Override
@@ -76,11 +74,16 @@ public class ClimateEngine {
 	}
 
 	public WorldClimateEngine getClimateEngine(String worldName) {
+		WorldClimateEngine climateEngine = null;
 		if (worldClimateEngines.containsKey(worldName)) {
-			return worldClimateEngines.get(worldName);
+			climateEngine = worldClimateEngines.get(worldName);
 		}
 
-		throw new NullPointerException("Climate Engine Not found for World -> " + worldName);
+		if (climateEngine == null) {
+			GlobalWarming.getInstance().getLogger().warning(String.format(Lang.ENGINE_NOTFOUND.get(), worldName));
+		}
+
+		return climateEngine;
 	}
 
 	/**
@@ -131,11 +134,6 @@ public class ClimateEngine {
 	public boolean isClimateEngineEnabled(String worldName) {
 		WorldClimateEngine worldClimateEngine = getClimateEngine(worldName);
 		return worldClimateEngine != null && worldClimateEngine.isEnabled();
-	}
-
-	public boolean isEffectEnabled(String worldName, ClimateEffectType type) {
-		WorldClimateEngine climateEngine = getClimateEngine(worldName);
-		return climateEngine != null && climateEngine.isEffectEnabled(type);
 	}
 
 	public static ClimateEngine getInstance() {

@@ -30,6 +30,6 @@ public class FurnaceSelectQuery extends SelectQuery<Furnace, FurnaceTable> {
 
 	@Override
 	public String getSQL() {
-		return "SELECT * FROM furnaces WHERE active=true";
+		return "SELECT * FROM furnaces WHERE active = true";
 	}
 }

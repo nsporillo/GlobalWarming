@@ -8,11 +8,11 @@ import net.porillo.effect.api.AtomicClimateEffect;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.change.block.BlockChange;
 import net.porillo.engine.ClimateEngine;
+import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.util.MapUtil;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.function.Supplier;
@@ -24,8 +24,12 @@ public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange
 
 	@Override
 	public Supplier<HashSet<BlockChange>> execute(ChunkSnapshot snapshot) {
-		double temp = ClimateEngine.getInstance().getClimateEngine(snapshot.getWorldName()).getTemperature();
-		return execute(snapshot, MapUtil.searchTreeMap(seaLevels, temp));
+		WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(snapshot.getWorldName());
+		if (climateEngine != null && climateEngine.isEnabled()) {
+			return execute(snapshot, MapUtil.searchTreeMap(seaLevels, climateEngine.getTemperature()));
+		}
+
+		return null;
 	}
 
 	public Supplier<HashSet<BlockChange>> execute(ChunkSnapshot snapshot, int seaLevel) {
@@ -64,7 +68,6 @@ public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange
 					// If the block at "sea level" is water, check above to see if it's air
 					if (blockType == Material.WATER) {
 						final Material aboveBlockType = snapshot.getBlockData(x, (y + 1), z).getMaterial();
-
 						if (aboveBlockType == Material.AIR) {
 							blockChanges.add(new BlockChange(Material.AIR, Material.WATER, x, y, z));
 						}
@@ -75,5 +78,4 @@ public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange
 			return blockChanges;
 		}
 	}
-
 }

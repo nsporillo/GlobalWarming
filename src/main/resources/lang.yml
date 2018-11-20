@@ -28,6 +28,7 @@ lang:
     CANCELLED: "§2§OBounties cancelled: §a§O%s"
   ENGINE:
     DISABLED: "§8§OGlobalWarming is not enabled for this world"
+    NOTFOUND: "Climate engine not found for world: '%s'"
   NOTIFICATION:
     DEFAULT:
       LOW: "§fSteve says: %sno more trees, it's time to build!"
@@ -106,9 +107,9 @@ lang:
        - Player movement
     BOUNTY: |
       §0BOUNTY COMMANDS:§8
-       - §6/gw bounty create [tree-blocks] [reward]:§8 pay other players to plant trees on your behalf, improving your carbon score and the global climate
+       - §6/gw bounty:§8 show or join active bounties
 
-       - §6/gw bounty list:§8 show active bounties
+       - §6/gw bounty create [tree-blocks] [reward]:§8 pay other players to plant trees on your behalf, improving your carbon score and the global climate
     OTHER: |
       §0OTHER COMMANDS:§8
        - §6/gw score [show | hide]:§8 access carbon footprint information or modify scoreboard visibility

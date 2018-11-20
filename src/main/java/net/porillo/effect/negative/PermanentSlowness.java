@@ -5,6 +5,7 @@ import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ScheduleClimateEffect;
 import net.porillo.engine.ClimateEngine;
+import net.porillo.engine.api.WorldClimateEngine;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -23,9 +24,8 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
         this.setPeriod(5 * 60 * 20);
     }
 
-    private void updatePlayerSlowness(Player player) {
-        double temp = ClimateEngine.getInstance().getClimateEngine(player.getWorld().getName()).getTemperature();
-        if (tempThreshold < temp) {
+    private void updatePlayerSlowness(Player player, double temperature) {
+        if (tempThreshold < temperature) {
             int potionDuration = 6 * 60 * 20;
             PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, potionDuration, 1);
             player.addPotionEffect(potionEffect);
@@ -34,19 +34,20 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (ClimateEngine.getInstance().getClimateEngine(event.getPlayer().getWorld().getName())
-                .isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
-            updatePlayerSlowness(event.getPlayer());
+        String eventWorldName = event.getPlayer().getWorld().getName();
+        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
+        if (climateEngine != null && climateEngine.isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
+            updatePlayerSlowness(event.getPlayer(), climateEngine.getTemperature());
         }
     }
 
     @Override
     public void run() {
         for (World world : Bukkit.getWorlds()) {
-            if (ClimateEngine.getInstance().getClimateEngine(world.getName())
-                    .isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
+            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getName());
+            if (climateEngine != null && climateEngine.isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
                 for (Player player : world.getPlayers()) {
-                    updatePlayerSlowness(player);
+                    updatePlayerSlowness(player, climateEngine.getTemperature());
                 }
             }
         }
@@ -58,5 +59,4 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
         super.setJsonModel(jsonModel);
         tempThreshold = jsonModel.get("threshold").getAsDouble();
     }
-
 }

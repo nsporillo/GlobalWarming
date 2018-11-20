@@ -50,7 +50,6 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
         offsetList.add(bounty);
     }
 
-
     /**
      * Check if the player is already hunting a bounty
      * - Only consider incomplete bounties from the player's world
@@ -203,14 +202,13 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
     public void onSelectionCompletion(List<OffsetBounty> returnList) throws SQLException {
         if (GlobalWarming.getInstance() != null) {
             new BukkitRunnable() {
-
                 @Override
                 public void run() {
                     offsetList.addAll(returnList);
                 }
             }.runTask(GlobalWarming.getInstance());
         } else {
-            System.out.println("Selection returned " + returnList.size() + " offsets.");
+            System.out.printf("Selection returned %d offsets.%n", returnList.size());
         }
     }
 

@@ -61,6 +61,7 @@ public class EffectEngine {
 				if (effect instanceof Listener) {
 					Bukkit.getPluginManager().registerEvents((Listener) effect, GlobalWarming.getInstance());
 				}
+
 				if (effect instanceof ScheduleClimateEffect) {
 					ScheduleClimateEffect runnable = (ScheduleClimateEffect) effect;
 					runnable.setTaskId(Bukkit.getScheduler().runTaskTimer(GlobalWarming.getInstance(), runnable, 0, runnable.getPeriod()).getTaskId());
@@ -100,5 +101,4 @@ public class EffectEngine {
 
 		return effectEngine;
 	}
-
 }
