@@ -50,6 +50,16 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("globalwarming.bounty")
     public class BountyCommand extends BaseCommand {
 
+        @Subcommand("")
+        @Description("Display all active bounties")
+        @Syntax("")
+        @CommandPermission("globalwarming.bounty")
+        public void onBounty(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                showBounties(gPlayer);
+            }
+        }
+
         @Subcommand("create")
         @Description("Create a tree-planting bounty to reduce your carbon footprint")
         @Syntax("[tree-blocks] [reward]")
@@ -195,16 +205,6 @@ public class GeneralCommands extends BaseCommand {
             if (isCommandAllowed(gPlayer)) {
                 showTopTen(gPlayer, false);
             }
-        }
-    }
-
-    @Subcommand("gatech")
-    @Description("Get the GATECH survey code")
-    @Syntax("")
-    @CommandPermission("globalwarming.gatech")
-    public void onGatech(GPlayer gPlayer) {
-        if (isCommandAllowed(gPlayer)) {
-            gPlayer.sendMsg("8675309");
         }
     }
 
