@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+import net.milkbowl.vault.economy.Economy;
 import net.porillo.commands.AdminCommands;
 import net.porillo.commands.GeneralCommands;
 import net.porillo.config.GlobalWarmingConfig;
@@ -21,10 +22,14 @@ import net.porillo.objects.GPlayer;
 import net.porillo.util.CO2Notifications;
 import net.porillo.util.GScoreboard;
 import org.bukkit.Bukkit;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GlobalWarming extends JavaPlugin {
 
@@ -38,6 +43,7 @@ public class GlobalWarming extends JavaPlugin {
 	@Getter private Gson gson;
     @Getter	private GScoreboard scoreboard;
     @Getter	private CO2Notifications notifications;
+	@Getter private static Economy economy;
 
 	@Override
 	public void onEnable() {
@@ -63,7 +69,10 @@ public class GlobalWarming extends JavaPlugin {
 		this.commandManager = new BukkitCommandManager(this);
 		this.scoreboard = new GScoreboard();
 		this.notifications = new CO2Notifications();
+		economy = null;
+
 		registerCommands();
+		setupEconomy();
 
 		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
@@ -84,6 +93,31 @@ public class GlobalWarming extends JavaPlugin {
 
 		this.commandManager.registerCommand(new AdminCommands());
 		this.commandManager.registerCommand(new GeneralCommands());
+	}
+
+	/**
+	 * Economy (soft-dependency)
+	 *  - If there isn't an economy, disable the bounty system
+	 */
+	private static void setupEconomy() {
+		if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+			RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
+			if (economyProvider != null) {
+				economy = economyProvider.getProvider();
+			}
+		}
+
+		if (economy == null) {
+			instance.getLogger().warning("Bounty-system disabled, [VAULT] not found");
+			for (Permission permission : Bukkit.getPluginManager().getDefaultPermissions(false)) {
+				if (permission.getName().startsWith("globalwarming.bounty")) {
+					Bukkit.getPluginManager().getPermission(permission.getName())
+						.setDefault(PermissionDefault.FALSE);
+				}
+			}
+		} else {
+			instance.getLogger().info("Bounty-system enabled, [VAULT] found");
+		}
 	}
 
 	/**

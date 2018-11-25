@@ -62,7 +62,8 @@ lang:
   TEMPERATURE:
     LOW: "§fGlobal CO2 levels are too low: §6increase furnace emissions"
     BALANCED: "Global CO2 levels are in balance"
-    HIGH: "§fGlobal CO2 levels are too high: §6plant new saplings\n§fOr see: §6/gw help§f to create a bounty"
+    HIGH: "§fGlobal CO2 levels are too high: §6plant new saplings"
+    HIGHWITHBOUNTY: "\n§fOr see: §6/gw help§f to create a bounty"
   TOPTABLE:
     PLAYER: "PLAYER"
     INDEX: "INDEX"
@@ -106,7 +107,7 @@ lang:
        - Mob counts
        - Player movement
     BOUNTY: |
-      §0BOUNTY COMMANDS:§8
+      §0BOUNTY COMMANDS:§8 (requires VAULT)
        - §6/gw bounty:§8 show or join active bounties
 
        - §6/gw bounty create [tree-blocks] [reward]:§8 pay other players to plant trees on your behalf, improving your carbon score and the global climate

@@ -532,7 +532,11 @@ public class GeneralCommands extends BaseCommand {
                 } else if (temperature < HIGH_TEMPERATURE_LBOUND) {
                     gPlayer.sendMsg(Lang.TEMPERATURE_BALANCED);
                 } else {
-                    gPlayer.sendMsg(Lang.TEMPERATURE_HIGH);
+                    gPlayer.sendMsg(String.format("%s%s",
+                          Lang.TEMPERATURE_HIGH.get(),
+                          GlobalWarming.getEconomy() == null
+                          ? ""
+                          : Lang.TEMPERATURE_HIGHWITHBOUNTY.get()));
                 }
             } else {
                 gPlayer.sendMsg(Lang.ENGINE_DISABLED);
