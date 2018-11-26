@@ -6,9 +6,6 @@ import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
 
 import net.porillo.config.Lang;
-import net.porillo.database.queries.insert.OffsetInsertQuery;
-import net.porillo.database.queue.AsyncDBQueue;
-import net.porillo.database.tables.OffsetTable;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
@@ -31,7 +28,6 @@ public class GeneralCommands extends BaseCommand {
     private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
     public static final double LOW_TEMPERATURE_UBOUND = GlobalWarming.getInstance().getConf().getLowTemperatureUBound();
     public static final double HIGH_TEMPERATURE_LBOUND = GlobalWarming.getInstance().getConf().getHighTemperatureLBound();
-    private static final int MAX_BOUNTIES_CREATED_PER_PLAYER = GlobalWarming.getInstance().getConf().getMaxBounties();
     private List<UUID> playerRequestList;
 
     public GeneralCommands() {
@@ -56,7 +52,7 @@ public class GeneralCommands extends BaseCommand {
         @CommandPermission("globalwarming.bounty")
         public void onBounty(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
-                showBounties(gPlayer);
+                OffsetBounty.show(gPlayer);
             }
         }
 
@@ -74,7 +70,7 @@ public class GeneralCommands extends BaseCommand {
                 }
 
                 if (treeBlocks > 0 && reward > 0) {
-                    createBounty(gPlayer, treeBlocks, reward);
+                    OffsetBounty.create(gPlayer, treeBlocks, reward);
                 } else {
                     gPlayer.sendMsg(String.format(
                           Lang.GENERIC_INVALIDARGS.get(),
@@ -95,7 +91,14 @@ public class GeneralCommands extends BaseCommand {
                 }
 
                 if (bountyId > 0) {
-                    joinBounty(gPlayer, bountyId);
+                    OffsetBounty bounty = OffsetBounty.join(gPlayer, bountyId);
+                    if (bounty != null) {
+                        OffsetBounty.notify(
+                              bounty,
+                              String.format(Lang.BOUNTY_ACCEPTEDBY.get(), gPlayer.getPlayer().getName()),
+                              Lang.BOUNTY_ACCEPTED.get()
+                        );
+                    }
                 } else {
                     gPlayer.sendMsg(String.format(
                           Lang.GENERIC_INVALIDARGS.get(),
@@ -110,12 +113,11 @@ public class GeneralCommands extends BaseCommand {
         @CommandPermission("globalwarming.bounty.cancel")
         public void onBountyUnjoin(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
-                OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
-                OffsetBounty bounty = offsetTable.unJoin(gPlayer);
+                OffsetBounty bounty = OffsetBounty.unJoin(gPlayer);
                 if (bounty == null) {
                     gPlayer.sendMsg(Lang.BOUNTY_NOTJOINED);
                 } else {
-                    notifyBounty(
+                    OffsetBounty.notify(
                           bounty,
                           gPlayer,
                           String.format(Lang.BOUNTY_ABANDONEDBY.get(), gPlayer.getPlayer().getName()),
@@ -131,9 +133,7 @@ public class GeneralCommands extends BaseCommand {
         @CommandPermission("globalwarming.bounty.cancel")
         public void onBountyCancel(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
-                OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
-                int count = offsetTable.cancel(gPlayer);
-                gPlayer.sendMsg(String.format(Lang.BOUNTY_CANCELLED.get(), count));
+                OffsetBounty.cancel(gPlayer);
             }
         }
     }
@@ -352,159 +352,6 @@ public class GeneralCommands extends BaseCommand {
         }
 
         return color;
-    }
-
-    /**
-     * TODO: Add economy integration
-     */
-    private static void createBounty(GPlayer gPlayer, int treeBlocks, int reward) {
-        OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
-        if (offsetTable.getIncompleteBountyCount(gPlayer) >= MAX_BOUNTIES_CREATED_PER_PLAYER) {
-            gPlayer.sendMsg(Lang.BOUNTY_MAXCREATED);
-        } else {
-            //New bounty:
-            OffsetBounty bounty = new OffsetBounty(
-                  GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE),
-                  gPlayer.getUniqueId(),
-                  null,
-                  ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer()),
-                  treeBlocks,
-                  reward,
-                  0,
-                  0
-            );
-
-            //Local records:
-            offsetTable.addOffset(bounty);
-
-            //Database:
-            OffsetInsertQuery insertQuery = new OffsetInsertQuery(bounty);
-            AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
-
-            //Notify:
-            //TODO: hold the reward
-            gPlayer.sendMsg(Lang.BOUNTY_CREATED);
-        }
-    }
-
-    /**
-     * Show all active bounties in the player's associated world
-     */
-    private static void showBounties(GPlayer gPlayer) {
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
-        ChatTable chatTable = new ChatTable(Lang.BOUNTY_TITLE.get());
-        chatTable.setGridColor(ChatColor.BLUE);
-        chatTable.addHeader(Lang.BOUNTY_PLAYER.get(), 75);
-        chatTable.addHeader(Lang.BOUNTY_HUNTER.get(), 75);
-        chatTable.addHeader(Lang.BOUNTY_BLOCKS.get(), 65);
-        chatTable.addHeader(Lang.BOUNTY_REWARD.get(), 65);
-
-        try {
-            List<Integer> clickIds = new ArrayList<>();
-            OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
-            PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
-            for (OffsetBounty offsetBounty : offsetTable.getOffsetList()) {
-                //Ignore completed bounties and bounties not from the player's world:
-                if (offsetBounty.getTimeCompleted() != 0 || !offsetBounty.getWorldName().equals(associatedWorldName)) {
-                    continue;
-                }
-
-                //Creator:
-                List<String> row = new ArrayList<>();
-                UUID creator = playerTable.getUuidMap().get(offsetBounty.getCreatorId());
-                String creatorName = Bukkit.getOfflinePlayer(creator).getName();
-                row.add(creatorName);
-
-                //Show the hunter-name:
-                if (offsetBounty.getHunterId() != null) {
-                    UUID hunter = playerTable.getUuidMap().get(offsetBounty.getHunterId());
-                    if (hunter != null) {
-                        String hunterName = Bukkit.getOfflinePlayer(hunter).getName();
-                        if (hunterName != null) {
-                            row.add(hunterName);
-                        }
-                    }
-                }
-
-                //Or a link to join the bounty:
-                // - Track bounty IDs for click-events:
-                if (row.size() == 1) {
-                    row.add(Lang.BOUNTY_JOIN.get());
-                    clickIds.add(offsetBounty.getUniqueId());
-                }
-
-                //Remaining tree-blocks:
-                row.add(offsetBounty.getLogBlocksTarget().toString());
-
-                //Reward:
-                row.add(String.format("$%s", offsetBounty.getReward()));
-
-                //Add table row:
-                chatTable.addRow(row);
-            }
-
-            String json = chatTable.toJson(gPlayer, Lang.BOUNTY_JOIN.get(), "/gw bounty join", clickIds);
-            Bukkit.getServer().dispatchCommand(
-                  Bukkit.getConsoleSender(),
-                  json);
-        } catch (Exception e) {
-            gPlayer.sendMsg(Lang.BOUNTY_ERROR);
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Join a bounty
-     * - Players are limited to joining one bounty
-     * - Bounties are limited to one hunter
-     */
-    private static void joinBounty(GPlayer gPlayer, int bountyId) {
-        try {
-            //Local and database update:
-            OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
-            OffsetBounty bounty = offsetTable.join(gPlayer, bountyId);
-            if (bounty != null) {
-                notifyBounty(
-                      bounty,
-                      String.format(Lang.BOUNTY_ACCEPTEDBY.get(), gPlayer.getPlayer().getName()),
-                      Lang.BOUNTY_ACCEPTED.get()
-                );
-            }
-        } catch (Exception e) {
-            if (e.getMessage().length() > 0) {
-                gPlayer.sendMsg(e.getMessage());
-            } else {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Send messages to the creator and hunter of a bounty
-     */
-    private static void notifyBounty(OffsetBounty bounty, String creatorMessage, String hunterMessage) {
-        PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
-        UUID uuid = playerTable.getUuidMap().get(bounty.getHunterId());
-        GPlayer hunter = playerTable.getPlayers().get(uuid);
-        notifyBounty(bounty, hunter, creatorMessage, hunterMessage);
-    }
-
-    /**
-     * Send messages to the creator and hunter of a bounty
-     */
-    public static void notifyBounty(OffsetBounty bounty, GPlayer hunter, String creatorMessage, String hunterMessage) {
-        //Notify bounty hunter:
-        if (hunter != null) {
-            hunter.sendMsg(hunterMessage);
-        }
-
-        //Notify bounty creator:
-        PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
-        UUID uuid = playerTable.getUuidMap().get(bounty.getCreatorId());
-        GPlayer creator = playerTable.getPlayers().get(uuid);
-        if (creator != null && hunter != null) {
-            creator.sendMsg(creatorMessage);
-        }
     }
 
     /**

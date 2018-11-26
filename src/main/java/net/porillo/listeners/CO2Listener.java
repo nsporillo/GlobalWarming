@@ -12,7 +12,6 @@ import net.porillo.database.queries.update.TreeUpdateQuery;
 import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.FurnaceTable;
-import net.porillo.database.tables.OffsetTable;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.database.tables.TreeTable;
 import net.porillo.engine.ClimateEngine;
@@ -46,6 +45,7 @@ public class CO2Listener implements Listener {
 	@EventHandler
 	public void onFurnaceSmelt(FurnaceBurnEvent event) {
 		// Don't handle events in worlds if it's disabled
+		// TODO: allow updating offline players
 		String eventWorldName = event.getBlock().getWorld().getName();
 		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
 		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
@@ -134,6 +134,7 @@ public class CO2Listener implements Listener {
 	@EventHandler
 	public void onStructureGrow(StructureGrowEvent event) {
 		// Don't handle events in worlds if it's disabled
+		// TODO: allow updating offline players
 		String eventWorldName = event.getLocation().getWorld().getName();
 		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
 		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
@@ -185,28 +186,27 @@ public class CO2Listener implements Listener {
 		//Create a new reduction object using the worlds climate engine:
 		Reduction reduction = eventClimateEngine.treeGrow(tree, event.getSpecies(), event.getBlocks());
 
-		//Decrement the player's carbon score:
-		int carbonScore = planter.getCarbonScore();
-		planter.setCarbonScore(carbonScore - reduction.getReductionValue());
+		//Decrement a player's carbon score:
+		// - If the planter is bounty-hunting, reduce the bounty-owner's carbon score
+		// - Note: the reduction record is assigned to the planter in either case though
+		GPlayer carbonScorePlayer = planter;
+		OffsetBounty updatedBounty = OffsetBounty.update(planter, event.getBlocks().size());
+		if (updatedBounty != null) {
+			UUID creator = playerTable.getUuidMap().get(updatedBounty.getCreatorId());
+			carbonScorePlayer = playerTable.getPlayers().get(creator);
+		}
+
+		//Update the affected player's carbon score:
+		int carbonScore = carbonScorePlayer.getCarbonScore();
+		carbonScorePlayer.setCarbonScore(carbonScore - reduction.getReductionValue());
 
 		//Queue player update query:
-		PlayerUpdateQuery playerUpdateQuery = new PlayerUpdateQuery(planter);
+		PlayerUpdateQuery playerUpdateQuery = new PlayerUpdateQuery(carbonScorePlayer);
 		AsyncDBQueue.getInstance().queueUpdateQuery(playerUpdateQuery);
 
 		//Queue reduction insert query:
 		ReductionInsertQuery insertQuery = new ReductionInsertQuery(reduction);
 		AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
-
-		//Update bounties:
-		OffsetTable offsetTable = gw.getTableManager().getOffsetTable();
-		OffsetBounty bounty = offsetTable.update(planter, event.getBlocks().size());
-		if (bounty != null && bounty.getTimeCompleted() != 0) {
-			GeneralCommands.notifyBounty(
-				bounty,
-				planter,
-				String.format(Lang.BOUNTY_COMPLETEDBY.get(), planter.getPlayer().getName()),
-				String.format(Lang.BOUNTY_COMPLETED.get(), bounty.getReward()));
-		}
 
 		//Decrement the associated world's carbon score:
 		String associatedWorldName = eventClimateEngine.getConfig().getAssociation();
@@ -221,7 +221,7 @@ public class CO2Listener implements Listener {
 		}
 
 		//Update the scoreboard:
-		gw.getScoreboard().update(planter.getUuid());
+		gw.getScoreboard().update(carbonScorePlayer.getUuid());
 	}
 
 	// TODO: Track furnace smelts which occur in untracked furnaces

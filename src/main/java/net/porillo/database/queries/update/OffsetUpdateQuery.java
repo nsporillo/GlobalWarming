@@ -15,7 +15,7 @@ public class OffsetUpdateQuery extends UpdateQuery<OffsetBounty> {
 
 	@Override
 	public String getSQL() {
-		return "UPDATE offsets SET hunterId = ?, timeStarted = ?, timeCompleted = ? WHERE uniqueId = ?";
+		return "UPDATE offsets SET hunterId = ?, timeStarted = ?, logBlocksTarget = ?, timeCompleted = ? WHERE uniqueId = ?";
 	}
 
 	@Override
@@ -27,9 +27,11 @@ public class OffsetUpdateQuery extends UpdateQuery<OffsetBounty> {
 			preparedStatement.setInt(1, getObject().getHunterId());
 		}
 
-        preparedStatement.setLong(2, getObject().getTimeStarted());
-		preparedStatement.setLong(3, getObject().getTimeCompleted());
-		preparedStatement.setInt(4, getObject().getUniqueId());
+		preparedStatement.setLong(2, getObject().getTimeStarted());
+		preparedStatement.setLong(3, getObject().getLogBlocksTarget());
+		preparedStatement.setLong(4, getObject().getTimeCompleted());
+		preparedStatement.setInt(5, getObject().getUniqueId());
+
 		return preparedStatement;
 	}
 }

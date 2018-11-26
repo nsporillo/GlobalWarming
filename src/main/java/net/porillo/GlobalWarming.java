@@ -96,8 +96,8 @@ public class GlobalWarming extends JavaPlugin {
 	}
 
 	/**
-	 * Economy (soft-dependency)
-	 *  - If there isn't an economy, disable the bounty system
+	 * Economy (soft-dependency on Vault)
+	 *  - If a Vault-based economy was not found, disable the bounty system
 	 */
 	private static void setupEconomy() {
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
@@ -108,7 +108,7 @@ public class GlobalWarming extends JavaPlugin {
 		}
 
 		if (economy == null) {
-			instance.getLogger().warning("Bounty-system disabled, [VAULT] not found");
+			instance.getLogger().warning("Bounty-system [disabled], Vault economy not found");
 			for (Permission permission : Bukkit.getPluginManager().getDefaultPermissions(false)) {
 				if (permission.getName().startsWith("globalwarming.bounty")) {
 					Bukkit.getPluginManager().getPermission(permission.getName())
@@ -116,7 +116,7 @@ public class GlobalWarming extends JavaPlugin {
 				}
 			}
 		} else {
-			instance.getLogger().info("Bounty-system enabled, [VAULT] found");
+			instance.getLogger().info("Bounty-system [enabled], Vault economy found");
 		}
 	}
 
