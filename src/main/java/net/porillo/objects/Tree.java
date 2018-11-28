@@ -46,7 +46,6 @@ public class Tree {
 		if (!super.equals(o)) return false;
 
 		Tree tree = (Tree) o;
-
 		return uniqueID.equals(tree.uniqueID);
 	}
 

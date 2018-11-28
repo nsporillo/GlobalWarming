@@ -1,7 +1,5 @@
 package net.porillo.database.queue;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Queue;
@@ -47,7 +45,6 @@ public class ConcurrentHashQueue<T> implements Iterable<T> {
 		return hashcodeQueue.size();
 	}
 
-	@NotNull
 	@Override
 	public Iterator<T> iterator() {
 		return hashcodeMap.values().iterator();

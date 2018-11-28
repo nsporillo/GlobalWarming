@@ -28,8 +28,9 @@ public class ScoreTempModel extends Model {
 	@Override
 	public void loadModel() {
 		this.indexMap = new TreeMap<>(Comparator.naturalOrder());
-		this.indexMap.putAll(ClimateEngine.getInstance().getGson()
-				.fromJson(super.getContents(), new TypeToken<Map<Integer, Double>>() {}.getType()));
+		this.indexMap.putAll(ClimateEngine.getInstance().getGson().fromJson(
+			super.getContents(),
+			new TypeToken<Map<Integer, Double>>() {}.getType()));
 
 		if (this.indexMap == null) {
 			throw new RuntimeException("No values found in " + super.getPath());

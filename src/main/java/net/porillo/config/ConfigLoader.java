@@ -8,15 +8,14 @@ import java.io.*;
 
 public abstract class ConfigLoader {
 
-    public FileConfiguration conf;
-    public String fileName;
+    FileConfiguration conf;
+    private String fileName;
     private File configFile;
 
     ConfigLoader(String fileName, String resource) {
         this.fileName = fileName;
         File dataFolder = GlobalWarming.getInstance().getDataFolder();
         configFile = new File(dataFolder, File.separator + fileName);
-
         if (!configFile.exists()) {
             if (!dataFolder.exists()) {
                 dataFolder.mkdir();
@@ -59,11 +58,11 @@ public abstract class ConfigLoader {
         load();
     }
 
-    void rereadFromDisk() {
+    private void rereadFromDisk() {
         conf = YamlConfiguration.loadConfiguration(configFile);
     }
 
-    void saveConfig() {
+    private void saveConfig() {
         try {
             conf.save(configFile);
         } catch (IOException ex) {
@@ -72,11 +71,13 @@ public abstract class ConfigLoader {
     }
 
     void saveIfNotExist() {
-        if (!configFile.exists())
+        if (!configFile.exists()) {
             if (GlobalWarming.getInstance().getResource(fileName) != null) {
-                GlobalWarming.getInstance().getLogger().info("Saving " + fileName + " to disk");
+                GlobalWarming.getInstance().getLogger().info(String.format("Saving [%s] to disk", fileName));
                 GlobalWarming.getInstance().saveResource(fileName, false);
             }
+        }
+
         rereadFromDisk();
     }
 
@@ -88,24 +89,26 @@ public abstract class ConfigLoader {
         OutputStream out = null;
         try {
             out = new FileOutputStream(configFile);
-            int read = 0;
+            int read;
             byte[] bytes = new byte[1024];
             while ((read = in.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
+
             out.flush();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
+
                 if (out != null) {
                     out.close();
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

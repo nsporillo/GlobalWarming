@@ -9,6 +9,7 @@ import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ListenerClimateEffect;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.Distribution;
+import net.porillo.engine.api.WorldClimateEngine;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockFormEvent;
@@ -20,14 +21,13 @@ public class SnowForm extends ListenerClimateEffect {
 
     @EventHandler
     public void blockFormEvent(BlockFormEvent event) {
-        if (!ClimateEngine.getInstance().isEffectEnabled(event.getBlock().getWorld().getName(), ClimateEffectType.SNOW_FORMATION)) {
-            return;
-        }
         if (event.getNewState().getType() == Material.SNOW) {
-            double temp = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName()).getTemperature();
-
-            if (event.getBlock().getY() < heightMap.getValue(temp)) {
-                event.setCancelled(true);
+            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName());
+            if (climateEngine != null && climateEngine.isEffectEnabled(ClimateEffectType.SNOW_FORMATION)) {
+                double temperature = climateEngine.getTemperature();
+                if (event.getBlock().getY() < heightMap.getValue(temperature)) {
+                    event.setCancelled(true);
+                }
             }
         }
     }

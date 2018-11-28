@@ -2,9 +2,13 @@ package net.porillo.database.tables;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
+import net.porillo.config.Lang;
 import net.porillo.database.api.SelectCallback;
 import net.porillo.database.queries.select.OffsetSelectQuery;
+import net.porillo.database.queries.update.OffsetUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
+import net.porillo.engine.ClimateEngine;
+import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -14,33 +18,199 @@ import java.util.List;
 
 public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
 
-	/**
-	 * In memory storage of all available OffsetBounty
-	 * When an offset bounty is complete, delete from this list
-	 * On startup, query the offset table for available OffsetBounty's
-	 */
-	@Getter private List<OffsetBounty> offsetList = new ArrayList<>();
+    /**
+     * In memory storage of all available OffsetBounty
+     * TODO: When an offset bounty is complete, delete from this list
+     * TODO: "synchronize" will be required to protect critical
+     */
+    @Getter
+    private List<OffsetBounty> offsetList = new ArrayList<>();
 
-	public OffsetTable() {
-		super("offsets");
-		createIfNotExists();
+    public OffsetTable() {
+        super("offsets");
+        createIfNotExists();
 
-		OffsetSelectQuery selectQuery = new OffsetSelectQuery(this);
-		AsyncDBQueue.getInstance().queueSelectQuery(selectQuery);
-	}
+        OffsetSelectQuery selectQuery = new OffsetSelectQuery(this);
+        AsyncDBQueue.getInstance().queueSelectQuery(selectQuery);
+    }
 
-	@Override
-	public void onSelectionCompletion(List<OffsetBounty> returnList) throws SQLException {
-		if (GlobalWarming.getInstance() != null) {
-			new BukkitRunnable() {
+    public void addOffset(OffsetBounty bounty) {
+        offsetList.add(bounty);
+    }
 
-				@Override
-				public void run() {
-					offsetList.addAll(returnList);
-				}
-			}.runTask(GlobalWarming.getInstance());
-		} else {
-			System.out.println("Selection returned " + returnList.size() + " offsets.");
-		}
-	}
+    /**
+     * Check if the player is already hunting a bounty
+     * - Only consider incomplete bounties from the player's world
+     */
+    private boolean isPlayerHunting(GPlayer gPlayer) {
+        boolean isPlayerHunting = false;
+        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
+        for (OffsetBounty bounty : offsetList) {
+            if (bounty.getTimeCompleted() == 0 &&
+                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getHunterId() != null &&
+                  bounty.getHunterId().equals(gPlayer.getUniqueId())) {
+                isPlayerHunting = true;
+                break;
+            }
+        }
+
+        return isPlayerHunting;
+    }
+
+    /**
+     * Join a bounty
+     * - Only consider incomplete bounties from the player's world
+     * - One bounty per player and one player per bounty
+     * - Cannot join your own bounty
+     */
+    public OffsetBounty join(GPlayer gPlayer, int bountyId) throws Exception {
+        if (isPlayerHunting(gPlayer)) {
+            throw new Exception(Lang.BOUNTY_ALREADYHUNTING.get());
+        }
+
+        OffsetBounty joinedBounty = null;
+        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
+        for (OffsetBounty bounty : offsetList) {
+            if (bounty.getTimeCompleted() == 0 &&
+                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getUniqueId() == bountyId) {
+                if (bounty.getCreatorId() != null &&
+                      bounty.getCreatorId().equals(gPlayer.getUniqueId())) {
+                    throw new Exception(Lang.BOUNTY_BOUNTYOWNER.get());
+                } else if (bounty.getHunterId() != null &&
+                      bounty.getHunterId() > 0) {
+                    throw new Exception(Lang.BOUNTY_ANOTHERPLAYER.get());
+                } else {
+                    bounty.setHunterId(gPlayer.getUniqueId());
+                    bounty.setTimeStarted(System.currentTimeMillis());
+
+                    //Database:
+                    OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
+                    AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+                    joinedBounty = bounty;
+                }
+
+                break;
+            }
+        }
+
+        if (joinedBounty == null) {
+            throw new Exception(Lang.BOUNTY_NOTFOUND.get());
+        }
+
+        return joinedBounty;
+    }
+
+    /**
+     * Leave the current bounty
+     */
+    public OffsetBounty unJoin(GPlayer gPlayer) {
+        OffsetBounty abandonedBounty = null;
+        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
+        for (OffsetBounty bounty : offsetList) {
+            if (bounty.getTimeCompleted() == 0 &&
+                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getHunterId() != null &&
+                  bounty.getHunterId().equals(gPlayer.getUniqueId())) {
+                bounty.setTimeStarted(0);
+                bounty.setHunterId(null);
+
+                //Database:
+                OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
+                AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+                abandonedBounty = bounty;
+                break;
+            }
+        }
+
+        return abandonedBounty;
+    }
+
+    /**
+     * Cancel any idle bounties created by this player
+     */
+    public List<OffsetBounty> cancel(GPlayer gPlayer) {
+        List<OffsetBounty> cancelledBounties = new ArrayList<>();
+        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
+        for (OffsetBounty bounty : offsetList) {
+            if (bounty.getTimeCompleted() == 0 &&
+                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getCreatorId() != null &&
+                  bounty.getCreatorId().equals(gPlayer.getUniqueId()) &&
+                  (bounty.getHunterId() == null ||
+                        bounty.getHunterId() == 0)) {
+                bounty.setTimeCompleted(System.currentTimeMillis());
+
+                //Database:
+                OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
+                AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+                cancelledBounties.add(bounty);
+            }
+        }
+
+        return cancelledBounties;
+    }
+
+    /**
+     * Decrement the remaining-block count on a hunter's bounty
+     * - Only consider incomplete bounties from the player's world
+     */
+    public OffsetBounty update(GPlayer gPlayer, int blocksCompleted) {
+        OffsetBounty updatedBounty = null;
+        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
+        for (OffsetBounty bounty : offsetList) {
+            if (bounty.getTimeCompleted() == 0 &&
+                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getHunterId() != null &&
+                  bounty.getHunterId().equals(gPlayer.getUniqueId())) {
+                int blocksRemaining = Math.max(bounty.getLogBlocksTarget() - blocksCompleted, 0);
+                bounty.setLogBlocksTarget(blocksRemaining);
+                if (blocksRemaining == 0) {
+                    bounty.setTimeCompleted(System.currentTimeMillis());
+                }
+
+                //Database:
+                OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
+                AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+                updatedBounty = bounty;
+                break;
+            }
+        }
+
+        return updatedBounty;
+    }
+
+    @Override
+    public void onSelectionCompletion(List<OffsetBounty> returnList) throws SQLException {
+        if (GlobalWarming.getInstance() != null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    offsetList.addAll(returnList);
+                }
+            }.runTask(GlobalWarming.getInstance());
+        } else {
+            System.out.printf("Selection returned %d offsets.%n", returnList.size());
+        }
+    }
+
+    /**
+     * Determine the amount of bounties created by the given player
+     * - Only consider incomplete bounties from the player's world
+     */
+    public int getIncompleteBountyCount(GPlayer gPlayer) {
+        int bountyCount = 0;
+        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
+        for (OffsetBounty bounty : offsetList) {
+            if (bounty.getTimeCompleted() == 0 &&
+                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getCreatorId() != null &&
+                  bounty.getCreatorId().equals(gPlayer.getUniqueId())) {
+                bountyCount++;
+            }
+        }
+
+        return bountyCount;
+    }
 }

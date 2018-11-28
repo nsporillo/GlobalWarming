@@ -18,26 +18,27 @@ public class OffsetInsertQuery extends InsertQuery {
 
 	@Override
 	public String getSQL() {
-		return "INSERT INTO offsets (creatorId, hunterId, worldName, logBlocksTarget, reward, timeStarted, timeCompleted)" +
-				" VALUES (?,?,?,?,?,?,?)";
+		return "INSERT INTO offsets (uniqueId, creatorId, hunterId, worldName, logBlocksTarget, reward, timeStarted, timeCompleted)" +
+				" VALUES (?,?,?,?,?,?,?,?)";
 	}
 
 	@Override
 	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setLong(1, offsetBounty.getCreator().getUniqueId());
+		preparedStatement.setInt(1, offsetBounty.getUniqueId());
+		preparedStatement.setInt(2, offsetBounty.getCreatorId());
 
-		if (offsetBounty.getHunter() != null) {
-			preparedStatement.setInt(2, offsetBounty.getHunter().getUniqueId());
+		if (offsetBounty.getHunterId() == null) {
+			preparedStatement.setObject(3, null);
 		} else {
-			preparedStatement.setObject(2, null);
+			preparedStatement.setInt(3, offsetBounty.getHunterId());
 		}
 
-		preparedStatement.setString(3, offsetBounty.getWorld().getWorldName());
-		preparedStatement.setInt(4, offsetBounty.getLogBlocksTarget());
-		preparedStatement.setInt(5, offsetBounty.getReward());
-		preparedStatement.setLong(6, offsetBounty.getTimeStarted());
-		preparedStatement.setLong(7, offsetBounty.getTimeCompleted());
+		preparedStatement.setString(4, offsetBounty.getWorldName());
+		preparedStatement.setInt(5, offsetBounty.getLogBlocksTarget());
+		preparedStatement.setInt(6, offsetBounty.getReward());
+		preparedStatement.setLong(7, offsetBounty.getTimeStarted());
+		preparedStatement.setLong(8, offsetBounty.getTimeCompleted());
 		return preparedStatement;
 	}
 }

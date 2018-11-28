@@ -1,6 +1,8 @@
 package net.porillo.listeners;
 
 import net.porillo.GlobalWarming;
+import net.porillo.commands.GeneralCommands;
+import net.porillo.config.Lang;
 import net.porillo.database.queries.insert.ContributionInsertQuery;
 import net.porillo.database.queries.insert.FurnaceInsertQuery;
 import net.porillo.database.queries.insert.ReductionInsertQuery;
@@ -43,12 +45,13 @@ public class CO2Listener implements Listener {
 	@EventHandler
 	public void onFurnaceSmelt(FurnaceBurnEvent event) {
 		// Don't handle events in worlds if it's disabled
+		// TODO: allow updating offline players
 		String eventWorldName = event.getBlock().getWorld().getName();
-		if (!ClimateEngine.getInstance().isClimateEngineEnabled(eventWorldName)) {
+		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
+		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
 			return;
 		}
 
-		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
 		Location location = event.getBlock().getLocation();
 		FurnaceTable furnaceTable = GlobalWarming.getInstance().getTableManager().getFurnaceTable();
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
@@ -87,37 +90,40 @@ public class CO2Listener implements Listener {
 			FurnaceInsertQuery insertQuery = new FurnaceInsertQuery(furnace);
 			AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
 
-			gw.getLogger().warning(event.getFuel().getType().name() + " burned as fuel in an untracked furnace!");
-			gw.getLogger().warning("@ " + location.toString());
+			gw.getLogger().warning(String.format("[%s] burned as fuel in an untracked furnace!", event.getFuel().getType().name()));
+			gw.getLogger().warning(String.format("@ %s", location.toString()));
 		}
 
-		// Update the carbon score in the associated world
-		String associatedWorldName = eventClimateEngine.getConfig().getAssociation();
-		GWorld associatedWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorldName);
+		//Carbon scores:
 		Contribution contrib = eventClimateEngine.furnaceBurn(furnace, event.getFuel());
+		if (contrib != null) {
+			//Increment the polluter's carbon score:
+			int carbonScore = polluter.getCarbonScore();
+			polluter.setCarbonScore(carbonScore + contrib.getContributionValue());
 
-		// increment polluters carbon score
-		int carbonScore = polluter.getCarbonScore();
-		polluter.setCarbonScore(carbonScore + contrib.getContributionValue());
+			//Queue an update to the player table:
+			PlayerUpdateQuery updateQuery = new PlayerUpdateQuery(polluter);
+			AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+
+			//Queue an insert into the contributions table:
+			ContributionInsertQuery insertQuery = new ContributionInsertQuery(contrib);
+			AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
+
+			//Increment the associated world's carbon score:
+			String associatedWorldName = eventClimateEngine.getConfig().getAssociation();
+			GWorld associatedWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorldName);
+			if (associatedWorld != null) {
+				int carbon = associatedWorld.getCarbonValue();
+				associatedWorld.setCarbonValue(carbon + contrib.getContributionValue());
+
+				//Queue an update to the world table:
+				WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(associatedWorld);
+				AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
+			}
+		}
 
 		//Update the scoreboard:
 		gw.getScoreboard().update(polluter.getUuid());
-
-		// increment worlds carbon score
-		int carbon = associatedWorld.getCarbonValue();
-		associatedWorld.setCarbonValue(carbon + contrib.getContributionValue());
-
-		// Queue an update to the player table
-		PlayerUpdateQuery updateQuery = new PlayerUpdateQuery(polluter);
-		AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
-
-		// Queue an insert into the contributions table
-		ContributionInsertQuery insertQuery = new ContributionInsertQuery(contrib);
-		AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
-
-		// Queue an update to the world table
-		WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(associatedWorld);
-		AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
 	}
 
 	/**
@@ -128,12 +134,13 @@ public class CO2Listener implements Listener {
 	@EventHandler
 	public void onStructureGrow(StructureGrowEvent event) {
 		// Don't handle events in worlds if it's disabled
+		// TODO: allow updating offline players
 		String eventWorldName = event.getLocation().getWorld().getName();
-		if (!ClimateEngine.getInstance().isClimateEngineEnabled(eventWorldName)) {
+		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
+		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
 			return;
 		}
 
-		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
 		Location location = event.getLocation();
 		TreeTable treeTable = GlobalWarming.getInstance().getTableManager().getTreeTable();
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
@@ -173,38 +180,48 @@ public class CO2Listener implements Listener {
 			AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
 
 			gw.getLogger().warning("Untracked structure grow occurred:");
-			gw.getLogger().warning("@ " + location.toString());
+			gw.getLogger().warning(String.format("@ %s", location.toString()));
 		}
 
-		// Update the carbon score in the associated world
-		String associatedWorldName = eventClimateEngine.getConfig().getAssociation();
-		GWorld associatedWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorldName);
-
-		// Create a new reduction object using the worlds climate engine
+		//Create a new reduction object using the worlds climate engine:
 		Reduction reduction = eventClimateEngine.treeGrow(tree, event.getSpecies(), event.getBlocks());
 
-		// decrement players carbon score
-		int carbonScore = planter.getCarbonScore();
-		planter.setCarbonScore(carbonScore - reduction.getReductionValue());
+		//Decrement a player's carbon score:
+		// - If the planter is bounty-hunting, reduce the bounty-owner's carbon score
+		// - Note: the reduction record is assigned to the planter in either case though
+		GPlayer carbonScorePlayer = planter;
+		OffsetBounty updatedBounty = OffsetBounty.update(planter, event.getBlocks().size());
+		if (updatedBounty != null) {
+			UUID creator = playerTable.getUuidMap().get(updatedBounty.getCreatorId());
+			carbonScorePlayer = playerTable.getPlayers().get(creator);
+		}
 
-		//Update the scoreboard:
-		gw.getScoreboard().update(planter.getUuid());
+		//Update the affected player's carbon score:
+		int carbonScore = carbonScorePlayer.getCarbonScore();
+		carbonScorePlayer.setCarbonScore(carbonScore - reduction.getReductionValue());
 
-		// decrement worlds carbon score
-		int carbon = associatedWorld.getCarbonValue();
-		associatedWorld.setCarbonValue(carbon - reduction.getReductionValue());
-
-		// Queue player update query
-		PlayerUpdateQuery playerUpdateQuery = new PlayerUpdateQuery(planter);
+		//Queue player update query:
+		PlayerUpdateQuery playerUpdateQuery = new PlayerUpdateQuery(carbonScorePlayer);
 		AsyncDBQueue.getInstance().queueUpdateQuery(playerUpdateQuery);
 
-		// Queue reduction insert query
+		//Queue reduction insert query:
 		ReductionInsertQuery insertQuery = new ReductionInsertQuery(reduction);
 		AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
 
-		// Queue an update to the world table
-		WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(associatedWorld);
-		AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
+		//Decrement the associated world's carbon score:
+		String associatedWorldName = eventClimateEngine.getConfig().getAssociation();
+		GWorld associatedWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(associatedWorldName);
+		if (associatedWorld != null) {
+			int carbon = associatedWorld.getCarbonValue();
+			associatedWorld.setCarbonValue(carbon - reduction.getReductionValue());
+
+			// Queue an update to the world table
+			WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(associatedWorld);
+			AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
+		}
+
+		//Update the scoreboard:
+		gw.getScoreboard().update(carbonScorePlayer.getUuid());
 	}
 
 	// TODO: Track furnace smelts which occur in untracked furnaces

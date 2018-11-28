@@ -47,7 +47,7 @@ public class TreeTable extends Table implements SelectCallback<Tree> {
 	public void updateTree(Tree tree) {
 		final GPlayer owner = tree.getOwner();
 
-		// Update map of Gplayer -> Furnace Id
+		// Update map of GPlayer -> Furnace Id
 		if (playerMap.containsKey(owner)) {
 			HashSet<Integer> trees = playerMap.get(owner);
 			trees.add(tree.getUniqueID());
@@ -60,6 +60,7 @@ public class TreeTable extends Table implements SelectCallback<Tree> {
 
 		// Map the tree unique id to the Tree object
 		treeMap.put(tree.getUniqueID(), tree);
+
 		// Map the block location to the tree unique id
 		locationMap.put(tree.getLocation(), tree.getUniqueID());
 	}
@@ -69,7 +70,6 @@ public class TreeTable extends Table implements SelectCallback<Tree> {
 	public void onSelectionCompletion(List<Tree> returnList) throws SQLException {
 		if (GlobalWarming.getInstance() != null) {
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
 					for (Tree tree : returnList) {
@@ -78,7 +78,7 @@ public class TreeTable extends Table implements SelectCallback<Tree> {
 				}
 			}.runTask(GlobalWarming.getInstance());
 		} else {
-			System.out.println("Selection returned " + returnList.size() + " trees");
+			System.out.printf("Selection returned %d trees%n", returnList.size());
 		}
 	}
 }

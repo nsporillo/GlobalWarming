@@ -48,7 +48,6 @@ public class Contribution {
 		if (!super.equals(o)) return false;
 
 		Contribution that = (Contribution) o;
-
 		return uniqueID.equals(that.uniqueID);
 	}
 

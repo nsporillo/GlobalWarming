@@ -10,7 +10,6 @@ import java.util.Set;
 public class WorldConfig extends ConfigLoader {
 
 	@Getter private final String world;
-
 	@Getter private boolean enabled;
 	@Getter private Set<ClimateEffectType> enabledEffects;
 	@Getter private String association;
@@ -32,7 +31,7 @@ public class WorldConfig extends ConfigLoader {
 			try {
 				this.enabledEffects.add(ClimateEffectType.valueOf(effect));
 			} catch(IllegalArgumentException ex) {
-				GlobalWarming.getInstance().getLogger().severe(String.format("Could not load effect %s for [%s]", effect, world));
+				GlobalWarming.getInstance().getLogger().severe(String.format("Could not load effect: [%s] for: [%s]", effect, world));
 			}
 		}
 	}

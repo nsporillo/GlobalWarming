@@ -18,7 +18,7 @@ public class OffsetSelectQuery extends SelectQuery<OffsetBounty, OffsetTable> {
 
 	@Override
 	public String getSQL() {
-		return "SELECT * FROM offsets WHERE hunterId IS NULL";
+		return "SELECT * FROM offsets WHERE timeCompleted = 0";
 	}
 
 	@Override

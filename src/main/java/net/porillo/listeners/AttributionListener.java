@@ -43,13 +43,12 @@ public class AttributionListener implements Listener {
 			return;
 		}
 
-		Location location = event.getBlockPlaced().getLocation();
-
 		// Don't handle events in worlds if it's disabled
-		if (!ClimateEngine.getInstance().getClimateEngine(event.getPlayer().getWorld().getName()).isEnabled()) {
+		if (!ClimateEngine.getInstance().isClimateEngineEnabled(event.getPlayer().getWorld().getName())) {
 			return;
 		}
 
+		Location location = event.getBlockPlaced().getLocation();
 		PlayerTable playerTable = gw.getTableManager().getPlayerTable();
 		GPlayer player = playerTable.getOrCreatePlayer(event.getPlayer().getUniqueId(), false);
 		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
@@ -64,7 +63,7 @@ public class AttributionListener implements Listener {
 			// Sanity check, if a furnace can be placed at a location which we think is a furnace then error out
 			if (furnaceTable.getLocationMap().containsKey(location)) {
 				gw.getLogger().severe("Furnace placed at location of existing furnace!");
-				gw.getLogger().severe("@ " + location.toString());
+				gw.getLogger().severe(String.format("@ %s", location.toString()));
 				return;
 			}
 
@@ -83,7 +82,7 @@ public class AttributionListener implements Listener {
 
 			if (treeTable.getLocationMap().containsKey(location)) {
 				gw.getLogger().severe("Tree placed at location of existing tree!");
-				gw.getLogger().severe("@ " + location.toString());
+				gw.getLogger().severe(String.format("@ %s", location.toString()));
 				return;
 			}
 
@@ -108,13 +107,12 @@ public class AttributionListener implements Listener {
 			return;
 		}
 
-		Location location = event.getBlock().getLocation();
-
 		// Don't handle events in worlds if it's disabled
-		if (!ClimateEngine.getInstance().getClimateEngine(event.getPlayer().getWorld().getName()).isEnabled()) {
+		if (!ClimateEngine.getInstance().isClimateEngineEnabled(event.getPlayer().getWorld().getName())) {
 			return;
 		}
 
+		Location location = event.getBlock().getLocation();
 		if (event.getBlock().getType() == Material.FURNACE) {
 			FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
 			Map<GPlayer, HashSet<Integer>> playerFurnaceMap = furnaceTable.getPlayerMap();
@@ -143,7 +141,7 @@ public class AttributionListener implements Listener {
 				AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
 				// TODO: Add DB triggers to delete inactive furnaces with no associated contributions
 			} else {
-				gw.getLogger().info("Untracked furnace destroyed. @ " + location.toString());
+				gw.getLogger().info(String.format("Untracked furnace destroyed @ %s", location.toString()));
 			}
 		} else if (event.getBlock().getType().name().endsWith("SAPLING")) {
 			TreeTable treeTable = gw.getTableManager().getTreeTable();
@@ -169,7 +167,7 @@ public class AttributionListener implements Listener {
 				TreeDeleteQuery deleteQuery = new TreeDeleteQuery(tree);
 				AsyncDBQueue.getInstance().queueDeleteQuery(deleteQuery);
 			} else {
-				gw.getLogger().info("Untracked sapling destroyed. @ " + location.toString());
+				gw.getLogger().info(String.format("Untracked sapling destroyed @ %s", location.toString()));
 			}
 		}
 	}

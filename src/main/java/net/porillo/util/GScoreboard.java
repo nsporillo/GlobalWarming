@@ -34,7 +34,7 @@ public class GScoreboard {
     private Map<String, Scoreboard> scoreboards;
     private ConcurrentLinkedQueue<UUID> requestQueue;
     private static final String GLOBAL_WARMING = "GlobalWarming";
-    private static final long SCOREBOARD_INTERVAL_TICKS = 20;
+    private static final long SCOREBOARD_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getScoreboardInterval();
 
     public GScoreboard() {
         //One scoreboard per world:
@@ -143,8 +143,8 @@ public class GScoreboard {
      * - One unique request per player only
      */
     public void update(UUID playerId) {
-        if (!requestQueue.contains(playerId)) {
-            synchronized (this) {
+        synchronized (this) {
+            if (!requestQueue.contains(playerId)) {
                 requestQueue.add(playerId);
             }
         }
@@ -219,8 +219,9 @@ public class GScoreboard {
     private void updatePlayerScore(GPlayer gPlayer) {
         if (gPlayer != null) {
             //Do not update associated-worlds with disabled climate-engines:
+            // - Ignore offline players (e.g., someone completing an offline player's bounty)
             Player player = gPlayer.getPlayer();
-            if (ClimateEngine.getInstance().isAssociatedEngineEnabled(player)) {
+            if (player != null && ClimateEngine.getInstance().isAssociatedEngineEnabled(player)) {
                 //Update the player's score:
                 Scoreboard scoreboard = getScoreboard(player);
                 if (scoreboard != null) {

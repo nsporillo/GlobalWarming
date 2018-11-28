@@ -47,7 +47,7 @@ public class FurnaceTable extends Table implements SelectCallback<Furnace> {
 	public void updateFurnace(Furnace furnace) {
 		final GPlayer player = furnace.getOwner();
 
-		// Update map of Gplayer -> Furnace Id
+		// Update map of GPlayer -> Furnace Id
 		if (!playerMap.containsKey(player)) {
 			HashSet<Integer> furnaces = new HashSet<>();
 			furnaces.add(furnace.getUniqueID());
@@ -60,18 +60,15 @@ public class FurnaceTable extends Table implements SelectCallback<Furnace> {
 
 		// Map the furnace unique id to the furnace object
 		furnaceMap.put(furnace.getUniqueID(), furnace);
+
 		// Map the block location to the furnace unique id
 		locationMap.put(furnace.getLocation(), furnace.getUniqueID());
 	}
 
 	@Override
 	public void onSelectionCompletion(List<Furnace> returnList) throws SQLException {
-		//synchronized (this) {
-		//	while()
-		//}
 		if (GlobalWarming.getInstance() != null) {
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
 					for (Furnace furnace : returnList) {
@@ -80,7 +77,7 @@ public class FurnaceTable extends Table implements SelectCallback<Furnace> {
 				}
 			}.runTask(GlobalWarming.getInstance());
 		} else {
-			System.out.println("Selection returned " + returnList.size() + " furnaces.");
+			System.out.printf("Selection returned %d furnaces.%n", returnList.size());
 		}
 	}
 }

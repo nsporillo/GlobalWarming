@@ -11,8 +11,35 @@ public enum Lang {
     /**
      * See lang.yml for translations
      */
+    BOUNTY_PLAYER(""),
+    BOUNTY_HUNTER(""),
+    BOUNTY_BLOCKS(""),
+    BOUNTY_BLOCKSREQUIRED(""),
+    BOUNTY_REWARD(""),
+    BOUNTY_REWARDREQUIRED(""),
+    BOUNTY_JOIN(""),
+    BOUNTY_TITLE(""),
+    BOUNTY_ERROR(""),
+    BOUNTY_ALREADYHUNTING(""),
+    BOUNTY_NOTFOUND(""),
+    BOUNTY_ANOTHERPLAYER(""),
+    BOUNTY_BOUNTYOWNER(""),
+    BOUNTY_CREATED(""),
+    BOUNTY_NOTCREATED(""),
+    BOUNTY_MAXCREATED(""),
+    BOUNTY_ACCEPTED(""),
+    BOUNTY_ACCEPTEDBY(""),
+    BOUNTY_COMPLETED(""),
+    BOUNTY_COMPLETEDBY(""),
+    BOUNTY_NOTJOINED(""),
+    BOUNTY_ABANDONED(""),
+    BOUNTY_ABANDONEDBY(""),
+    BOUNTY_CANCELLED(""),
     ENGINE_DISABLED(""),
+    ENGINE_NOTFOUND(""),
     GENERIC_PERMISSION(""),
+    GENERIC_INVALIDARGS(""),
+    GENERIC_SPAM(""),
     NOTIFICATION_DEFAULT_LOW(""),
     NOTIFICATION_DEFAULT_OK(""),
     NOTIFICATION_DEFAULT_HIGH(""),
@@ -33,9 +60,17 @@ public enum Lang {
     NOTIFICATION_SNOW_HIGH(""),
     SCORE_CHAT(""),
     SCORE_TEMPERATURE(""),
+    TABLE_EMPTY(""),
     TEMPERATURE_BALANCED(""),
     TEMPERATURE_HIGH(""),
+    TEMPERATURE_HIGHWITHBOUNTY(""),
     TEMPERATURE_LOW(""),
+    TOPTABLE_PLAYER(""),
+    TOPTABLE_INDEX(""),
+    TOPTABLE_SCORE(""),
+    TOPTABLE_POLLUTERS(""),
+    TOPTABLE_PLANTERS(""),
+    TOPTABLE_ERROR(""),
     WIKI_ADDED(""),
     WIKI_NAME(""),
     WIKI_AUTHOR(""),
@@ -87,7 +122,7 @@ public enum Lang {
             super.saveIfNotExist();
             super.load();
 
-            GlobalWarming.getInstance().getLogger().info("Lang Loaded: " + locale);
+            GlobalWarming.getInstance().getLogger().info(String.format("Lang loaded: [%s]", locale));
         }
 
         private ConfigurationSection getLangConf() {

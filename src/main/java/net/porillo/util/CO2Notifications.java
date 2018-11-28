@@ -36,13 +36,13 @@ import java.util.Map;
 public class CO2Notifications {
     @Getter
     private Map<String, BossBar> bossBars;
-    private static final long NOTIFICATION_INTERVAL_TICKS = 6000; //5 minutes
-    private static final long NOTIFICATION_DURATION_TICKS = 300; //15 seconds
-    private static final int NORMAL_SEA_LEVEL = 63;
-    private static final double NORMAL_ICE_LEVEL_HEIGHT = 0.0;
-    private static final double NORMAL_SNOW_LEVEL_HEIGHT = 0.0;
-    private static final double NORMAL_FARM_YIELD_FITNESS = 100.0;
-    private static final double NORMAL_MOB_FITNESS = 100.0;
+    private static final long NOTIFICATION_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getNotificationInterval();
+    private static final long NOTIFICATION_DURATION_TICKS = GlobalWarming.getInstance().getConf().getNotificationDuration();
+    private static final int NORMAL_SEA_LEVEL = GlobalWarming.getInstance().getConf().getDefaultSeaLevel();
+    private static final double NORMAL_ICE_LEVEL_HEIGHT = GlobalWarming.getInstance().getConf().getDefaultIceLevel();
+    private static final double NORMAL_SNOW_LEVEL_HEIGHT = GlobalWarming.getInstance().getConf().getDefaultSnowLevel();
+    private static final double NORMAL_FARM_YIELD_FITNESS = GlobalWarming.getInstance().getConf().getDefaultFarmYieldFitness();
+    private static final double NORMAL_MOB_FITNESS = GlobalWarming.getInstance().getConf().getDefaultMobFitness();
     private enum TemperatureRange {LOW, AVERAGE, HIGH}
 
     public CO2Notifications() {
@@ -92,8 +92,7 @@ public class CO2Notifications {
         String message = Lang.ENGINE_DISABLED.get();
         WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(worldName);
         if (climateEngine != null && climateEngine.isEnabled()) {
-            double temperature = climateEngine.getTemperature();
-            message = getTemperatureGuidance(worldName, temperature);
+            message = getTemperatureGuidance(worldName, climateEngine.getTemperature());
         }
 
         return message;

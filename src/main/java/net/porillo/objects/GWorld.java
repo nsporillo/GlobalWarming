@@ -70,7 +70,6 @@ public class GWorld {
 		if (!super.equals(o)) return false;
 
 		GWorld gWorld = (GWorld) o;
-
 		return uniqueID.equals(gWorld.uniqueID);
 	}
 

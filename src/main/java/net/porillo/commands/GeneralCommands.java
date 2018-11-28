@@ -6,230 +6,297 @@ import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
 
 import net.porillo.config.Lang;
-import net.porillo.database.api.SelectCallback;
-import net.porillo.database.queries.select.TopPlayersQuery;
-import net.porillo.database.queue.AsyncDBQueue;
-import net.porillo.database.tables.OffsetTable;
+import net.porillo.database.tables.PlayerTable;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.engine.models.CarbonIndexModel;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
+import net.porillo.util.ChatTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.bukkit.ChatColor.*;
 
 @CommandAlias("globalwarming|gw")
 public class GeneralCommands extends BaseCommand {
-	private Map<UUID, Long> lastTopped = new HashMap<>();
-	private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
-	private static final ChatColor[] topHeader = {GOLD, AQUA, LIGHT_PURPLE, AQUA, GOLD, AQUA, LIGHT_PURPLE, AQUA, GOLD,
-			AQUA, LIGHT_PURPLE, AQUA, GOLD};
-    public static final double LOW_TEMPERATURE_UBOUND = 13.75;
-    public static final double HIGH_TEMPERATURE_LBOUND = 14.25;
+    private static final long SPAM_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getSpamInterval();
+    private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
+    public static final double LOW_TEMPERATURE_UBOUND = GlobalWarming.getInstance().getConf().getLowTemperatureUBound();
+    public static final double HIGH_TEMPERATURE_LBOUND = GlobalWarming.getInstance().getConf().getHighTemperatureLBound();
+    private List<UUID> playerRequestList;
 
-    @Subcommand("score")
-    @Description("Get your carbon score")
-    @CommandPermission("globalwarming.score")
-    public void onScore(GPlayer gPlayer) {
-        Player player = gPlayer.getPlayer();
-        if (player != null) {
-            //Do not show scored for worlds with disabled climate-engines:
-            // - Note: temperature is based on the player's associated-world (not the current world)
-            WorldClimateEngine associatedClimateEngine =
-                  ClimateEngine.getInstance().getAssociatedClimateEngine(player);
-
-            if (associatedClimateEngine != null && associatedClimateEngine.isEnabled()) {
-                int score = gPlayer.getCarbonScore();
-                double temperature = associatedClimateEngine.getTemperature();
-                gPlayer.sendMsg(
-                      Lang.SCORE_CHAT,
-                      formatScore(score),
-                      formatTemperature(temperature));
-
-                //Guidance based on the global temperature:
-                if (temperature < LOW_TEMPERATURE_UBOUND) {
-                    gPlayer.sendMsg(Lang.TEMPERATURE_LOW);
-                } else if (temperature < HIGH_TEMPERATURE_LBOUND) {
-                    gPlayer.sendMsg(Lang.TEMPERATURE_BALANCED);
-                } else {
-                    gPlayer.sendMsg(Lang.TEMPERATURE_HIGH);
-                }
-            } else {
-                gPlayer.sendMsg(Lang.ENGINE_DISABLED);
-            }
-        }
+    public GeneralCommands() {
+        playerRequestList = new ArrayList<>();
+        debounceRequests();
     }
 
-	@Subcommand("top")
-	@Description("Display the top ten players")
-	@CommandPermission("globalwarming.top")
-	public void onTop(GPlayer gPlayer) {
-		// Prevent players from spamming /gw top (which syncs the database)
-		if (lastTopped.containsKey(gPlayer.getUuid())) {
-			Long last = lastTopped.get(gPlayer.getUuid());
-			long diff = System.currentTimeMillis() - last;
-
-			if (diff < 3000) {
-				gPlayer.sendMsg(RED + "Please wait " + YELLOW + (3000 - diff) / 1000 + RED + " seconds to view top again.");
-			} else {
-				lastTopped.remove(gPlayer.getUuid());
-				onTop(gPlayer);
-			}
-		} else {
-			lastTopped.put(gPlayer.getUuid(), System.currentTimeMillis());
-
-			Player player = Bukkit.getPlayer(gPlayer.getUuid());
-			String worldName = player.getWorld().getName();
-
-			if (ClimateEngine.getInstance().getClimateEngine(worldName).isEnabled()) {
-				CarbonIndexModel indexModel = ClimateEngine.getInstance().getClimateEngine(worldName).getCarbonIndexModel();
-
-				AsyncDBQueue.getInstance().queueSelectQuery(new TopPlayersQuery("players", (SelectCallback<Object[]>) returnList -> {
-					String header = "%s+%s------ %splayer%s ------%s+%s-- %sindex%s --%s+%s-- %sscore%s --%s+";
-					String footer = "%s+%s------------------%s+%s-----------%s+%s-----------%s+";
-					gPlayer.sendMsg(String.format(header, topHeader));
-
-					String row = DARK_PURPLE + "%d " + WHITE + "%s " + GOLD + "+ %s " + GOLD + "+ %s " + GOLD + "+";
-					int i = 1;
-					for (Object[] result : returnList) {
-						UUID uuid = UUID.fromString((String) result[0]);
-						int score = (int) result[1];
-						double index = indexModel.getCarbonIndex(score);
-						String playerName;
-
-						if (uuid.equals(untrackedUUID)) {
-							playerName = "Untracked";
-						} else {
-							playerName = Bukkit.getOfflinePlayer(uuid).getName();
-						}
-
-						int pad = i == 10 ? 22 : 23;
-						gPlayer.sendMsg(String.format(row, i++, fixed(playerName, pad),
-								fixed(formatIndex(index, score), 13),
-								fixed(formatScore(score), 12)));
-					}
-
-					gPlayer.sendMsg(String.format(footer, GOLD, AQUA, GOLD, AQUA, GOLD, AQUA, GOLD));
-				}));
-			} else {
-                gPlayer.sendMsg(Lang.ENGINE_DISABLED);
-			}
-		}
-	}
+    @HelpCommand
+    public void onHelp(GPlayer gPlayer, CommandHelp help) {
+        if (isCommandAllowed(gPlayer)) {
+            help.showHelp();
+        }
+    }
 
     @Subcommand("bounty")
     @CommandPermission("globalwarming.bounty")
     public class BountyCommand extends BaseCommand {
 
-        @Subcommand("offset")
-        @Description("Set tree-planting bounties to reduce carbon footprint")
-        @Syntax("[log] [reward]")
-        @CommandPermission("globalwarming.bounty.offset")
-        public void onBountyOffset(GPlayer gPlayer, String[] args) {
-            // Validate input
-            Integer logTarget;
-            Integer reward;
-
-            if (args.length != 2) {
-                gPlayer.sendMsg(RED + "Must specify 2 args");
+        @Subcommand("")
+        @Description("Display all active bounties")
+        @Syntax("")
+        @CommandPermission("globalwarming.bounty")
+        public void onBounty(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                OffsetBounty.show(gPlayer);
             }
-            try {
-                logTarget = Integer.parseInt(args[0]);
-                reward = Integer.parseInt(args[1]);
-
-                if (logTarget <= 0 || reward <= 0) {
-                    throw new NumberFormatException();
-                }
-            } catch (NumberFormatException nfe) {
-                gPlayer.sendMsg(RED + "Error: <trees> and <reward> must be positive integers");
-                return;
-            }
-
-            //TODO: Add economy integration
-            OffsetBounty bounty = new OffsetBounty();
-            bounty.setCreator(gPlayer);
-            bounty.setLogBlocksTarget(logTarget);
-            bounty.setReward(reward);
         }
 
-        // TODO: When listing bounties, add a clickable chat link to easily start job
-        // TODO: Add configurable player max concurrent bounties to prevent bounty hoarding
-        @Subcommand("list")
-        @Description("Show all current bounties")
-        @Syntax("")
-        @CommandPermission("globalwarming.bounty.list")
-        public void onBounty(GPlayer gPlayer) {
-            OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
-            Player player = gPlayer.getPlayer();
-
-            int numBounties = offsetTable.getOffsetList().size();
-            gPlayer.sendMsg(GREEN + "Showing " + numBounties + " Tree Planting Bounties");
-
-            // TODO: Paginate if necessary
-            for (OffsetBounty bounty : offsetTable.getOffsetList()) {
-                if (bounty.isAvailable()) {
-                    //bounty.showPlayerDetails(player);
+        @Subcommand("create")
+        @Description("Create a tree-planting bounty to reduce your carbon footprint")
+        @Syntax("[tree-blocks] [reward]")
+        @CommandPermission("globalwarming.bounty.create")
+        public void onBountyCreate(GPlayer gPlayer, String[] args) {
+            if (isCommandAllowed(gPlayer)) {
+                int treeBlocks = 0;
+                int reward = 0;
+                if (args.length == 2) {
+                    treeBlocks = Integer.parseInt(args[0]);
+                    reward = Integer.parseInt(args[1]);
                 }
+
+                if (treeBlocks > 0 && reward > 0) {
+                    OffsetBounty.create(gPlayer, treeBlocks, reward);
+                } else {
+                    gPlayer.sendMsg(String.format(
+                          Lang.GENERIC_INVALIDARGS.get(),
+                          "[tree-blocks:integer] [reward:integer]"));
+                }
+            }
+        }
+
+        @Subcommand("join")
+        @Description("Join a tree-planting bounty for a reward (see: /gw bounty list)")
+        @Syntax("[bounty_id]")
+        @CommandPermission("globalwarming.bounty.join")
+        public void onBountyJoin(GPlayer gPlayer, String[] args) {
+            if (isCommandAllowed(gPlayer)) {
+                int bountyId = 0;
+                if (args.length == 1) {
+                    bountyId = Integer.parseInt(args[0]);
+                }
+
+                if (bountyId > 0) {
+                    OffsetBounty bounty = OffsetBounty.join(gPlayer, bountyId);
+                    if (bounty != null) {
+                        OffsetBounty.notify(
+                              bounty,
+                              String.format(Lang.BOUNTY_ACCEPTEDBY.get(), gPlayer.getPlayer().getName()),
+                              Lang.BOUNTY_ACCEPTED.get()
+                        );
+                    }
+                } else {
+                    gPlayer.sendMsg(String.format(
+                          Lang.GENERIC_INVALIDARGS.get(),
+                          "[bounty_id:integer]"));
+                }
+            }
+        }
+
+        @Subcommand("unjoin")
+        @Description("Abandon a bounty you joined")
+        @Syntax("")
+        @CommandPermission("globalwarming.bounty.cancel")
+        public void onBountyUnjoin(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                OffsetBounty bounty = OffsetBounty.unJoin(gPlayer);
+                if (bounty == null) {
+                    gPlayer.sendMsg(Lang.BOUNTY_NOTJOINED);
+                } else {
+                    OffsetBounty.notify(
+                          bounty,
+                          gPlayer,
+                          String.format(Lang.BOUNTY_ABANDONEDBY.get(), gPlayer.getPlayer().getName()),
+                          Lang.BOUNTY_ABANDONED.get()
+                    );
+                }
+            }
+        }
+
+        @Subcommand("cancel")
+        @Description("Cancel any idle bounties you created")
+        @Syntax("")
+        @CommandPermission("globalwarming.bounty.cancel")
+        public void onBountyCancel(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                OffsetBounty.cancel(gPlayer);
             }
         }
     }
 
-    @Subcommand("scoreboard")
-    @CommandPermission("globalwarming.scoreboard")
-    public class ScoreboardCommand extends BaseCommand {
+    @Subcommand("score")
+    @CommandPermission("globalwarming.score")
+    public class ScoreCommand extends BaseCommand {
+
+        @Subcommand("")
+        @Description("Get your carbon score")
+        @Syntax("")
+        @CommandPermission("globalwarming.score")
+        public void onScore(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                showCarbonScore(gPlayer);
+            }
+        }
 
         @Subcommand("show")
         @Description("Show the scoreboard")
         @Syntax("")
-        @CommandPermission("globalwarming.scoreboard.show")
+        @CommandPermission("globalwarming.score.show")
         public void onShow(GPlayer gPlayer) {
-            Player player = gPlayer.getPlayer();
-            GlobalWarming.getInstance().getScoreboard().show(player, true);
+            if (isCommandAllowed(gPlayer)) {
+                Player player = gPlayer.getPlayer();
+                GlobalWarming.getInstance().getScoreboard().show(player, true);
+            }
         }
 
         @Subcommand("hide")
-        @Description("Show the scoreboard")
+        @Description("Hide the scoreboard")
         @Syntax("")
-        @CommandPermission("globalwarming.scoreboard.hide")
+        @CommandPermission("globalwarming.score.hide")
         public void onHide(GPlayer gPlayer) {
-            Player player = gPlayer.getPlayer();
-            GlobalWarming.getInstance().getScoreboard().show(player, false);
+            if (isCommandAllowed(gPlayer)) {
+                Player player = gPlayer.getPlayer();
+                GlobalWarming.getInstance().getScoreboard().show(player, false);
+            }
         }
     }
 
-    @HelpCommand
-    public void onHelp(GPlayer gPlayer, CommandHelp help) {
-        help.showHelp();
+    @Subcommand("top")
+    @CommandPermission("globalwarming.top")
+    public class TopCommand extends BaseCommand {
+
+        @Subcommand("")
+        @Description("Display the top ten polluters and planters")
+        @CommandPermission("globalwarming.top")
+        public void onTop(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                showTopTen(gPlayer, true);
+                showTopTen(gPlayer, false);
+            }
+        }
+
+        @Subcommand("polluter")
+        @Description("Display the top ten polluters")
+        @CommandPermission("globalwarming.top.polluter")
+        public void onTopPolluter(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                showTopTen(gPlayer, true);
+            }
+        }
+
+        @Subcommand("planter")
+        @Description("Display the top ten tree-planters")
+        @CommandPermission("globalwarming.top.planter")
+        public void onTopPlanter(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                showTopTen(gPlayer, false);
+            }
+        }
     }
 
+    /**
+     * True when:
+     * - The player is not spamming
+     * - The player's climate-engine is enabled
+     */
+    private boolean isCommandAllowed(GPlayer gPlayer) {
+        boolean isCommandAllowed = false;
+        if (isSpamming(gPlayer)) {
+            gPlayer.sendMsg(Lang.GENERIC_SPAM);
+        } else if (!ClimateEngine.getInstance().isAssociatedEngineEnabled(gPlayer)) {
+            gPlayer.sendMsg(Lang.ENGINE_DISABLED);
+        } else {
+            isCommandAllowed = true;
+        }
 
-    private static String fixed(String text, int length) {
-        return String.format("%-" + length + "." + length + "s", text);
+        return isCommandAllowed;
     }
 
-    private String formatIndex(double index, int score) {
-        return String.format("%s%1.4f",
+    /**
+     * Limit player requests per interval
+     * - Valid requests store that player in a list
+     * - The player-request list is cleared periodically
+     */
+    private boolean isSpamming(GPlayer gPlayer) {
+        boolean isSpamming = true;
+        if (gPlayer != null) {
+            synchronized (this) {
+                if (!playerRequestList.contains(gPlayer.getUuid())) {
+                    playerRequestList.add(gPlayer.getUuid());
+                    isSpamming = false;
+                }
+            }
+        }
+
+        return isSpamming;
+    }
+
+    /**
+     * Clear the spam list periodically
+     */
+    private void debounceRequests() {
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
+              GlobalWarming.getInstance(),
+              () -> {
+                  synchronized (this) {
+                      playerRequestList.clear();
+                  }
+              }, 0L, SPAM_INTERVAL_TICKS);
+    }
+
+    /**
+     * Format a carbon index
+     * - Map the value to color heat
+     * - Maximum of two decimal places
+     */
+    private static String formatIndex(double index, int score) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        return String.format("%s%s",
               getScoreColor(score),
-              index);
+              decimalFormat.format(index));
     }
 
-    private String formatScore(int score) {
+    /**
+     * Format a carbon score
+     * - Map the value to color heat
+     */
+    private static String formatScore(int score) {
         return String.format("%s%d",
               getScoreColor(score),
               score);
     }
 
     /**
-     * Using color-heat to map LOW CO2 (cold) to HIGH CO2 (hot) values
-     *  - Currently, these values are arbitrary
+     * Format a temperature
+     * - Map the value to color heat
+     * - Maximum of two decimal places
+     */
+    private static String formatTemperature(double temperature) {
+        ChatColor color = getTemperatureColor(temperature);
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        return String.format("%s%s",
+              color,
+              decimalFormat.format(temperature));
+    }
+
+    /**
+     * Get the color associated with a carbon score
+     * - Values are mapped to color-heat from LOW CO2 (cold) to HIGH CO2 (hot)
+     * - These ranges are somewhat arbitrary
      */
     public static ChatColor getScoreColor(int score) {
         ChatColor color;
@@ -256,6 +323,10 @@ public class GeneralCommands extends BaseCommand {
         return color;
     }
 
+    /**
+     * Get the color associated with a temperature
+     * - These ranges are somewhat arbitrary
+     */
     public static ChatColor getTemperatureColor(double temperature) {
         ChatColor color;
         if (temperature <= 10.5) {
@@ -283,11 +354,88 @@ public class GeneralCommands extends BaseCommand {
         return color;
     }
 
-    private String formatTemperature(double temperature) {
-        ChatColor color = getTemperatureColor(temperature);
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        return String.format("%s%s",
-              color,
-              decimalFormat.format(temperature));
+    /**
+     * Show the player's carbon score as a chat message
+     */
+    private static void showCarbonScore(GPlayer gPlayer) {
+        Player player = gPlayer.getPlayer();
+        if (player != null) {
+            //Do not show scored for worlds with disabled climate-engines:
+            // - Note: temperature is based on the player's associated-world (not the current world)
+            WorldClimateEngine associatedClimateEngine =
+                  ClimateEngine.getInstance().getAssociatedClimateEngine(player);
+
+            if (associatedClimateEngine != null && associatedClimateEngine.isEnabled()) {
+                int score = gPlayer.getCarbonScore();
+                double temperature = associatedClimateEngine.getTemperature();
+                gPlayer.sendMsg(
+                      Lang.SCORE_CHAT,
+                      formatScore(score),
+                      formatTemperature(temperature));
+
+                //Guidance based on the global temperature:
+                if (temperature < LOW_TEMPERATURE_UBOUND) {
+                    gPlayer.sendMsg(Lang.TEMPERATURE_LOW);
+                } else if (temperature < HIGH_TEMPERATURE_LBOUND) {
+                    gPlayer.sendMsg(Lang.TEMPERATURE_BALANCED);
+                } else {
+                    gPlayer.sendMsg(String.format("%s%s",
+                          Lang.TEMPERATURE_HIGH.get(),
+                          GlobalWarming.getEconomy() == null
+                          ? ""
+                          : Lang.TEMPERATURE_HIGHWITHBOUNTY.get()));
+                }
+            } else {
+                gPlayer.sendMsg(Lang.ENGINE_DISABLED);
+            }
+        }
+    }
+
+    /**
+     * Show the top 10 polluters or planters as a chat message
+     */
+    private static void showTopTen(GPlayer gPlayer, boolean isPolluterList) {
+        if (ClimateEngine.getInstance().isAssociatedEngineEnabled(gPlayer)) {
+            CarbonIndexModel indexModel = ClimateEngine.getInstance().getAssociatedClimateEngine(gPlayer.getPlayer()).getCarbonIndexModel();
+            ChatTable chatTable = new ChatTable(isPolluterList ? Lang.TOPTABLE_POLLUTERS.get() : Lang.TOPTABLE_PLANTERS.get());
+            chatTable.setGridColor(isPolluterList ? ChatColor.DARK_RED : ChatColor.GREEN);
+            chatTable.addHeader(Lang.TOPTABLE_PLAYER.get(), 130);
+            chatTable.addHeader(Lang.TOPTABLE_INDEX.get(), 75);
+            chatTable.addHeader(Lang.TOPTABLE_SCORE.get(), 75);
+
+            try {
+                PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
+                List<GPlayer> players = new ArrayList<>(playerTable.getPlayers().values());
+                players.sort(Comparator.comparing(GPlayer::getCarbonScore));
+                if (isPolluterList) {
+                    Collections.reverse(players);
+                }
+
+                int rowCount = 0;
+                for (GPlayer player : players) {
+                    List<String> row = new ArrayList<>();
+                    if (player.getUuid().equals(untrackedUUID)) {
+                        continue;
+                    }
+
+                    int score = player.getCarbonScore();
+                    double index = indexModel.getCarbonIndex(score);
+                    row.add(Bukkit.getOfflinePlayer(player.getUuid()).getName());
+                    row.add(formatIndex(index, score));
+                    row.add(formatScore(score));
+                    chatTable.addRow(row);
+                    if (++rowCount == 10) {
+                        break;
+                    }
+                }
+
+                gPlayer.sendMsg(chatTable.toString());
+            } catch (Exception e) {
+                gPlayer.sendMsg(Lang.TOPTABLE_ERROR);
+                e.printStackTrace();
+            }
+        } else {
+            gPlayer.sendMsg(Lang.ENGINE_DISABLED);
+        }
     }
 }

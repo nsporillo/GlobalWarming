@@ -56,7 +56,6 @@ public class Furnace {
 		if (!super.equals(o)) return false;
 
 		Furnace furnace = (Furnace) o;
-
 		return uniqueID.equals(furnace.uniqueID);
 	}
 

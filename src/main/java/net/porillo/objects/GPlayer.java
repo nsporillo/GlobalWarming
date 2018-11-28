@@ -47,7 +47,10 @@ public class GPlayer {
 	}
 
 	public void sendMsg(String msg) {
-		getPlayer().sendMessage(msg);
+		Player player = getPlayer();
+		if (player != null) {
+			player.sendMessage(msg);
+		}
 	}
 
 	public void sendMsg(Lang lang) {
@@ -65,7 +68,6 @@ public class GPlayer {
 		if (!super.equals(o)) return false;
 
 		GPlayer gPlayer = (GPlayer) o;
-
 		return uniqueId.equals(gPlayer.uniqueId);
 	}
 

@@ -3,6 +3,7 @@ author: milkywayz
 main: net.porillo.GlobalWarming
 version: ${project.version}
 api-version: 1.13
+softdepend: [Vault]
 commands:   
     globalwarming:
       aliases: gw
@@ -10,19 +11,23 @@ commands:
 permissions:
   globalwarming.bounty:
     default: true
-  globalwarming.bounty.offset:
+  globalwarming.bounty.create:
     default: true
-  globalwarming.bounty.list:
+  globalwarming.bounty.join:
+    default: true
+  globalwarming.bounty.cancel:
     default: true
   globalwarming.help:
     default: true
   globalwarming.score:
     default: true
-  globalwarming.scoreboard:
+  globalwarming.score.show:
     default: true
-  globalwarming.scoreboard.show:
-    default: true
-  globalwarming.scoreboard.hide:
+  globalwarming.score.hide:
     default: true
   globalwarming.top:
+    default: true
+  globalwarming.top.polluter:
+    default: true
+  globalwarming.top.planter:
     default: true

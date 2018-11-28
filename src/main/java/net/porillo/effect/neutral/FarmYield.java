@@ -25,19 +25,15 @@ public class FarmYield extends ListenerClimateEffect {
 
     @EventHandler
     public void onCropGrow(BlockGrowEvent event) {
-        if (!ClimateEngine.getInstance().isEffectEnabled(event.getBlock().getWorld().getName(), ClimateEffectType.FARM_YIELD)) {
-            return;
-        }
-
-        Distribution distribution = cropDistribution.get(event.getBlock().getType());
-        if (distribution != null) {
-            WorldClimateEngine worldEngine = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName());
-            double temp = worldEngine.getTemperature();
-            double random = GlobalWarming.getInstance().getRandom().nextDouble();
-            double chance = distribution.getValue(temp);
-
-            if (chance / 100 <= random) {
-                event.setCancelled(true);
+        WorldClimateEngine worldEngine = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName());
+        if (worldEngine != null && worldEngine.isEffectEnabled(ClimateEffectType.FARM_YIELD)) {
+            Distribution distribution = cropDistribution.get(event.getBlock().getType());
+            if (distribution != null) {
+                double random = GlobalWarming.getInstance().getRandom().nextDouble();
+                double chance = distribution.getValue(worldEngine.getTemperature());
+                if (chance / 100 <= random) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
@@ -50,6 +46,4 @@ public class FarmYield extends ListenerClimateEffect {
             unregister();
         }
     }
-
-
 }

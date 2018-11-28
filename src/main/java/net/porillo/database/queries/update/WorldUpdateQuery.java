@@ -17,7 +17,7 @@ public class WorldUpdateQuery extends UpdateQuery<GWorld> {
 
 	@Override
 	public String getSQL() {
-		return "UPDATE worlds SET carbonValue = ?, seaLevel = ?, size = ? WHERE uniqueId = ? ";
+		return "UPDATE worlds SET carbonValue = ?, seaLevel = ?, size = ? WHERE uniqueId = ?";
 	}
 
 	@Override

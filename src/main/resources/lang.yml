@@ -1,16 +1,37 @@
 locale: en-US
 lang:
   GENERIC:
-    PERMISSION: "&cInsufficient permissions for GlobalWarming command"
+    PERMISSION: "§c§OInsufficient permissions for GlobalWarming command"
+    SPAM: "§8§OToo many requests at once"
+    INVALIDARGS: "§c§OInvalid command arguments, expecting: §7§O%s"
+  BOUNTY:
+    PLAYER: "PLAYER"
+    HUNTER: "HUNTER"
+    BLOCKS: "BLOCKS"
+    BLOCKSREQUIRED: "§c§OA minimum of one block is required"
+    REWARD: "REWARD"
+    REWARDREQUIRED: "§c§OA minimum reward of $1 is required"
+    JOIN: "§aJOIN"
+    TITLE: "ACTIVE BOUNTIES"
+    ERROR: "§c§OError creating the bounty-list table"
+    ALREADYHUNTING: "§c§OCannot join: one bounty per player"
+    NOTFOUND: "§c§OCannot join: bounty not found"
+    ANOTHERPLAYER: "§c§OCannot join: accepted by another player"
+    BOUNTYOWNER: "§c§OCannot join: you own this bounty"
+    CREATED: "§2§OBounty created §a§O(new balance: $%.2f)"
+    NOTCREATED: "§c§OUnable to create bounty §7§O(balance: $%.2f)"
+    MAXCREATED: "§c§OYou cannot create additional bounties at this time"
+    ACCEPTED: "§2§OBounty accepted"
+    ACCEPTEDBY: "§2§OBounty accepted by: §a§O%s"
+    COMPLETED: "§2§OBounty completed: §a§O$%d"
+    COMPLETEDBY: "§2§OBounty completed by: §a§O%s"
+    NOTJOINED: "§c§OYou have not joined a bounty"
+    ABANDONED: "§2§OBounty abandoned"
+    ABANDONEDBY: "§2§OBounty abandoned by: §a§O%s"
+    CANCELLED: "§2§OBounties cancelled: §a§O%s§2§O, refund: §a§O$%d"
   ENGINE:
-    DISABLED: "&cGlobalWarming is not enabled for this world"
-  SCORE:
-    CHAT: "&fYour carbon footprint: {0}&f, global temperature: {1}&f°C"
-    TEMPERATURE: "&fGlobal Temp: %s%s&f°C"
-  TEMPERATURE:
-    LOW: "&fGlobal CO2 levels are too low: &6increase furnace emissions"
-    BALANCED: "Global CO2 levels are in balance"
-    HIGH: "&fGlobal CO2 levels are too high: &6plant new saplings\n&fOr see: &6/gw help&f to create a bounty"
+    DISABLED: "§8§OGlobalWarming is not enabled for this world"
+    NOTFOUND: "Climate engine not found for world: '%s'"
   NOTIFICATION:
     DEFAULT:
       LOW: "§fSteve says: %sno more trees, it's time to build!"
@@ -36,11 +57,28 @@ lang:
       LOW: "§fScientists: %slow CO2 is affecting snow conditions"
       OK: "§fScientists: %sexpect normal snow conditions this year"
       HIGH: "§fScientists: %shigh CO2 is affecting snow conditions"
+  SCORE:
+    CHAT: "§fYour carbon footprint: {0}§f, global temperature: {1}§f°C"
+    TEMPERATURE: "§fGlobal Temp: %s%s§f°C"
+  TABLE:
+    EMPTY: "NO RECORDS FOUND"
+  TEMPERATURE:
+    LOW: "§fGlobal CO2 levels are too low: §6increase furnace emissions"
+    BALANCED: "Global CO2 levels are in balance"
+    HIGH: "§fGlobal CO2 levels are too high: §6plant new saplings"
+    HIGHWITHBOUNTY: "\n§fOr see: §6/gw help§f to create a bounty"
+  TOPTABLE:
+    PLAYER: "PLAYER"
+    INDEX: "INDEX"
+    SCORE: "SCORE"
+    POLLUTERS: "TOP 10 POLLUTERS"
+    PLANTERS: "TOP 10 TREE PLANTERS"
+    ERROR: "§c§OError creating polluter / planter table"
   WIKI:
-    ADDED: "&fThe &6GlobalWarming wiki&f was added to your inventory"
-    NAME: "&fGlobalWarming Wiki"
+    ADDED: "§fThe §6GlobalWarming wiki§f was added to your inventory"
+    NAME: "§fGlobalWarming Wiki"
     AUTHOR: "Team GW"
-    LORE: "&8Gameplay and instructions"
+    LORE: "§8Gameplay and instructions"
     INTRODUCTION: |
       §0GOAL:§8
       Prevent global warming by offsetting furnace emissions
@@ -72,16 +110,14 @@ lang:
        - Mob counts
        - Player movement
     BOUNTY: |
-      §0BOUNTY COMMANDS:§8
-       - §6/gw bounty offset [trees] [reward]:§8 pay other players to plant trees on your behalf, improving your carbon score and the global climate
+      §0BOUNTY COMMANDS:§8 (requires VAULT)
+       - §6/gw bounty:§8 show or join active bounties
 
-       - §6/gw bounty list:§8 show active bounties
+       - §6/gw bounty create [tree-blocks] [reward]:§8 pay other players to plant trees on your behalf, improving your carbon score and the global climate
     OTHER: |
       §0OTHER COMMANDS:§8
-       - §6/gw score:§8 carbon footprint and temperature information
+       - §6/gw score [show | hide]:§8 access carbon footprint information or modify scoreboard visibility
 
-       - §6/gw scoreboard:§8 show or hide
-
-       - §6/gw top:§8 worst-polluters list
+       - §6/gw top [polluter | planter]:§8 top ten player lists
 
        - §6/gw help:§8 command list

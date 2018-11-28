@@ -37,7 +37,6 @@ public class Reduction {
 		if (!super.equals(o)) return false;
 
 		Reduction reduction = (Reduction) o;
-
 		return uniqueID.equals(reduction.uniqueID);
 	}
 
