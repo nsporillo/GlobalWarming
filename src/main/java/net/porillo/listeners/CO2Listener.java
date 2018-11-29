@@ -184,7 +184,7 @@ public class CO2Listener implements Listener {
 			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 			tree = new Tree(uniqueId, planter.getUniqueId(), location, false, event.getBlocks().size());
 
-			//Update all furnace collections:
+			//Update all tree collections:
 			treeTable.updateCollections(tree);
 
 			//Database update:
