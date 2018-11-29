@@ -10,6 +10,7 @@ import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GPlayer;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -29,11 +30,12 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         //Player lookup:
         PlayerTable table = gw.getTableManager().getPlayerTable();
-        GPlayer gPlayer = table.getOrCreatePlayer(event.getPlayer().getUniqueId());
+        Player player = event.getPlayer();
+        GPlayer gPlayer = table.getOrCreatePlayer(player.getUniqueId());
 
         //First-time players will receive an instructional booklet:
         // - Note: adding it even if the climate-engine is disabled (in case it is enabled later)
-        if (!gPlayer.getPlayer().hasPlayedBefore()) {
+        if (!player.hasPlayedBefore()) {
             ItemStack wiki = new ItemStack(Material.WRITTEN_BOOK);
             final BookMeta meta = (BookMeta) wiki.getItemMeta();
             meta.setDisplayName(Lang.WIKI_NAME.get());
@@ -53,7 +55,7 @@ public class PlayerListener implements Listener {
             //Create the book and add to inventory:
             meta.setPages(content);
             wiki.setItemMeta(meta);
-            gPlayer.getPlayer().getInventory().addItem(wiki);
+            player.getInventory().addItem(wiki);
 
             //Notify the player in chat:
             gPlayer.sendMsg(Lang.WIKI_ADDED);
@@ -66,7 +68,7 @@ public class PlayerListener implements Listener {
 
         if (engine != null && engine.isEnabled()) {
             //Show players their current carbon score in chat:
-            gPlayer.getPlayer().performCommand("gw score");
+            player.performCommand("gw score");
 
             //Add the player to the scoreboard:
             gw.getScoreboard().connect(gPlayer);

@@ -96,7 +96,7 @@ public class GScoreboard {
             disconnect(gPlayer);
 
             //Connect online players to their associated-world scoreboards:
-            Player onlinePlayer = gPlayer.getPlayer();
+            Player onlinePlayer = gPlayer.getOnlinePlayer();
             if (onlinePlayer != null) {
                 Scoreboard scoreboard = getScoreboard(gPlayer);
                 onlinePlayer.setScoreboard(scoreboard);
@@ -220,7 +220,7 @@ public class GScoreboard {
         if (gPlayer != null) {
             //Do not update associated-worlds with disabled climate-engines:
             // - Ignore offline players (e.g., someone completing an offline player's bounty)
-            Player onlinePlayer = gPlayer.getPlayer();
+            Player onlinePlayer = gPlayer.getOnlinePlayer();
             if (onlinePlayer != null && ClimateEngine.getInstance().isClimateEngineEnabled(gPlayer.getAssociatedWorldId())) {
                 //Update the player's score:
                 Scoreboard scoreboard = getScoreboard(gPlayer);

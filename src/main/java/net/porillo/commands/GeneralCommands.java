@@ -92,10 +92,11 @@ public class GeneralCommands extends BaseCommand {
 
                 if (bountyId > 0) {
                     OffsetBounty bounty = OffsetBounty.join(gPlayer, bountyId);
-                    if (bounty != null) {
+                    Player onlinePlayer = gPlayer.getOnlinePlayer();
+                    if (onlinePlayer != null && bounty != null) {
                         OffsetBounty.notify(
                               bounty,
-                              String.format(Lang.BOUNTY_ACCEPTEDBY.get(), gPlayer.getPlayer().getName()),
+                              String.format(Lang.BOUNTY_ACCEPTEDBY.get(), onlinePlayer.getName()),
                               Lang.BOUNTY_ACCEPTED.get()
                         );
                     }
@@ -117,12 +118,15 @@ public class GeneralCommands extends BaseCommand {
                 if (bounty == null) {
                     gPlayer.sendMsg(Lang.BOUNTY_NOTJOINED);
                 } else {
-                    OffsetBounty.notify(
-                          bounty,
-                          gPlayer,
-                          String.format(Lang.BOUNTY_ABANDONEDBY.get(), gPlayer.getPlayer().getName()),
-                          Lang.BOUNTY_ABANDONED.get()
-                    );
+                    Player onlinePlayer = gPlayer.getOnlinePlayer();
+                    if (onlinePlayer != null) {
+                        OffsetBounty.notify(
+                              bounty,
+                              gPlayer,
+                              String.format(Lang.BOUNTY_ABANDONEDBY.get(), onlinePlayer.getName()),
+                              Lang.BOUNTY_ABANDONED.get()
+                        );
+                    }
                 }
             }
         }
@@ -356,8 +360,8 @@ public class GeneralCommands extends BaseCommand {
      * Show the player's carbon score as a chat message
      */
     private static void showCarbonScore(GPlayer gPlayer) {
-        Player player = gPlayer.getPlayer();
-        if (player != null) {
+        Player onlinePlayer = gPlayer.getOnlinePlayer();
+        if (onlinePlayer != null) {
             //Do not show scored for worlds with disabled climate-engines:
             // - Note: temperature is based on the player's associated-world (not the current world)
             WorldClimateEngine associatedClimateEngine =

@@ -7,6 +7,7 @@ import net.porillo.config.Lang;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -55,8 +56,18 @@ public class GPlayer {
         this.worldId = UUID.fromString(rs.getString(5));
     }
 
-    public Player getPlayer() {
+    /**
+     * @return player-record if online, NULL otherwise
+     */
+    public Player getOnlinePlayer() {
         return Bukkit.getPlayer(uuid);
+    }
+
+    /**
+     * @return never NULL, even when player-record does not exist
+     */
+    public OfflinePlayer getOfflinePlayer() {
+        return Bukkit.getOfflinePlayer(uuid);
     }
 
     public UUID getAssociatedWorldId() {
@@ -70,7 +81,7 @@ public class GPlayer {
     }
 
     public void sendMsg(String msg) {
-        Player onlinePlayer = getPlayer();
+        Player onlinePlayer = getOnlinePlayer();
         if (onlinePlayer != null) {
             onlinePlayer.sendMessage(msg);
         }

@@ -427,7 +427,7 @@ public class ChatTable {
         // - Note: escaping newlines prior to execution
         return String.format(
               "tellraw %s [%s]",
-              gPlayer.getPlayer().getName(),
+              gPlayer.getOfflinePlayer().getName(),
               jsonBuilder.toString().replace("\n", "\\n"));
     }
 }

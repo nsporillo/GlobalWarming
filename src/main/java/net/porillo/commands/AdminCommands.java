@@ -56,10 +56,12 @@ public class AdminCommands extends BaseCommand {
                         }
                     }
 
-                    Player player = gPlayer.getPlayer();
-                    Supplier<HashSet<BlockChange>> changes = EffectEngine.getInstance().getEffect(SeaLevelRise.class, ClimateEffectType.SEA_LEVEL_RISE).execute(player.getLocation().getChunk().getChunkSnapshot(), seaLevel);
-                    new SyncChunkUpdateTask(player.getLocation().getChunk(), CompletableFuture.supplyAsync(changes)).runTaskLater(GlobalWarming.getInstance(), 40L);
-                    gPlayer.sendMsg(ChatColor.GREEN + String.format("Applying sea level rise from y:%d to chunk", seaLevel));
+                    Player onlinePlayer = gPlayer.getOnlinePlayer();
+                    if (onlinePlayer != null) {
+                        Supplier<HashSet<BlockChange>> changes = EffectEngine.getInstance().getEffect(SeaLevelRise.class, ClimateEffectType.SEA_LEVEL_RISE).execute(onlinePlayer.getLocation().getChunk().getChunkSnapshot(), seaLevel);
+                        new SyncChunkUpdateTask(onlinePlayer.getLocation().getChunk(), CompletableFuture.supplyAsync(changes)).runTaskLater(GlobalWarming.getInstance(), 40L);
+                        gPlayer.sendMsg(ChatColor.GREEN + String.format("Applying sea level rise from y:%d to chunk", seaLevel));
+                    }
                 } else {
                     gPlayer.sendMsg(ChatColor.RED + "Invalid Args");
                 }

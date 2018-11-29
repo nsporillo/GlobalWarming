@@ -116,9 +116,9 @@ public class OffsetBounty {
             double balance = 0;
             Economy economy = GlobalWarming.getEconomy();
             if (economy != null) {
-                EconomyResponse response = economy.withdrawPlayer(gPlayer.getPlayer(), reward);
+                EconomyResponse response = economy.withdrawPlayer(gPlayer.getOfflinePlayer(), reward);
                 isWithdrawn = response.transactionSuccess();
-                balance = economy.getBalance(gPlayer.getPlayer());
+                balance = economy.getBalance(gPlayer.getOfflinePlayer());
             }
 
             if (isWithdrawn) {
@@ -227,11 +227,11 @@ public class OffsetBounty {
         if (bounty != null && bounty.getTimeCompleted() != 0) {
             Economy economy = GlobalWarming.getEconomy();
             if (economy != null) {
-                economy.depositPlayer(hunter.getPlayer(), bounty.getReward());
+                economy.depositPlayer(hunter.getOfflinePlayer(), bounty.getReward());
                 notify(
                       bounty,
                       hunter,
-                      String.format(Lang.BOUNTY_COMPLETEDBY.get(), hunter.getPlayer().getName()),
+                      String.format(Lang.BOUNTY_COMPLETEDBY.get(), hunter.getOfflinePlayer().getName()),
                       String.format(Lang.BOUNTY_COMPLETED.get(), bounty.getReward()));
             }
         }
@@ -272,7 +272,7 @@ public class OffsetBounty {
         Economy economy = GlobalWarming.getEconomy();
         if (economy != null) {
             for (OffsetBounty bounty : cancelledBounties) {
-                economy.depositPlayer(gPlayer.getPlayer(), bounty.getReward());
+                economy.depositPlayer(gPlayer.getOfflinePlayer(), bounty.getReward());
                 refund += bounty.getReward();
             }
         }
