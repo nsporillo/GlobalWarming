@@ -31,9 +31,9 @@ public class AdminCommands extends BaseCommand {
             AsyncDBQueue.getInstance().setDebug(!value);
 
             if (!value) {
-                gPlayer.sendMsg(ChatColor.GREEN + "Database console logging = " +  ChatColor.YELLOW + "true.");
+                gPlayer.sendMsg(String.format("%sDatabase console logging = %strue.", ChatColor.GREEN, ChatColor.YELLOW));
             } else {
-                gPlayer.sendMsg(ChatColor.GREEN + "Database console logging = " + ChatColor.GRAY + "false.");
+                gPlayer.sendMsg(String.format("%sDatabase console logging = %sfalse.", ChatColor.GREEN, ChatColor.GRAY));
             }
         }
 
@@ -47,7 +47,6 @@ public class AdminCommands extends BaseCommand {
             public void onSeaLevel(GPlayer gPlayer, String[] args) {
                 if (args.length < 2) {
                     int seaLevel = 62;
-
                     if (args.length == 1) {
                         try {
                             seaLevel = Integer.parseInt(args[0]);
@@ -68,3 +67,4 @@ public class AdminCommands extends BaseCommand {
         }
     }
 }
+

@@ -15,8 +15,6 @@ import java.util.List;
 
 public class WorldClimateEngine {
 
-	private final String worldName;
-
 	@Getter private WorldConfig config;
 
 	// Models
@@ -27,15 +25,14 @@ public class WorldClimateEngine {
 	@Getter private CarbonIndexModel carbonIndexModel;
 
 	public WorldClimateEngine(WorldConfig config) {
-		this.worldName = config.getWorld();
 		this.config = config;
 
 		// Worlds load their own model file
-		this.scoreTempModel = new ScoreTempModel(worldName);
-		this.contributionModel = new ContributionModel(worldName);
-		this.reductionModel = new ReductionModel(worldName);
-		this.entityFitnessModel = new EntityFitnessModel(worldName);
-		this.carbonIndexModel = new CarbonIndexModel(worldName);
+		this.scoreTempModel = new ScoreTempModel(config.getWorldId());
+		this.contributionModel = new ContributionModel(config.getWorldId());
+		this.reductionModel = new ReductionModel(config.getWorldId());
+		this.entityFitnessModel = new EntityFitnessModel(config.getWorldId());
+		this.carbonIndexModel = new CarbonIndexModel(config.getWorldId());
 	}
 
 	public Reduction treeGrow(Tree tree, TreeType treeType, List<BlockState> blocks) {
@@ -47,9 +44,9 @@ public class WorldClimateEngine {
 		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 		Reduction reduction = new Reduction();
 		reduction.setUniqueID(uniqueId);
-		reduction.setWorldName(worldName);
-		reduction.setReductioner(tree.getOwnerID());
-		reduction.setReductionKey(tree.getUniqueID());
+		reduction.setWorldId(config.getWorldId());
+		reduction.setReductioner(tree.getOwnerId());
+		reduction.setReductionKey(tree.getUniqueId());
 		reduction.setReductionValue(reductionValue);
 		return reduction;
 	}
@@ -64,9 +61,9 @@ public class WorldClimateEngine {
 			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 			contribution = new Contribution();
 			contribution.setUniqueID(uniqueId);
-			contribution.setWorldName(worldName);
-			contribution.setContributer(furnace.getOwnerID());
-			contribution.setContributionKey(furnace.getUniqueID());
+			contribution.setWorldId(config.getWorldId());
+			contribution.setContributer(furnace.getOwnerId());
+			contribution.setContributionKey(furnace.getUniqueId());
 			contribution.setContributionValue((int) contributionModel.getContribution(fuel.getType()));
 		}
 
@@ -75,16 +72,16 @@ public class WorldClimateEngine {
 
 	public double getTemperature() throws NullPointerException {
 		WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
-		GWorld world = worldTable.getWorld(worldName);
-		if (world == null) {
-			throw new NullPointerException(String.format("World not found: [%s]", worldName));
+		GWorld gWorld = worldTable.getWorld(config.getWorldId());
+		if (gWorld == null) {
+			throw new NullPointerException(String.format("World not found: [%s]", config.getWorldId()));
 		}
 
-		return scoreTempModel.getTemperature(world.getCarbonValue());
+		return scoreTempModel.getTemperature(gWorld.getCarbonValue());
 	}
 
 	public boolean isEffectEnabled(ClimateEffectType type) {
-		return isEnabled() && config.getWorld().equals(worldName) && config.getEnabledEffects().contains(type);
+		return isEnabled() && config.getWorldId().equals(config.getWorldId()) && config.getEnabledEffects().contains(type);
 	}
 
 	public boolean isEnabled() {

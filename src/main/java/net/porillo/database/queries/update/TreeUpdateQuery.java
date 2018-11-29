@@ -23,7 +23,7 @@ public class TreeUpdateQuery extends UpdateQuery<Tree> {
 		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
 		preparedStatement.setBoolean(1, getObject().isSapling());
 		preparedStatement.setInt(2, getObject().getSize());
-		preparedStatement.setInt(3, getObject().getUniqueID());
+		preparedStatement.setInt(3, getObject().getUniqueId());
 		return preparedStatement;
 	}
 }

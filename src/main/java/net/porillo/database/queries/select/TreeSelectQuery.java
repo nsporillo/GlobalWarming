@@ -12,24 +12,24 @@ import java.util.List;
 
 public class TreeSelectQuery extends SelectQuery<Tree, TreeTable> {
 
-	public TreeSelectQuery(TreeTable callback) {
-		super("trees", callback);
-	}
+    public TreeSelectQuery(TreeTable callback) {
+        super("trees", callback);
+    }
 
-	@Override
-	public String getSQL() {
-		return "SELECT * FROM trees WHERE sapling=true";
-	}
+    @Override
+    public String getSQL() {
+        return "SELECT * FROM trees WHERE sapling = true";
+    }
 
-	@Override
-	public List<Tree> queryDatabase(Connection connection) throws SQLException {
-		List<Tree> treeList = new ArrayList<>();
-		ResultSet rs = prepareStatement(connection).executeQuery(getSQL());
+    @Override
+    public List<Tree> queryDatabase(Connection connection) throws SQLException {
+        List<Tree> treeList = new ArrayList<>();
+        ResultSet rs = prepareStatement(connection).executeQuery(getSQL());
 
-		while (rs.next()) {
-			treeList.add(new Tree(rs));
-		}
+        while (rs.next()) {
+            treeList.add(new Tree(rs));
+        }
 
-		return treeList;
-	}
+        return treeList;
+    }
 }

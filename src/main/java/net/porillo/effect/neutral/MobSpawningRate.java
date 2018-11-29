@@ -15,7 +15,7 @@ public class MobSpawningRate extends ListenerClimateEffect {
 
     @EventHandler
     public void onMobSpawn(EntitySpawnEvent event) {
-        WorldClimateEngine worldEngine = ClimateEngine.getInstance().getClimateEngine(event.getLocation().getWorld().getName());
+        WorldClimateEngine worldEngine = ClimateEngine.getInstance().getClimateEngine(event.getLocation().getWorld().getUID());
         if (worldEngine != null && worldEngine.isEffectEnabled(ClimateEffectType.MOB_SPAWN_RATE)) {
             Distribution distribution = worldEngine.getEntityFitnessModel().getEntityFitnessMap().get(event.getEntityType());
             if (distribution != null) {

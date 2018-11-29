@@ -158,8 +158,7 @@ public class GeneralCommands extends BaseCommand {
         @CommandPermission("globalwarming.score.show")
         public void onShow(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
-                Player player = gPlayer.getPlayer();
-                GlobalWarming.getInstance().getScoreboard().show(player, true);
+                GlobalWarming.getInstance().getScoreboard().show(gPlayer, true);
             }
         }
 
@@ -169,8 +168,7 @@ public class GeneralCommands extends BaseCommand {
         @CommandPermission("globalwarming.score.hide")
         public void onHide(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
-                Player player = gPlayer.getPlayer();
-                GlobalWarming.getInstance().getScoreboard().show(player, false);
+                GlobalWarming.getInstance().getScoreboard().show(gPlayer, false);
             }
         }
     }
@@ -217,7 +215,7 @@ public class GeneralCommands extends BaseCommand {
         boolean isCommandAllowed = false;
         if (isSpamming(gPlayer)) {
             gPlayer.sendMsg(Lang.GENERIC_SPAM);
-        } else if (!ClimateEngine.getInstance().isAssociatedEngineEnabled(gPlayer)) {
+        } else if (!ClimateEngine.getInstance().isClimateEngineEnabled(gPlayer.getAssociatedWorldId())) {
             gPlayer.sendMsg(Lang.ENGINE_DISABLED);
         } else {
             isCommandAllowed = true;
@@ -363,7 +361,7 @@ public class GeneralCommands extends BaseCommand {
             //Do not show scored for worlds with disabled climate-engines:
             // - Note: temperature is based on the player's associated-world (not the current world)
             WorldClimateEngine associatedClimateEngine =
-                  ClimateEngine.getInstance().getAssociatedClimateEngine(player);
+                  ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
 
             if (associatedClimateEngine != null && associatedClimateEngine.isEnabled()) {
                 int score = gPlayer.getCarbonScore();
@@ -382,8 +380,8 @@ public class GeneralCommands extends BaseCommand {
                     gPlayer.sendMsg(String.format("%s%s",
                           Lang.TEMPERATURE_HIGH.get(),
                           GlobalWarming.getEconomy() == null
-                          ? ""
-                          : Lang.TEMPERATURE_HIGHWITHBOUNTY.get()));
+                                ? ""
+                                : Lang.TEMPERATURE_HIGHWITHBOUNTY.get()));
                 }
             } else {
                 gPlayer.sendMsg(Lang.ENGINE_DISABLED);
@@ -395,8 +393,11 @@ public class GeneralCommands extends BaseCommand {
      * Show the top 10 polluters or planters as a chat message
      */
     private static void showTopTen(GPlayer gPlayer, boolean isPolluterList) {
-        if (ClimateEngine.getInstance().isAssociatedEngineEnabled(gPlayer)) {
-            CarbonIndexModel indexModel = ClimateEngine.getInstance().getAssociatedClimateEngine(gPlayer.getPlayer()).getCarbonIndexModel();
+        if (ClimateEngine.getInstance().isClimateEngineEnabled(gPlayer.getAssociatedWorldId())) {
+            WorldClimateEngine associatedClimateEngine =
+                  ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
+
+            CarbonIndexModel indexModel = associatedClimateEngine.getCarbonIndexModel();
             ChatTable chatTable = new ChatTable(isPolluterList ? Lang.TOPTABLE_POLLUTERS.get() : Lang.TOPTABLE_PLANTERS.get());
             chatTable.setGridColor(isPolluterList ? ChatColor.DARK_RED : ChatColor.GREEN);
             chatTable.addHeader(Lang.TOPTABLE_PLAYER.get(), 130);

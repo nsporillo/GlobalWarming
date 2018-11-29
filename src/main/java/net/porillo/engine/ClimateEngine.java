@@ -8,139 +8,90 @@ import net.porillo.config.Lang;
 import net.porillo.config.WorldConfig;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.engine.api.WorldClimateEngine;
-import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ClimateEngine {
 
-	private static ClimateEngine climateEngine;
+    private static ClimateEngine climateEngine;
+    private Map<UUID, WorldClimateEngine> worldClimateEngines;
+    @Getter private Gson gson;
 
-	private Map<String, WorldClimateEngine> worldClimateEngines;
-	@Getter private Gson gson;
+    public ClimateEngine() {
+        this.worldClimateEngines = new HashMap<>();
+        if (GlobalWarming.getInstance() != null) {
+            this.gson = GlobalWarming.getInstance().getGson();
+        } else {
+            this.gson = new GsonBuilder().setPrettyPrinting().create();
+        }
+    }
 
-	public ClimateEngine() {
-		this.worldClimateEngines = new HashMap<>();
-		if (GlobalWarming.getInstance() != null) {
-			this.gson = GlobalWarming.getInstance().getGson();
-		} else {
-			this.gson = new GsonBuilder().setPrettyPrinting().create();
-		}
-	}
+    public void loadWorldClimateEngines() {
+        //Load a world config for all worlds:
+        Set<WorldConfig> worldConfigs = new HashSet<>();
+        for (World world : Bukkit.getWorlds()) {
+            worldConfigs.add(new WorldConfig(world.getUID()));
+        }
 
-	public void loadWorldClimateEngines() {
-		Set<WorldConfig> worldConfigs = new HashSet<>();
+        for (WorldConfig config : worldConfigs) {
+            //Engine status notification:
+            final UUID worldId = config.getWorldId();
+            final World world = Bukkit.getWorld(worldId);
+            if (config.isEnabled()) {
+                GlobalWarming.getInstance().getLogger().info(String.format("Loading climate engine for: [%s]", world.getName()));
+            } else {
+                GlobalWarming.getInstance().getLogger().info(String.format("World: [%s] found, but is disabled", world.getName()));
+            }
 
-		// Load a world config for all worlds
-		for (World world : Bukkit.getWorlds()) {
-			worldConfigs.add(new WorldConfig(world.getName()));
-		}
+            //Add the climate engine:
+            worldClimateEngines.put(worldId, new WorldClimateEngine(config));
 
-		for (WorldConfig config : worldConfigs) {
-			final String world = config.getWorld();
+            //Delayed attempt create the world object if it doesn't currently exist:
+            WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
+            GWorld gWorld = worldTable.getWorld(worldId);
+            if (gWorld == null) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        GWorld gw = worldTable.getWorld(worldId);
+                        if (gw == null) {
+                            worldTable.insertNewWorld(worldId);
+                        }
+                    }
+                }.runTaskLater(GlobalWarming.getInstance(), 40L);
+            }
+        }
+    }
 
-			if (config.isEnabled()) {
-				GlobalWarming.getInstance().getLogger().info(String.format("Loading climate engine for: [%s]", world));
-			} else {
-				GlobalWarming.getInstance().getLogger().info(String.format("World: [%s] found, but is disabled", world));
-			}
+    public WorldClimateEngine getClimateEngine(UUID worldId) {
+        WorldClimateEngine climateEngine = null;
+        if (worldClimateEngines.containsKey(worldId)) {
+            climateEngine = worldClimateEngines.get(worldId);
+        }
 
-			worldClimateEngines.put(world, new WorldClimateEngine(config));
+        if (climateEngine == null) {
+            GlobalWarming.getInstance().getLogger().warning(String.format(
+                  Lang.ENGINE_NOTFOUND.get(),
+                  WorldConfig.getDisplayName(worldId)));
+        }
 
-			// Delayed attempt create the world object if it doesn't currently exist
-			WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
-			GWorld gworld = worldTable.getWorld(world);
-			if (gworld == null) {
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						GWorld gw = worldTable.getWorld(world);
+        return climateEngine;
+    }
 
-						if (gw == null) {
-							worldTable.insertNewWorld(world);
-						}
-					}
-				}.runTaskLater(GlobalWarming.getInstance(), 40L);
-			}
-		}
-	}
+    public boolean isClimateEngineEnabled(UUID worldId) {
+        WorldClimateEngine worldClimateEngine = getClimateEngine(worldId);
+        return worldClimateEngine != null && worldClimateEngine.isEnabled();
+    }
 
-	public WorldClimateEngine getClimateEngine(String worldName) {
-		WorldClimateEngine climateEngine = null;
-		if (worldClimateEngines.containsKey(worldName)) {
-			climateEngine = worldClimateEngines.get(worldName);
-		}
+    public static ClimateEngine getInstance() {
+        if (climateEngine == null) {
+            climateEngine = new ClimateEngine();
+        }
 
-		if (climateEngine == null) {
-			GlobalWarming.getInstance().getLogger().warning(String.format(Lang.ENGINE_NOTFOUND.get(), worldName));
-		}
-
-		return climateEngine;
-	}
-
-	/**
-	 * Helper function:
-	 * - Get the climate engine for the player's associated-world
-	 * - Note: GlobalWarming scores are not tied to a player's current-world
-	 */
-	public WorldClimateEngine getAssociatedClimateEngine(Player player) {
-		String associatedWorldName = getAssociatedWorldName(player);
-		return getClimateEngine(associatedWorldName);
-	}
-
-	/**
-	 * Helper function:
-	 * - Get the climate engine name of the player's associated-world
-	 * - Note: GlobalWarming scores are not tied to a player's current-world
-	 */
-	public String getAssociatedWorldName(Player player) {
-		World world = player == null
-			? null
-			: player.getWorld();
-
-		return world == null
-			? ""
-			: getAssociatedWorldName(world.getName());
-	}
-
-	/**
-	 * Helper function:
-	 * - Get the climate engine name of the given world's associated-world
-	 */
-	private String getAssociatedWorldName(String worldName) {
-		WorldClimateEngine currentWorldEngine = getClimateEngine(worldName);
-		return currentWorldEngine == null
-			? ""
-			: currentWorldEngine.getConfig().getAssociation();
-	}
-
-	public boolean isAssociatedEngineEnabled(GPlayer gPlayer) {
-		return gPlayer != null && isAssociatedEngineEnabled(gPlayer.getPlayer());
-	}
-
-	public boolean isAssociatedEngineEnabled(Player player) {
-		WorldClimateEngine associatedClimateEngine = getAssociatedClimateEngine(player);
-		return associatedClimateEngine != null && associatedClimateEngine.isEnabled();
-	}
-
-	public boolean isClimateEngineEnabled(String worldName) {
-		WorldClimateEngine worldClimateEngine = getClimateEngine(worldName);
-		return worldClimateEngine != null && worldClimateEngine.isEnabled();
-	}
-
-	public static ClimateEngine getInstance() {
-		if (climateEngine == null) {
-			climateEngine = new ClimateEngine();
-		}
-
-		return climateEngine;
-	}
+        return climateEngine;
+    }
 }

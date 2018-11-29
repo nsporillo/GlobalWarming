@@ -22,10 +22,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Maintain one periodic notification-message per world (uses the scoreboard's worlds)
@@ -35,7 +32,7 @@ import java.util.Map;
  */
 public class CO2Notifications {
     @Getter
-    private Map<String, BossBar> bossBars;
+    private Map<UUID, BossBar> bossBars;
     private static final long NOTIFICATION_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getNotificationInterval();
     private static final long NOTIFICATION_DURATION_TICKS = GlobalWarming.getInstance().getConf().getNotificationDuration();
     private static final int NORMAL_SEA_LEVEL = GlobalWarming.getInstance().getConf().getDefaultSeaLevel();
@@ -43,6 +40,7 @@ public class CO2Notifications {
     private static final double NORMAL_SNOW_LEVEL_HEIGHT = GlobalWarming.getInstance().getConf().getDefaultSnowLevel();
     private static final double NORMAL_FARM_YIELD_FITNESS = GlobalWarming.getInstance().getConf().getDefaultFarmYieldFitness();
     private static final double NORMAL_MOB_FITNESS = GlobalWarming.getInstance().getConf().getDefaultMobFitness();
+
     private enum TemperatureRange {LOW, AVERAGE, HIGH}
 
     public CO2Notifications() {
@@ -58,15 +56,15 @@ public class CO2Notifications {
                   synchronized (this) {
                       bossBars.clear();
                       GScoreboard scoreboard = GlobalWarming.getInstance().getScoreboard();
-                      for (String worldName : scoreboard.getScoreboards().keySet()) {
-                          World world = Bukkit.getWorld(worldName);
+                      for (UUID worldId : scoreboard.getScoreboards().keySet()) {
+                          World world = Bukkit.getWorld(worldId);
                           if (world != null) {
                               BossBar bossBar = Bukkit.createBossBar(
-                                    getNotificationMessage(worldName),
+                                    getNotificationMessage(worldId),
                                     BarColor.WHITE,
                                     BarStyle.SOLID);
 
-                              bossBars.put(worldName, bossBar);
+                              bossBars.put(worldId, bossBar);
                               for (Player player : world.getPlayers()) {
                                   bossBar.addPlayer(player);
                               }
@@ -88,17 +86,17 @@ public class CO2Notifications {
               }, 0L, NOTIFICATION_INTERVAL_TICKS);
     }
 
-    private String getNotificationMessage(String worldName) {
+    private String getNotificationMessage(UUID worldId) {
         String message = Lang.ENGINE_DISABLED.get();
-        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(worldName);
+        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
         if (climateEngine != null && climateEngine.isEnabled()) {
-            message = getTemperatureGuidance(worldName, climateEngine.getTemperature());
+            message = getTemperatureGuidance(worldId, climateEngine.getTemperature());
         }
 
         return message;
     }
 
-    private String getTemperatureGuidance(String worldName, double temperature) {
+    private String getTemperatureGuidance(UUID worldId, double temperature) {
         //Get the temperature range:
         String message = "";
         String optional = "";
@@ -115,7 +113,7 @@ public class CO2Notifications {
             //Get a message based on current conditions:
             String index = String.valueOf((int) temperature);
             double random = GlobalWarming.getInstance().getRandom().nextDouble();
-            WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldName);
+            WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
             if (worldClimateEngine != null) {
                 if (worldClimateEngine.isEffectEnabled(ClimateEffectType.FARM_YIELD) && random < 0.1) {
                     //Farm yields (with random materials):

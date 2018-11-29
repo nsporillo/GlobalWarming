@@ -15,6 +15,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.UUID;
+
 @ClimateData(type = ClimateEffectType.PERMANENT_SLOWNESS)
 public class PermanentSlowness extends ScheduleClimateEffect implements Listener {
 
@@ -34,8 +36,8 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        String eventWorldName = event.getPlayer().getWorld().getName();
-        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
+        UUID worldId = event.getPlayer().getWorld().getUID();
+        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
         if (climateEngine != null && climateEngine.isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
             updatePlayerSlowness(event.getPlayer(), climateEngine.getTemperature());
         }
@@ -44,7 +46,7 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
     @Override
     public void run() {
         for (World world : Bukkit.getWorlds()) {
-            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getName());
+            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
             if (climateEngine != null && climateEngine.isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
                 for (Player player : world.getPlayers()) {
                     updatePlayerSlowness(player, climateEngine.getTemperature());

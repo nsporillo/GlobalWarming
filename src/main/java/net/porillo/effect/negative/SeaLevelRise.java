@@ -10,8 +10,10 @@ import net.porillo.effect.api.change.block.BlockChange;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.util.MapUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
+import org.bukkit.World;
 
 import java.util.HashSet;
 import java.util.TreeMap;
@@ -20,62 +22,64 @@ import java.util.function.Supplier;
 @ClimateData(type = ClimateEffectType.SEA_LEVEL_RISE)
 public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange> {
 
-	private TreeMap<Double, Integer> seaLevels;
+    private TreeMap<Double, Integer> seaLevels;
 
-	@Override
-	public Supplier<HashSet<BlockChange>> execute(ChunkSnapshot snapshot) {
-		WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(snapshot.getWorldName());
-		if (climateEngine != null && climateEngine.isEnabled()) {
-			return execute(snapshot, MapUtil.searchTreeMap(seaLevels, climateEngine.getTemperature()));
-		}
+    @Override
+    public Supplier<HashSet<BlockChange>> execute(ChunkSnapshot snapshot) {
+        World world = Bukkit.getWorld(snapshot.getWorldName());
+        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
+        if (climateEngine != null && climateEngine.isEnabled()) {
+            return execute(snapshot, MapUtil.searchTreeMap(seaLevels, climateEngine.getTemperature()));
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public Supplier<HashSet<BlockChange>> execute(ChunkSnapshot snapshot, int seaLevel) {
-		return new SeaLevelRiseExecutor(snapshot, seaLevel);
-	}
+    public Supplier<HashSet<BlockChange>> execute(ChunkSnapshot snapshot, int seaLevel) {
+        return new SeaLevelRiseExecutor(snapshot, seaLevel);
+    }
 
-	@Override
-	public void setJsonModel(JsonObject jsonModel) {
-		super.setJsonModel(jsonModel);
-		seaLevels = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<TreeMap<Double, Integer>>(){}.getType());
-		if (seaLevels == null) {
-			unregister();
-		}
-	}
+    @Override
+    public void setJsonModel(JsonObject jsonModel) {
+        super.setJsonModel(jsonModel);
+        seaLevels = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<TreeMap<Double, Integer>>() {
+        }.getType());
+        if (seaLevels == null) {
+            unregister();
+        }
+    }
 
-	private class SeaLevelRiseExecutor implements Supplier<HashSet<BlockChange>> {
+    private class SeaLevelRiseExecutor implements Supplier<HashSet<BlockChange>> {
 
-		private ChunkSnapshot snapshot;
-		private int seaLevel;
+        private ChunkSnapshot snapshot;
+        private int seaLevel;
 
-		private SeaLevelRiseExecutor(ChunkSnapshot snapshot, int seaLevel) {
-			this.snapshot = snapshot;
-			this.seaLevel = seaLevel;
-		}
+        private SeaLevelRiseExecutor(ChunkSnapshot snapshot, int seaLevel) {
+            this.snapshot = snapshot;
+            this.seaLevel = seaLevel;
+        }
 
-		@Override
-		public HashSet<BlockChange> get() {
-			HashSet<BlockChange> blockChanges = new HashSet<>();
+        @Override
+        public HashSet<BlockChange> get() {
+            HashSet<BlockChange> blockChanges = new HashSet<>();
 
-			// loop all x,z coords in the chunk
-			for (int x = 0; x < 16; x++) {
-				for (int z = 0; z < 16; z++) {
-					int y = seaLevel;
-					final Material blockType = snapshot.getBlockData(x, y, z).getMaterial();
+            // loop all x,z coords in the chunk
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    int y = seaLevel;
+                    final Material blockType = snapshot.getBlockData(x, y, z).getMaterial();
 
-					// If the block at "sea level" is water, check above to see if it's air
-					if (blockType == Material.WATER) {
-						final Material aboveBlockType = snapshot.getBlockData(x, (y + 1), z).getMaterial();
-						if (aboveBlockType == Material.AIR) {
-							blockChanges.add(new BlockChange(Material.AIR, Material.WATER, x, y, z));
-						}
-					}
-				}
-			}
+                    // If the block at "sea level" is water, check above to see if it's air
+                    if (blockType == Material.WATER) {
+                        final Material aboveBlockType = snapshot.getBlockData(x, (y + 1), z).getMaterial();
+                        if (aboveBlockType == Material.AIR) {
+                            blockChanges.add(new BlockChange(Material.AIR, Material.WATER, x, y, z));
+                        }
+                    }
+                }
+            }
 
-			return blockChanges;
-		}
-	}
+            return blockChanges;
+        }
+    }
 }

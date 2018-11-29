@@ -7,6 +7,7 @@ import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.engine.api.Model;
+import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +17,15 @@ public class EffectModel extends Model {
     @Getter private Map<ClimateEffectType, JsonObject> effectMap;
 
     public EffectModel() {
-        super("","effectModel.json");
+        super(Bukkit.getWorlds().get(0).getUID(), "effectModel.json");
         this.loadModel();
     }
 
     @Override
     public void loadModel() {
         this.effectMap = GlobalWarming.getInstance().getGson()
-                .fromJson(super.getContents(), new TypeToken<Map<ClimateEffectType, JsonObject>>(){}.getType());
+              .fromJson(super.getContents(), new TypeToken<Map<ClimateEffectType, JsonObject>>() {
+              }.getType());
 
         if (this.effectMap == null) {
             throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));

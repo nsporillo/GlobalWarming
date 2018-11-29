@@ -23,14 +23,20 @@ public class ChatTable {
     public enum Section {
         HEADER(0),
         BODY(1);
-        public int get() {return value;}
+
+        public int get() {
+            return value;
+        }
+
         private final int value;
+
         Section(int value) {
             this.value = value;
         }
     }
 
     private enum Alignment {LEFT, CENTER, RIGHT}
+
     private final Map<Character, Integer> charWidth;
     @Setter private String title;
     private List<String> headers;
@@ -73,7 +79,7 @@ public class ChatTable {
         onePixelPad[Section.BODY.get()] = '\u17f2';
 
         //ASCII character sizes:
-        charWidth = new HashMap();
+        charWidth = new HashMap<>();
         charWidth.put(' ', 4);
         charWidth.put('!', 2);
         charWidth.put('"', 4);
@@ -376,7 +382,7 @@ public class ChatTable {
         tableBuilder.append(gridColor);
         tableBuilder.append(delimiters[Section.HEADER.get()]);
         List<String> footers = new ArrayList<>();
-        for (int width: headerWidth) {
+        for (int width : headerWidth) {
             footers.add(pad("", width, Section.HEADER, Alignment.LEFT));
         }
 

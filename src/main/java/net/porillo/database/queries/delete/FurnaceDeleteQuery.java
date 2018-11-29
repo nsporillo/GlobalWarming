@@ -1,30 +1,30 @@
 package net.porillo.database.queries.delete;
 
 import net.porillo.database.api.DeleteQuery;
-import net.porillo.objects.Tree;
+import net.porillo.objects.Furnace;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class TreeDeleteQuery extends DeleteQuery {
+public class FurnaceDeleteQuery extends DeleteQuery {
 
-    private Tree tree;
+    private Furnace furnace;
 
-    public TreeDeleteQuery(Tree tree) {
-        super("trees");
-        this.tree = tree;
+    public FurnaceDeleteQuery(Furnace furnace) {
+        super("furnaces");
+        this.furnace = furnace;
     }
 
     @Override
     public String getSQL() {
-        return "DELETE FROM trees WHERE uniqueId = ?";
+        return "DELETE FROM furnaces WHERE uniqueId = ?";
     }
 
     @Override
     public PreparedStatement prepareStatement(Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-        preparedStatement.setInt(1, tree.getUniqueId());
+        preparedStatement.setInt(1, furnace.getUniqueId());
         return preparedStatement;
     }
 }

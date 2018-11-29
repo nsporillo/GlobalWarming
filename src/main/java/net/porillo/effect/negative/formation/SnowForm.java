@@ -22,7 +22,7 @@ public class SnowForm extends ListenerClimateEffect {
     @EventHandler
     public void blockFormEvent(BlockFormEvent event) {
         if (event.getNewState().getType() == Material.SNOW) {
-            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName());
+            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getUID());
             if (climateEngine != null && climateEngine.isEffectEnabled(ClimateEffectType.SNOW_FORMATION)) {
                 double temperature = climateEngine.getTemperature();
                 if (event.getBlock().getY() < heightMap.getValue(temperature)) {
@@ -35,10 +35,10 @@ public class SnowForm extends ListenerClimateEffect {
     @Override
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
-        this.heightMap = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<Distribution>(){}.getType());
+        this.heightMap = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<Distribution>() {
+        }.getType());
         if (this.heightMap == null) {
             unregister();
         }
     }
-
 }

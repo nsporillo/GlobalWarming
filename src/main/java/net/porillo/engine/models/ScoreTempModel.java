@@ -10,45 +10,47 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 public class ScoreTempModel extends Model {
 
-	@Getter private Map<Integer, Double> indexMap;
+    @Getter private Map<Integer, Double> indexMap;
 
-	private double[] scores;
-	private double[] temps;
+    private double[] scores;
+    private double[] temps;
 
-	private PolynomialSplineFunction splineFunction;
+    private PolynomialSplineFunction splineFunction;
 
-	public ScoreTempModel(String worldName) {
-		super(worldName, "scoreTempModel.json");
-		this.loadModel();
-	}
+    public ScoreTempModel(UUID worldId) {
+        super(worldId, "scoreTempModel.json");
+        this.loadModel();
+    }
 
-	@Override
-	public void loadModel() {
-		this.indexMap = new TreeMap<>(Comparator.naturalOrder());
-		this.indexMap.putAll(ClimateEngine.getInstance().getGson().fromJson(
-			super.getContents(),
-			new TypeToken<Map<Integer, Double>>() {}.getType()));
+    @Override
+    public void loadModel() {
+        this.indexMap = new TreeMap<>(Comparator.naturalOrder());
+        this.indexMap.putAll(ClimateEngine.getInstance().getGson().fromJson(
+              super.getContents(),
+              new TypeToken<Map<Integer, Double>>() {
+              }.getType()));
 
-		if (this.indexMap == null) {
-			throw new RuntimeException("No values found in " + super.getPath());
-		}
+        if (this.indexMap == null) {
+            throw new RuntimeException("No values found in " + super.getPath());
+        }
 
-		this.scores = new double[indexMap.size()];
-		this.temps = new double[indexMap.size()];
+        this.scores = new double[indexMap.size()];
+        this.temps = new double[indexMap.size()];
 
-		int i = 0;
-		for (Map.Entry<Integer, Double> entry : indexMap.entrySet()) {
-			scores[i] = entry.getKey();
-			temps[i++] = entry.getValue();
-		}
+        int i = 0;
+        for (Map.Entry<Integer, Double> entry : indexMap.entrySet()) {
+            scores[i] = entry.getKey();
+            temps[i++] = entry.getValue();
+        }
 
-		this.splineFunction = new LinearInterpolator().interpolate(this.scores, this.temps);
-	}
+        this.splineFunction = new LinearInterpolator().interpolate(this.scores, this.temps);
+    }
 
-	public double getTemperature(int score) {
-		return splineFunction.value((double) score);
-	}
+    public double getTemperature(int score) {
+        return splineFunction.value((double) score);
+    }
 }

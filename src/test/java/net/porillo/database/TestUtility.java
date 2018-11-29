@@ -10,51 +10,49 @@ import java.util.UUID;
 
 public class TestUtility {
 
-	private static TestUtility instance;
+    private static TestUtility instance;
 
-	@Getter private final ConnectionManager connectionManager;
-	@Getter private final Random random = new Random();
+    @Getter private final ConnectionManager connectionManager;
+    @Getter private final Random random = new Random();
 
-	public TestUtility() {
-		this.connectionManager = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests");
-	}
+    public TestUtility() {
+        this.connectionManager = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests");
+    }
 
-	public GWorld nextRandomWorld() {
-		GWorld gWorld = new GWorld();
-		gWorld.setUniqueID(random.nextInt(Integer.MAX_VALUE));
-		byte[] worldName = new byte[64];
-		random.nextBytes(worldName);
+    public GWorld nextRandomWorld() {
+        GWorld gWorld = new GWorld();
+        gWorld.setUniqueID(random.nextInt(Integer.MAX_VALUE));
+        gWorld.setWorldId(UUID.randomUUID());
+        gWorld.setTemperature(14.0 + random.nextInt(2));
+        gWorld.setFirstSeen(random.nextLong());
+        gWorld.setCarbonValue(random.nextInt(16777215));
+        gWorld.setSeaLevel(random.nextInt(255));
+        gWorld.setSize(random.nextInt(65535));
+        return gWorld;
+    }
 
-		gWorld.setWorldName(new String(worldName));
-		gWorld.setTemperature(14.0 + random.nextInt(2));
-		gWorld.setFirstSeen(random.nextLong());
-		gWorld.setCarbonValue(random.nextInt(16777215));
-		gWorld.setSeaLevel(random.nextInt(255));
-		gWorld.setSize(random.nextInt(65535));
-		return gWorld;
-	}
+    public GPlayer nextRandomPlayer() {
+        GPlayer gPlayer = new GPlayer();
+        gPlayer.setUniqueId(random.nextInt(Integer.MAX_VALUE));
+        gPlayer.setUuid(UUID.randomUUID());
+        gPlayer.setCarbonScore(random.nextInt(16777215));
+        gPlayer.setFirstSeen(0);
+        gPlayer.setWorldId(UUID.randomUUID());
+        return gPlayer;
+    }
 
-	public GPlayer nextRandomPlayer() {
-		GPlayer gPlayer = new GPlayer();
-		gPlayer.setUniqueId(random.nextInt(Integer.MAX_VALUE));
-		gPlayer.setUuid(UUID.randomUUID());
-		gPlayer.setCarbonScore(random.nextInt(16777215));
-		gPlayer.setFirstSeen(0);
-		return gPlayer;
-	}
+    public Furnace nextRandomFurnace() {
+        Furnace furnace = new Furnace();
+        furnace.setUniqueId(random.nextInt(Integer.MAX_VALUE));
+        furnace.setOwnerId(random.nextInt(Integer.MAX_VALUE));
+        //TODO: Update furnace class to use worldId,x,y,z for location
+        return furnace;
+    }
 
-	public Furnace nextRandomFurnace() {
-		Furnace furnace = new Furnace();
-		furnace.setUniqueID(random.nextInt(Integer.MAX_VALUE));
-		furnace.setOwnerID(random.nextInt(Integer.MAX_VALUE));
-		//TODO: Update furnace class to use worldName,x,y,z for location
-		return furnace;
-	}
-
-	public static TestUtility getInstance() {
-		if (instance == null) {
-			instance = new TestUtility();
-		}
-		return instance;
-	}
+    public static TestUtility getInstance() {
+        if (instance == null) {
+            instance = new TestUtility();
+        }
+        return instance;
+    }
 }

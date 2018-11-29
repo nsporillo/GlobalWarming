@@ -9,6 +9,7 @@ import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
@@ -31,7 +32,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class GScoreboard {
     @Getter
-    private Map<String, Scoreboard> scoreboards;
+    private Map<UUID, Scoreboard> scoreboards;
     private ConcurrentLinkedQueue<UUID> requestQueue;
     private static final String GLOBAL_WARMING = "GlobalWarming";
     private static final long SCOREBOARD_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getScoreboardInterval();
@@ -52,25 +53,24 @@ public class GScoreboard {
      * - The player may be in a different world, that's ok
      * - Creates the scoreboard if not found
      */
-    private Scoreboard getScoreboard(Player player) {
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(player);
-        return getScoreboard(associatedWorldName, true);
+    private Scoreboard getScoreboard(GPlayer gPlayer) {
+        return getScoreboard(gPlayer.getAssociatedWorldId(), true);
     }
 
     /**
      * Get any scoreboard by world
      * - Note: players should use their associated-world (not current-world)
      */
-    private Scoreboard getScoreboard(String worldName, boolean isCreateIfNotFound) {
+    private Scoreboard getScoreboard(UUID worldId, boolean isCreateIfNotFound) {
         Scoreboard scoreboard = null;
-        if (ClimateEngine.getInstance().isClimateEngineEnabled(worldName)) {
-            if (scoreboards.containsKey(worldName)) {
+        if (ClimateEngine.getInstance().isClimateEngineEnabled(worldId)) {
+            if (scoreboards.containsKey(worldId)) {
                 //Existing scoreboard:
-                scoreboard = scoreboards.get(worldName);
+                scoreboard = scoreboards.get(worldId);
             } else if (isCreateIfNotFound) {
                 //New scoreboard:
                 scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-                scoreboards.put(worldName, scoreboard);
+                scoreboards.put(worldId, scoreboard);
 
                 //Objective (scoreboard title / group):
                 Objective objective = scoreboard.registerNewObjective(
@@ -91,21 +91,19 @@ public class GScoreboard {
      * - Creates a new scoreboard for the world if required
      */
     public void connect(GPlayer gPlayer) {
-        Player player = null;
         if (gPlayer != null) {
-            player = gPlayer.getPlayer();
-        }
+            //Disconnect the player from the current scoreboard (if required):
+            disconnect(gPlayer);
 
-        if (player != null) {
-            //Disconnect from the current scoreboard (if required):
-            disconnect(player);
-
-            //Connect to the player's associated-world scoreboard:
-            Scoreboard scoreboard = getScoreboard(player);
-            player.setScoreboard(scoreboard);
-            Team team = scoreboard.registerNewTeam(player.getName());
-            team.addPlayer(player);
-            update(gPlayer.getUuid());
+            //Connect online players to their associated-world scoreboards:
+            Player onlinePlayer = gPlayer.getPlayer();
+            if (onlinePlayer != null) {
+                Scoreboard scoreboard = getScoreboard(gPlayer);
+                onlinePlayer.setScoreboard(scoreboard);
+                Team team = scoreboard.registerNewTeam(onlinePlayer.getName());
+                team.addPlayer(onlinePlayer);
+                update(gPlayer);
+            }
         }
     }
 
@@ -114,13 +112,14 @@ public class GScoreboard {
      * - Removes the player from their team (i.e., player-color)
      * - Removes their score from the scoreboard
      * - The scoreboard will still be displayed on the player's client
-     *   until a new scoreboard is assigned or the user exits
+     * until a new scoreboard is assigned or the user exits
      */
-    public void disconnect(Player player) {
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(player);
-        Scoreboard scoreboard = getScoreboard(associatedWorldName, false);
+    public void disconnect(GPlayer gPlayer) {
+        UUID associatedWorldId = gPlayer.getAssociatedWorldId();
+        Scoreboard scoreboard = getScoreboard(associatedWorldId, false);
         if (scoreboard != null) {
             //Remove the team (i.e., player-color)
+            OfflinePlayer player = Bukkit.getOfflinePlayer(gPlayer.getUuid());
             Team team = scoreboard.getPlayerTeam(player);
             if (team != null) {
                 team.removePlayer(player);
@@ -132,7 +131,7 @@ public class GScoreboard {
 
             //Delete unused scoreboards:
             if (scoreboard.getPlayers().size() == 0) {
-                scoreboards.remove(associatedWorldName);
+                scoreboards.remove(associatedWorldId);
             }
         }
     }
@@ -142,10 +141,12 @@ public class GScoreboard {
      * Request a score update
      * - One unique request per player only
      */
-    public void update(UUID playerId) {
+    public void update(GPlayer player) {
         synchronized (this) {
-            if (!requestQueue.contains(playerId)) {
-                requestQueue.add(playerId);
+            if (player != null) {
+                if (!requestQueue.contains(player.getUuid())) {
+                    requestQueue.add(player.getUuid());
+                }
             }
         }
     }
@@ -153,8 +154,8 @@ public class GScoreboard {
     /**
      * Show or hide the scoreboard (UI)
      */
-    public void show(Player player, boolean isVisible) {
-        Scoreboard scoreboard = getScoreboard(player);
+    public void show(GPlayer gPlayer, boolean isVisible) {
+        Scoreboard scoreboard = getScoreboard(gPlayer);
         if (isVisible) {
             Objective objective = scoreboard.getObjective(GLOBAL_WARMING);
             if (objective != null) {
@@ -171,11 +172,10 @@ public class GScoreboard {
     private void updateGlobalScores() {
         for (World world : Bukkit.getWorlds()) {
             //Do not update worlds with disabled climate-engines:
-            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getName());
+            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
             if (climateEngine != null && climateEngine.isEnabled()) {
                 //Get the scoreboard for this world:
-                String worldName = world.getName();
-                Scoreboard scoreboard = getScoreboard(worldName, false);
+                Scoreboard scoreboard = getScoreboard(world.getUID(), false);
 
                 //Get its objective (scoreboard title / group):
                 Objective objective = null;
@@ -220,17 +220,17 @@ public class GScoreboard {
         if (gPlayer != null) {
             //Do not update associated-worlds with disabled climate-engines:
             // - Ignore offline players (e.g., someone completing an offline player's bounty)
-            Player player = gPlayer.getPlayer();
-            if (player != null && ClimateEngine.getInstance().isAssociatedEngineEnabled(player)) {
+            Player onlinePlayer = gPlayer.getPlayer();
+            if (onlinePlayer != null && ClimateEngine.getInstance().isClimateEngineEnabled(gPlayer.getAssociatedWorldId())) {
                 //Update the player's score:
-                Scoreboard scoreboard = getScoreboard(player);
+                Scoreboard scoreboard = getScoreboard(gPlayer);
                 if (scoreboard != null) {
                     Objective objective = scoreboard.getObjective(GLOBAL_WARMING);
                     if (objective != null) {
-                        Team team = scoreboard.getPlayerTeam(player);
+                        Team team = scoreboard.getPlayerTeam(onlinePlayer);
                         if (team != null) {
                             team.setColor(GeneralCommands.getScoreColor(gPlayer.getCarbonScore()));
-                            objective.getScore(player).setScore(gPlayer.getCarbonScore());
+                            objective.getScore(onlinePlayer).setScore(gPlayer.getCarbonScore());
                         }
                     }
                 }
