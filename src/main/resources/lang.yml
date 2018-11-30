@@ -12,6 +12,7 @@ lang:
     REWARD: "REWARD"
     REWARDREQUIRED: "§c§OA minimum reward of $1 is required"
     JOIN: "§aJOIN"
+    JOINTOOLTIP: "§aClick here to begin this bounty"
     TITLE: "ACTIVE BOUNTIES"
     ERROR: "§c§OError creating the bounty-list table"
     ALREADYHUNTING: "§c§OCannot join: one bounty per player"

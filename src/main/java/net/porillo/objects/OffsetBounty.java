@@ -207,7 +207,13 @@ public class OffsetBounty {
                 chatTable.addRow(row);
             }
 
-            String json = chatTable.toJson(gPlayer, Lang.BOUNTY_JOIN.get(), "/gw bounty join", clickIds);
+            String json = chatTable.toJson(
+                  gPlayer,
+                  Lang.BOUNTY_JOIN.get(),
+                  "/gw bounty join",
+                  Lang.BOUNTY_JOINTOOLTIP.get(),
+                  clickIds);
+
             Bukkit.getServer().dispatchCommand(
                   Bukkit.getConsoleSender(),
                   json);

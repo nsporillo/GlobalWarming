@@ -18,6 +18,7 @@ public enum Lang {
     BOUNTY_REWARD(""),
     BOUNTY_REWARDREQUIRED(""),
     BOUNTY_JOIN(""),
+    BOUNTY_JOINTOOLTIP(""),
     BOUNTY_TITLE(""),
     BOUNTY_ERROR(""),
     BOUNTY_ALREADYHUNTING(""),
@@ -111,7 +112,6 @@ public enum Lang {
     public static String color(String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
-
 
     private static class LangConfig extends ConfigLoader {
 
