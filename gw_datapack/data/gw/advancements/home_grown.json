@@ -1,0 +1,35 @@
+{
+    "display": {
+        "title": {
+            "text": "Home Grown"
+        },
+        "description": {
+            "text": "Plant a dozen carrots. Trivia: food-related emissions are mostly in the production phase, not transportation [Weber et. al, 2008]."
+        },
+        "icon": {
+            "item": "minecraft:carrot"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "rewards": {
+        "experience": 2
+    },
+    "criteria": {
+        "home_grown_carrot": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:carrots",
+                "item": {
+                    "count": {
+                        "min": 12,
+                        "max": 12
+                    }
+                }
+            }
+        }
+    },
+    "parent": "gw:root"
+}

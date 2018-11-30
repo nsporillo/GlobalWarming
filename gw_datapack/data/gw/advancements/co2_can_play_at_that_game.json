@@ -1,0 +1,29 @@
+{
+    "display": {
+        "title": {
+            "text": "CO2 Can Play at That Game"
+        },
+        "description": {
+            "text": "Place a furnace.  Trivia: carbon dioxide enters the atmosphere when fossil fuels (coal, natural gas and oil), solid waste, trees and wood products burn [EPA, 2016]."
+        },
+        "icon": {
+            "item": "minecraft:furnace"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "rewards": {
+        "experience": 2
+    },
+    "criteria": {
+        "furnace_placed": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:furnace"
+            }
+        }
+    },
+    "parent": "gw:root"
+}

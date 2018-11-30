@@ -1,0 +1,35 @@
+{
+    "display": {
+        "title": {
+            "text": "The Carbon Diet"
+        },
+        "description": {
+            "text": "Eat a half-dozen carrots.  Trivia: reductions in meat consumption would lead to reductions in dietary-related emissions [Scarborough, et. al, 2014]"
+        },
+        "icon": {
+            "item": "minecraft:grass"
+        },
+        "frame": "challenge",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "rewards": {
+        "experience": 5
+    },
+    "criteria": {
+        "carbon_diet_carrots": {
+            "trigger": "minecraft:consume_item",
+            "conditions": {
+                "item": {
+                    "item": "minecraft:carrot",
+                    "count": {
+                        "min": 6,
+                        "max": 6
+                    }
+                }
+            }
+        }
+    },
+    "parent": "gw:home_grown"
+}

@@ -1,0 +1,105 @@
+{
+    "display": {
+        "title": {
+            "text": "Forest Bump"
+        },
+        "description": {
+            "text": "Plant 64 saplings.  Trivia: reforestation offsets climate change by sequestering carbon dioxide emissions from the atmosphere in trees and soil [IPCC, 2014]."
+        },
+        "icon": {
+            "item": "minecraft:birch_leaves"
+        },
+        "frame": "challenge",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "requirements": [
+        [
+            "green_thumb_oak",
+            "green_thumb_birch",
+            "green_thumb_sapling",
+            "green_thumb_jungle",
+            "green_thumb_acacia",
+            "green_thumb_dark_oak"
+        ]
+    ],
+    "rewards": {
+        "experience": 10
+    },
+    "criteria": {
+        "green_thumb_oak": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:oak_sapling",
+                "item": {
+                    "count": {
+                        "min": 64,
+                        "max": 64
+                    }
+                }
+            }
+        },
+        "green_thumb_birch": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:birch_sapling",
+                "item": {
+                    "count": {
+                        "min": 64,
+                        "max": 64
+                    }
+                }
+            }
+        },
+        "green_thumb_sapling": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:spruce_sapling",
+                "item": {
+                    "count": {
+                        "min": 64,
+                        "max": 64
+                    }
+                }
+            }
+        },
+        "green_thumb_jungle": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:jungle_sapling",
+                "item": {
+                    "count": {
+                        "min": 64,
+                        "max": 64
+                    }
+                }
+            }
+        },
+        "green_thumb_acacia": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:acacia_sapling",
+                "item": {
+                    "count": {
+                        "min": 64,
+                        "max": 64
+                    }
+                }
+            }
+        },
+        "green_thumb_dark_oak": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:dark_oak_sapling",
+                "item": {
+                    "count": {
+                        "min": 64,
+                        "max": 64
+                    }
+                }
+            }
+        }
+    },
+    "parent": "gw:green_thumbs_up"
+}
