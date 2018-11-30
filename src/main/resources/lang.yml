@@ -59,7 +59,7 @@ lang:
       OK: "§fScientists: %sexpect normal snow conditions this year"
       HIGH: "§fScientists: %shigh CO2 is affecting snow conditions"
   SCORE:
-    CHAT: "§fYour carbon footprint: {0}§f, global temperature: {1}§f°C"
+    CHAT: "§fYour carbon footprint: %s§f, global temperature: %s§f°C"
     TEMPERATURE: "§fGlobal Temp: %s%s§f°C"
   TABLE:
     EMPTY: "NO RECORDS FOUND"
@@ -67,7 +67,8 @@ lang:
     LOW: "§fGlobal CO2 levels are too low: §6increase furnace emissions"
     BALANCED: "Global CO2 levels are in balance"
     HIGH: "§fGlobal CO2 levels are too high: §6plant new saplings"
-    HIGHWITHBOUNTY: "\n§fOr see: §6/gw help§f to create a bounty"
+    HIGHWITHBOUNTY: "§fOr see: §6/gw help§f to create a bounty"
+    AVERAGE: "Mean temperature from 1951-80: §614°C §7[GISS]§f, this is your goal"
   TOPTABLE:
     PLAYER: "PLAYER"
     INDEX: "INDEX"

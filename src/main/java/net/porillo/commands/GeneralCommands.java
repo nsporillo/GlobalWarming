@@ -370,24 +370,37 @@ public class GeneralCommands extends BaseCommand {
             if (associatedClimateEngine != null && associatedClimateEngine.isEnabled()) {
                 int score = gPlayer.getCarbonScore();
                 double temperature = associatedClimateEngine.getTemperature();
-                gPlayer.sendMsg(
-                      Lang.SCORE_CHAT,
+                StringBuilder welcomeMessage = new StringBuilder();
+                //Player's carbon score and the global temperature:
+                welcomeMessage.append(String.format(
+                      Lang.SCORE_CHAT.get(),
                       formatScore(score),
-                      formatTemperature(temperature));
+                      formatTemperature(temperature)));
+
+                //What the target is (i.e., a point of reference):
+                welcomeMessage.append("\n");
+                welcomeMessage.append(Lang.TEMPERATURE_AVERAGE.get());
 
                 //Guidance based on the global temperature:
                 if (temperature < LOW_TEMPERATURE_UBOUND) {
-                    gPlayer.sendMsg(Lang.TEMPERATURE_LOW);
+                    welcomeMessage.append("\n");
+                    welcomeMessage.append(Lang.TEMPERATURE_LOW.get());
                 } else if (temperature < HIGH_TEMPERATURE_LBOUND) {
-                    gPlayer.sendMsg(Lang.TEMPERATURE_BALANCED);
+                    welcomeMessage.append("\n");
+                    welcomeMessage.append(Lang.TEMPERATURE_BALANCED.get());
                 } else {
-                    gPlayer.sendMsg(String.format("%s%s",
-                          Lang.TEMPERATURE_HIGH.get(),
-                          GlobalWarming.getEconomy() == null
-                                ? ""
-                                : Lang.TEMPERATURE_HIGHWITHBOUNTY.get()));
+                    welcomeMessage.append("\n");
+                    welcomeMessage.append(Lang.TEMPERATURE_HIGH.get());
+                    if (GlobalWarming.getEconomy() != null) {
+                        //Tip: create a bounty when the temperature is high:
+                        welcomeMessage.append(Lang.TEMPERATURE_HIGHWITHBOUNTY.get());
+                    }
                 }
+
+                //Send customized welcome message:
+                gPlayer.sendMsg(welcomeMessage.toString());
             } else {
+                //Notification that the climate engine was turned off:
                 gPlayer.sendMsg(Lang.ENGINE_DISABLED);
             }
         }

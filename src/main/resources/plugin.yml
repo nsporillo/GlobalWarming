@@ -1,13 +1,13 @@
 name: GlobalWarming
-author: milkywayz 
+author: milkywayz
 main: net.porillo.GlobalWarming
 version: ${project.version}
 api-version: 1.13
 softdepend: [Vault]
-commands:   
-    globalwarming:
-      aliases: gw
-      description: The main command for GlobalWarming
+commands:
+  globalwarming:
+    aliases: gw
+    description: The main command for GlobalWarming
 permissions:
   globalwarming.bounty:
     default: true
