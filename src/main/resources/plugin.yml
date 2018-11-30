@@ -9,6 +9,8 @@ commands:
     aliases: gw
     description: The main command for GlobalWarming
 permissions:
+  globalwarming.booklet:
+    default: true
   globalwarming.bounty:
     default: true
   globalwarming.bounty.create:

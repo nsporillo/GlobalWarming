@@ -2,8 +2,9 @@ locale: en-US
 lang:
   GENERIC:
     PERMISSION: "§c§OInsufficient permissions for GlobalWarming command"
-    SPAM: "§8§OToo many requests at once"
     INVALIDARGS: "§c§OInvalid command arguments, expecting: §7§O%s"
+    SPAM: "§8§OToo many requests at once"
+    INVENTORYFULL: "§c§OYour inventory is full"
   BOUNTY:
     PLAYER: "PLAYER"
     HUNTER: "HUNTER"
@@ -77,7 +78,8 @@ lang:
     PLANTERS: "TOP 10 TREE PLANTERS"
     ERROR: "§c§OError creating polluter / planter table"
   WIKI:
-    ADDED: "§fThe §6GlobalWarming wiki§f was added to your inventory"
+    ADDED: "§fThe §6GlobalWarming§f wiki was added to your inventory"
+    ALREADYADDED: "§fYou already have the §6GlobalWarming§f wiki"
     NAME: "§fGlobalWarming Wiki"
     AUTHOR: "Team GW"
     LORE: "§8Gameplay and instructions"

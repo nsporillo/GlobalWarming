@@ -15,7 +15,11 @@ import net.porillo.objects.OffsetBounty;
 import net.porillo.util.ChatTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -210,6 +214,15 @@ public class GeneralCommands extends BaseCommand {
         }
     }
 
+    @Subcommand("booklet")
+    @Description("Add the instructional booklet to your inventory")
+    @CommandPermission("globalwarming.booklet")
+    public void onBooklet(GPlayer gPlayer) {
+        if (isCommandAllowed(gPlayer)) {
+            getBooklet(gPlayer);
+        }
+    }
+
     /**
      * True when:
      * - The player is not spamming
@@ -359,7 +372,7 @@ public class GeneralCommands extends BaseCommand {
     /**
      * Show the player's carbon score as a chat message
      */
-    private static void showCarbonScore(GPlayer gPlayer) {
+    public static void showCarbonScore(GPlayer gPlayer) {
         Player onlinePlayer = gPlayer.getOnlinePlayer();
         if (onlinePlayer != null) {
             //Do not show scored for worlds with disabled climate-engines:
@@ -454,6 +467,59 @@ public class GeneralCommands extends BaseCommand {
             }
         } else {
             gPlayer.sendMsg(Lang.ENGINE_DISABLED);
+        }
+    }
+
+    /**
+     * Add an instructional booklet to a player's inventory
+     * - Will prevent duplicates
+     */
+    public static void getBooklet(GPlayer gPlayer) {
+        Player onlinePlayer = gPlayer.getOnlinePlayer();
+        if (onlinePlayer != null) {
+            //Prevent duplicates:
+            // - Note that empty inventory slots will be NULL
+            boolean isDuplicate = false;
+            PlayerInventory inventory = onlinePlayer.getInventory();
+            for(ItemStack item : inventory.getContents()) {
+                if (item != null &&
+                      item.getType().equals(Material.WRITTEN_BOOK) &&
+                      item.getItemMeta().getDisplayName().equals(Lang.WIKI_NAME.get())) {
+                    gPlayer.sendMsg(Lang.WIKI_ALREADYADDED);
+                    isDuplicate = true;
+                    break;
+                }
+            }
+
+            //Add the booklet:
+            if (!isDuplicate) {
+                ItemStack wiki = new ItemStack(Material.WRITTEN_BOOK);
+                final BookMeta meta = (BookMeta) wiki.getItemMeta();
+                meta.setDisplayName(Lang.WIKI_NAME.get());
+                meta.setAuthor(Lang.WIKI_AUTHOR.get());
+
+                final ArrayList<String> lore = new ArrayList<>();
+                lore.add(Lang.WIKI_LORE.get());
+                meta.setLore(lore);
+
+                final ArrayList<String> content = new ArrayList<>();
+                content.add(Lang.WIKI_INTRODUCTION.get());
+                content.add(Lang.WIKI_SCORES.get());
+                content.add(Lang.WIKI_EFFECTS.get());
+                content.add(Lang.WIKI_BOUNTY.get());
+                content.add(Lang.WIKI_OTHER.get());
+
+                //Create the book and add to inventory:
+                meta.setPages(content);
+                wiki.setItemMeta(meta);
+                if (onlinePlayer.getInventory().addItem(wiki).isEmpty()) {
+                    //Added:
+                    gPlayer.sendMsg(Lang.WIKI_ADDED);
+                } else {
+                    //Inventory full:
+                    gPlayer.sendMsg(Lang.GENERIC_INVENTORYFULL);
+                }
+            }
         }
     }
 }
