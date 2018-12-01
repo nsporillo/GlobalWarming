@@ -44,9 +44,13 @@ public abstract class Table {
 	}
 
 	private void copyFromResource() {
-		Path file = getPath();
-		if (file == null || !Files.exists(file)) {
-			GlobalWarming.getInstance().getLogger().info(String.format("Script: [%s.sql] does not exist, creating", tableName));
+		Path path = getPath();
+		if (path == null || !Files.exists(path)) {
+			GlobalWarming.getInstance().getLogger().info(String.format(
+				"Script: [%s.sql] does not exist at: [%s], creating",
+				tableName,
+				path));
+
 			GlobalWarming.getInstance().saveResource(String.format("scripts/%s.sql", tableName), false);
 		}
 	}

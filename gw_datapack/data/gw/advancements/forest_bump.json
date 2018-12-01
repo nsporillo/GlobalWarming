@@ -16,19 +16,19 @@
     },
     "requirements": [
         [
-            "green_thumb_oak",
-            "green_thumb_birch",
-            "green_thumb_sapling",
-            "green_thumb_jungle",
-            "green_thumb_acacia",
-            "green_thumb_dark_oak"
+            "forest_bump_oak",
+            "forest_bump_birch",
+            "forest_bump_spruce",
+            "forest_bump_jungle",
+            "forest_bump_acacia",
+            "forest_bump_dark_oak"
         ]
     ],
     "rewards": {
         "experience": 10
     },
     "criteria": {
-        "green_thumb_oak": {
+        "forest_bump_oak": {
             "trigger": "minecraft:placed_block",
             "conditions": {
                 "block": "minecraft:oak_sapling",
@@ -40,7 +40,7 @@
                 }
             }
         },
-        "green_thumb_birch": {
+        "forest_bump_birch": {
             "trigger": "minecraft:placed_block",
             "conditions": {
                 "block": "minecraft:birch_sapling",
@@ -52,7 +52,7 @@
                 }
             }
         },
-        "green_thumb_sapling": {
+        "forest_bump_spruce": {
             "trigger": "minecraft:placed_block",
             "conditions": {
                 "block": "minecraft:spruce_sapling",
@@ -64,7 +64,7 @@
                 }
             }
         },
-        "green_thumb_jungle": {
+        "forest_bump_jungle": {
             "trigger": "minecraft:placed_block",
             "conditions": {
                 "block": "minecraft:jungle_sapling",
@@ -76,7 +76,7 @@
                 }
             }
         },
-        "green_thumb_acacia": {
+        "forest_bump_acacia": {
             "trigger": "minecraft:placed_block",
             "conditions": {
                 "block": "minecraft:acacia_sapling",
@@ -88,7 +88,7 @@
                 }
             }
         },
-        "green_thumb_dark_oak": {
+        "forest_bump_dark_oak": {
             "trigger": "minecraft:placed_block",
             "conditions": {
                 "block": "minecraft:dark_oak_sapling",

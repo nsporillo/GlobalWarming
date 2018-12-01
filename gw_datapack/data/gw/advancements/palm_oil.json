@@ -18,7 +18,7 @@
         "experience": 2
     },
     "criteria": {
-        "palm_oil": {
+        "palm_oil_log": {
             "trigger": "minecraft:inventory_changed",
             "conditions": {
                 "items": [

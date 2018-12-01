@@ -1,5 +1,6 @@
 enabled: true
 association: world
+carbonSensitivity: LOW
 enabledEffects:
     - SEA_LEVEL_RISE
     - ICE_MELT

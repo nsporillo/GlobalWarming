@@ -61,15 +61,18 @@ public abstract class Model {
     }
 
     private void createIfNotExists() {
-        Path file = getPath();
-        if (!Files.exists(file)) {
-            GlobalWarming.getInstance().getLogger().info(String.format("Model: [%s] does not exist, creating.", modelName));
+        Path path = getPath();
+        if (!Files.exists(path)) {
+            GlobalWarming.getInstance().getLogger().info(String.format(
+                  "Model: [%s] does not exist at: [%s], creating.",
+                  modelName,
+                  path));
 
             try {
                 // Copy resource from JAR to the correct path
                 World world = Bukkit.getWorld(worldId);
                 Files.createDirectories(modelsPath.resolve(world.getName()));
-                Files.copy(GlobalWarming.getInstance().getResource(String.format("models/%s", modelName)), getPath());
+                Files.copy(GlobalWarming.getInstance().getResource(String.format("models/%s", modelName)), path);
             } catch (IOException e) {
                 e.printStackTrace();
             }

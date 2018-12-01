@@ -10,12 +10,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static net.porillo.engine.models.ScoreTempModel.CarbonSensitivity;
+
 public class WorldConfig extends ConfigLoader {
 
     @Getter private final UUID worldId;
     @Getter private boolean enabled;
     @Getter private Set<ClimateEffectType> enabledEffects;
     @Getter private UUID associatedWorldId;
+    @Getter private CarbonSensitivity sensitivity;
 
     public WorldConfig(UUID worldId) {
         super(String.format("%s.yml", Bukkit.getWorld(worldId).getName()), "world.yml");
@@ -26,10 +29,23 @@ public class WorldConfig extends ConfigLoader {
 
     @Override
     protected void loadKeys() {
+        sensitivity = CarbonSensitivity.LOW;
+        String carbonSensitivity = conf.getString("carbonSensitivity");
+        if (carbonSensitivity != null && !carbonSensitivity.isEmpty()) {
+            try {
+                sensitivity = CarbonSensitivity.valueOf(carbonSensitivity);
+            } catch (Exception e) {
+                GlobalWarming.getInstance().getLogger().warning(
+                      String.format(
+                            "Unknown carbon sensitivity for: [%s], defaulting to [%s]",
+                            getDisplayName(worldId),
+                            sensitivity));
+            }
+        }
+
         this.enabled = this.conf.getBoolean("enabled");
         this.associatedWorldId = Bukkit.getWorld(this.conf.getString("association")).getUID();
         this.enabledEffects = new HashSet<>();
-
         for (String effect : this.conf.getStringList("enabledEffects")) {
             try {
                 this.enabledEffects.add(ClimateEffectType.valueOf(effect));

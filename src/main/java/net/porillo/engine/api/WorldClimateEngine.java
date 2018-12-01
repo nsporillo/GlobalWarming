@@ -28,7 +28,7 @@ public class WorldClimateEngine {
 		this.config = config;
 
 		// Worlds load their own model file
-		this.scoreTempModel = new ScoreTempModel(config.getWorldId());
+		this.scoreTempModel = new ScoreTempModel(config.getWorldId(), config.getSensitivity());
 		this.contributionModel = new ContributionModel(config.getWorldId());
 		this.reductionModel = new ReductionModel(config.getWorldId());
 		this.entityFitnessModel = new EntityFitnessModel(config.getWorldId());
@@ -81,7 +81,7 @@ public class WorldClimateEngine {
 	}
 
 	public boolean isEffectEnabled(ClimateEffectType type) {
-		return isEnabled() && config.getWorldId().equals(config.getWorldId()) && config.getEnabledEffects().contains(type);
+		return isEnabled() && config.getEnabledEffects().contains(type);
 	}
 
 	public boolean isEnabled() {

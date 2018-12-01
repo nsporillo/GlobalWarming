@@ -1,6 +1,8 @@
 package net.porillo;
 
 import net.porillo.engine.models.*;
+import static net.porillo.engine.models.ScoreTempModel.CarbonSensitivity;
+
 import org.testng.annotations.Test;
 
 import java.util.UUID;
@@ -29,7 +31,7 @@ public class ModelTest {
     @Test
     public void testScoreTempModel() {
         UUID worldId = UUID.randomUUID();
-        ScoreTempModel model = new ScoreTempModel(worldId);
+        ScoreTempModel model = new ScoreTempModel(worldId, CarbonSensitivity.LOW);
 
         // Test the interpolator
         // If any of the points aren't monotonically increasing, an exception is thrown
