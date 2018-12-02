@@ -7,6 +7,7 @@ import net.porillo.GlobalWarming;
 
 import net.porillo.config.Lang;
 import net.porillo.database.tables.PlayerTable;
+import net.porillo.database.tables.WorldTable;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.engine.models.CarbonIndexModel;
@@ -30,8 +31,6 @@ import static org.bukkit.ChatColor.*;
 public class GeneralCommands extends BaseCommand {
     private static final long SPAM_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getSpamInterval();
     private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
-    public static final double LOW_TEMPERATURE_UBOUND = GlobalWarming.getInstance().getConf().getLowTemperatureUBound();
-    public static final double HIGH_TEMPERATURE_LBOUND = GlobalWarming.getInstance().getConf().getHighTemperatureLBound();
     private List<UUID> playerRequestList;
 
     public GeneralCommands() {
@@ -395,10 +394,10 @@ public class GeneralCommands extends BaseCommand {
                 welcomeMessage.append(Lang.TEMPERATURE_AVERAGE.get());
 
                 //Guidance based on the global temperature:
-                if (temperature < LOW_TEMPERATURE_UBOUND) {
+                if (temperature < WorldTable.LOW_TEMPERATURE_UBOUND) {
                     welcomeMessage.append("\n");
                     welcomeMessage.append(Lang.TEMPERATURE_LOW.get());
-                } else if (temperature < HIGH_TEMPERATURE_LBOUND) {
+                } else if (temperature < WorldTable.HIGH_TEMPERATURE_LBOUND) {
                     welcomeMessage.append("\n");
                     welcomeMessage.append(Lang.TEMPERATURE_BALANCED.get());
                 } else {

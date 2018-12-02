@@ -1,14 +1,7 @@
 bounty:
   max-created-per-player: 5
-climate:
-  default-sea-level: 63
-  default-ice-level: 0.0
-  default-snow-level: 0.0
-  default-farm-yield-fitness: 100.0
-  default-mob-fitness: 100.0
-  default-temperature: 14.0
-  low-temperature-ubound: 13.75
-  high-temperature-lbound: 14.25
+climate-notification:
+  degrees-until-change-detected: 0.25
 commands:
   spam-interval: 60
 database:

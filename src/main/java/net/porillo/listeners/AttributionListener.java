@@ -1,10 +1,8 @@
 package net.porillo.listeners;
 
 import net.porillo.GlobalWarming;
-import net.porillo.database.queries.delete.TreeDeleteQuery;
 import net.porillo.database.queries.insert.FurnaceInsertQuery;
 import net.porillo.database.queries.insert.TreeInsertQuery;
-import net.porillo.database.queries.update.FurnaceUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.PlayerTable;

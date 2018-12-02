@@ -52,28 +52,35 @@ public class SeaLevelRise extends AtomicClimateEffect<ChunkSnapshot, BlockChange
     private class SeaLevelRiseExecutor implements Supplier<HashSet<BlockChange>> {
 
         private ChunkSnapshot snapshot;
-        private int seaLevel;
+        private int deltaSeaLevel;
 
-        private SeaLevelRiseExecutor(ChunkSnapshot snapshot, int seaLevel) {
+        private SeaLevelRiseExecutor(ChunkSnapshot snapshot, int deltaSeaLevel) {
             this.snapshot = snapshot;
-            this.seaLevel = seaLevel;
+            this.deltaSeaLevel = deltaSeaLevel;
         }
 
         @Override
         public HashSet<BlockChange> get() {
             HashSet<BlockChange> blockChanges = new HashSet<>();
+            World world = Bukkit.getWorld(snapshot.getWorldName());
+            int baseSeaLevel = world.getSeaLevel() - 1;
 
-            // loop all x,z coords in the chunk
+            //Update the sea level for this block:
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
-                    int y = seaLevel;
-                    final Material blockType = snapshot.getBlockData(x, y, z).getMaterial();
+                    //Check that the base is water:
+                    if (snapshot.getBlockData(x, baseSeaLevel, z).getMaterial() != Material.WATER) {
+                        continue;
+                    }
 
-                    // If the block at "sea level" is water, check above to see if it's air
-                    if (blockType == Material.WATER) {
-                        final Material aboveBlockType = snapshot.getBlockData(x, (y + 1), z).getMaterial();
-                        if (aboveBlockType == Material.AIR) {
-                            blockChanges.add(new BlockChange(Material.AIR, Material.WATER, x, y, z));
+                    //Stack upward until the max is hit, or limited by non-air block:
+                    int maxHeight = baseSeaLevel + deltaSeaLevel;
+                    for (int y = baseSeaLevel; y < maxHeight; y++) {
+                        Material topMaterial = snapshot.getBlockData(x, (y + 1), z).getMaterial();
+                        if (topMaterial == Material.AIR) {
+                            blockChanges.add(new BlockChange(Material.AIR, Material.WATER, x, (y + 1), z));
+                        } else if (topMaterial != Material.WATER) {
+                            break;
                         }
                     }
                 }
