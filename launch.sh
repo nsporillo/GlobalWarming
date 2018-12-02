@@ -22,7 +22,7 @@ LPAREN="\e[0m[\e[1;94m"
 RPAREN="\e[0;21m]"
 echo -e "${LPAREN}BUILDING${RPAREN} (CTRL+C TO EXIT)"
 mvn clean compile install &&
-if [ $1 == CLEAN ]; then
+if [[ $1 == CLEAN ]]; then
 echo -e "${LPAREN}DELETING THE PLUGIN CONFIGURATION${RPAREN}" &&
 sudo rm -rf /home/minecraft/server/plugins/GlobalWarming/* &&
 echo -e "${LPAREN}DROPPING THE DATABASE AND USER${RPAREN}" &&

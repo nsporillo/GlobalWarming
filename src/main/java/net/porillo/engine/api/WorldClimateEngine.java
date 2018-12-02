@@ -18,7 +18,7 @@ public class WorldClimateEngine {
 	@Getter private WorldConfig config;
 
 	// Models
-	private ScoreTempModel scoreTempModel;
+	@Getter private ScoreTempModel scoreTempModel;
 	private ContributionModel contributionModel;
 	private ReductionModel reductionModel;
 	@Getter private EntityFitnessModel entityFitnessModel;

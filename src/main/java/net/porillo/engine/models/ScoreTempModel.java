@@ -29,11 +29,16 @@ public class ScoreTempModel extends Model {
     @Getter private Map<Integer, Double> indexMap;
     private PolynomialSplineFunction splineFunction;
     private CarbonSensitivity sensitivity;
+    Map<CarbonSensitivity, Map<Integer, Double>> temperatureMap;
 
     public ScoreTempModel(UUID worldId, CarbonSensitivity sensitivity) {
         super(worldId, "scoreTempModel.json");
         this.sensitivity = sensitivity;
         this.loadModel();
+    }
+
+    public Map<Integer, Double> getTemperatureMap() {
+        return temperatureMap.get(sensitivity);
     }
 
     /**
@@ -46,7 +51,7 @@ public class ScoreTempModel extends Model {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.enableComplexMapKeySerialization().create();
         Type listType = new TypeToken<Map<CarbonSensitivity, Map<Integer, Double>>>() {}.getType();
-        Map<CarbonSensitivity, Map<Integer, Double>> temperatureMap = gson.fromJson(super.getContents(), listType);
+        temperatureMap = gson.fromJson(super.getContents(), listType);
 
         //Validate the result:
         this.indexMap = new TreeMap<>(Comparator.naturalOrder());
