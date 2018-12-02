@@ -128,7 +128,7 @@ cd ../server
 sudo su minecraft -c "mv ../build/spigot-1.*.jar spigot.jar"
 
 # Startup script
-sudo su minecraft -c 'echo "cd /home/minecraft/server;java -Xms512M -Xmx1536M -jar spigot.jar" >> /home/minecraft/server/launch.sh'
+sudo su minecraft -c 'echo "cd /home/minecraft/server;java -Xms512M -Xmx1536M -jar spigot.jar" > /home/minecraft/server/launch.sh'
 
 # Make it executable
 sudo su minecraft -c "chmod +x /home/minecraft/server/launch.sh"
@@ -158,10 +158,7 @@ sudo su minecraft -c "mkdir -p /home/minecraft/server/world/datapacks"
 sudo su minecraft -c "cp -r gw_datapack /home/minecraft/server/world/datapacks/"
 
 # Delete any old configuration files (if required)
-sudo su minecraft -c "rm /home/minecraft/server/plugins/GlobalWarming/lang.yml"
-sudo su minecraft -c "rm /home/minecraft/server/plugins/GlobalWarming/config.yml"
-sudo su minecraft -c "rm /home/minecraft/server/plugins/GlobalWarming/plugin.yml"
-sudo su minecraft -c "rm /home/minecraft/server/plugins/GlobalWarming/world.yml"
+sudo rm -rf /home/minecraft/server/plugins/GlobalWarming/*
 
 # Get Vault.jar (OPTIONAL)
 #  - NOTE: an economy is required by the bounty system
