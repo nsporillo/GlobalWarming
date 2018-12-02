@@ -43,7 +43,9 @@
   "PERMANENT_SLOWNESS": {
     "enabled": true,
     "model": {
-      "threshold": 20
+      "threshold": 20,
+      "period": 6,
+      "duration": 5
     }
   }
 }
