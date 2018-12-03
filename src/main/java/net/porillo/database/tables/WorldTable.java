@@ -50,7 +50,6 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
         gWorld.setUniqueID(GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE));
         gWorld.setWorldId(worldId);
         gWorld.setFirstSeen(System.currentTimeMillis());
-        gWorld.setTemperature(DEFAULT_WORLD_TEMPERATURE);
         gWorld.setCarbonValue(0);
         gWorld.setSeaLevel(0);
         gWorld.setSize(0);

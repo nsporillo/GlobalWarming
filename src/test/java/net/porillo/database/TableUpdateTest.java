@@ -28,7 +28,7 @@ public class TableUpdateTest {
 		// Create a world and insert it into the DB
 		final int uniqueId = random.nextInt();
 		UUID worldId = UUID.randomUUID();
-		GWorld gWorld = new GWorld(uniqueId, worldId, 0.0, 0L, 0, 0, 0);
+		GWorld gWorld = new GWorld(uniqueId, worldId, 0L, 0, 0, 0);
 		AsyncDBQueue.getInstance().queueInsertQuery(new WorldInsertQuery(gWorld));
 		AsyncDBQueue.getInstance().writeInsertQueue(connection);
 

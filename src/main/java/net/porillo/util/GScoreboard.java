@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *  - Players request score updates when their carbon scores change
  *  - Duplicate requests are ignored (one request per player)
  *  - Scoreboard updates happen only when requests are available, clearing the queue
- *  - These updates happen within a second of the request (20 ticks)
  *
  * Notes:
  *  - Player's scores are tied to their associated-world, not the current one
@@ -136,7 +135,6 @@ public class GScoreboard {
         }
     }
 
-
     /**
      * Request a score update
      * - One unique request per player only
@@ -240,7 +238,7 @@ public class GScoreboard {
 
     /**
      * Update the scoreboard if requests are available
-     * - Updates are processed within a second (20 ticks)
+     * - Updates are processed periodically
      */
     private void debounceScoreUpdates() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(

@@ -23,7 +23,6 @@ public class TestUtility {
         GWorld gWorld = new GWorld();
         gWorld.setUniqueID(random.nextInt(Integer.MAX_VALUE));
         gWorld.setWorldId(UUID.randomUUID());
-        gWorld.setTemperature(14.0 + random.nextInt(2));
         gWorld.setFirstSeen(random.nextLong());
         gWorld.setCarbonValue(random.nextInt(16777215));
         gWorld.setSeaLevel(random.nextInt(255));

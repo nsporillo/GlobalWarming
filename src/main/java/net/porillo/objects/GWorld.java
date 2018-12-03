@@ -24,11 +24,6 @@ public class GWorld {
     private UUID worldId;
 
     /**
-     * Temperature value, derived directly from the scoreTempModel
-     */
-    private double temperature;
-
-    /**
      * When we loaded this world into GlobalWarming.
      * This might be useful one day to normalize the rate of temperature
      * change so that worlds don't implode if a lot of CO2 is emitted.
