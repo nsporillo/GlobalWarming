@@ -18,6 +18,7 @@ public enum Lang {
     BOUNTY_REWARD(""),
     BOUNTY_REWARDREQUIRED(""),
     BOUNTY_JOIN(""),
+    BOUNTY_JOINTOOLTIP(""),
     BOUNTY_TITLE(""),
     BOUNTY_ERROR(""),
     BOUNTY_ALREADYHUNTING(""),
@@ -40,6 +41,7 @@ public enum Lang {
     GENERIC_PERMISSION(""),
     GENERIC_INVALIDARGS(""),
     GENERIC_SPAM(""),
+    GENERIC_INVENTORYFULL(""),
     NOTIFICATION_DEFAULT_LOW(""),
     NOTIFICATION_DEFAULT_OK(""),
     NOTIFICATION_DEFAULT_HIGH(""),
@@ -64,6 +66,7 @@ public enum Lang {
     TEMPERATURE_BALANCED(""),
     TEMPERATURE_HIGH(""),
     TEMPERATURE_HIGHWITHBOUNTY(""),
+    TEMPERATURE_AVERAGE(""),
     TEMPERATURE_LOW(""),
     TOPTABLE_PLAYER(""),
     TOPTABLE_INDEX(""),
@@ -72,6 +75,7 @@ public enum Lang {
     TOPTABLE_PLANTERS(""),
     TOPTABLE_ERROR(""),
     WIKI_ADDED(""),
+    WIKI_ALREADYADDED(""),
     WIKI_NAME(""),
     WIKI_AUTHOR(""),
     WIKI_LORE(""),
@@ -111,7 +115,6 @@ public enum Lang {
     public static String color(String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
-
 
     private static class LangConfig extends ConfigLoader {
 

@@ -7,6 +7,7 @@ import net.porillo.GlobalWarming;
 
 import net.porillo.config.Lang;
 import net.porillo.database.tables.PlayerTable;
+import net.porillo.database.tables.WorldTable;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.engine.models.CarbonIndexModel;
@@ -15,7 +16,11 @@ import net.porillo.objects.OffsetBounty;
 import net.porillo.util.ChatTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -26,8 +31,6 @@ import static org.bukkit.ChatColor.*;
 public class GeneralCommands extends BaseCommand {
     private static final long SPAM_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getSpamInterval();
     private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
-    public static final double LOW_TEMPERATURE_UBOUND = GlobalWarming.getInstance().getConf().getLowTemperatureUBound();
-    public static final double HIGH_TEMPERATURE_LBOUND = GlobalWarming.getInstance().getConf().getHighTemperatureLBound();
     private List<UUID> playerRequestList;
 
     public GeneralCommands() {
@@ -92,10 +95,11 @@ public class GeneralCommands extends BaseCommand {
 
                 if (bountyId > 0) {
                     OffsetBounty bounty = OffsetBounty.join(gPlayer, bountyId);
-                    if (bounty != null) {
+                    Player onlinePlayer = gPlayer.getOnlinePlayer();
+                    if (onlinePlayer != null && bounty != null) {
                         OffsetBounty.notify(
                               bounty,
-                              String.format(Lang.BOUNTY_ACCEPTEDBY.get(), gPlayer.getPlayer().getName()),
+                              String.format(Lang.BOUNTY_ACCEPTEDBY.get(), onlinePlayer.getName()),
                               Lang.BOUNTY_ACCEPTED.get()
                         );
                     }
@@ -117,12 +121,15 @@ public class GeneralCommands extends BaseCommand {
                 if (bounty == null) {
                     gPlayer.sendMsg(Lang.BOUNTY_NOTJOINED);
                 } else {
-                    OffsetBounty.notify(
-                          bounty,
-                          gPlayer,
-                          String.format(Lang.BOUNTY_ABANDONEDBY.get(), gPlayer.getPlayer().getName()),
-                          Lang.BOUNTY_ABANDONED.get()
-                    );
+                    Player onlinePlayer = gPlayer.getOnlinePlayer();
+                    if (onlinePlayer != null) {
+                        OffsetBounty.notify(
+                              bounty,
+                              gPlayer,
+                              String.format(Lang.BOUNTY_ABANDONEDBY.get(), onlinePlayer.getName()),
+                              Lang.BOUNTY_ABANDONED.get()
+                        );
+                    }
                 }
             }
         }
@@ -158,8 +165,7 @@ public class GeneralCommands extends BaseCommand {
         @CommandPermission("globalwarming.score.show")
         public void onShow(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
-                Player player = gPlayer.getPlayer();
-                GlobalWarming.getInstance().getScoreboard().show(player, true);
+                GlobalWarming.getInstance().getScoreboard().show(gPlayer, true);
             }
         }
 
@@ -169,8 +175,7 @@ public class GeneralCommands extends BaseCommand {
         @CommandPermission("globalwarming.score.hide")
         public void onHide(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
-                Player player = gPlayer.getPlayer();
-                GlobalWarming.getInstance().getScoreboard().show(player, false);
+                GlobalWarming.getInstance().getScoreboard().show(gPlayer, false);
             }
         }
     }
@@ -208,6 +213,15 @@ public class GeneralCommands extends BaseCommand {
         }
     }
 
+    @Subcommand("booklet")
+    @Description("Add the instructional booklet to your inventory")
+    @CommandPermission("globalwarming.booklet")
+    public void onBooklet(GPlayer gPlayer) {
+        if (isCommandAllowed(gPlayer)) {
+            getBooklet(gPlayer);
+        }
+    }
+
     /**
      * True when:
      * - The player is not spamming
@@ -217,7 +231,7 @@ public class GeneralCommands extends BaseCommand {
         boolean isCommandAllowed = false;
         if (isSpamming(gPlayer)) {
             gPlayer.sendMsg(Lang.GENERIC_SPAM);
-        } else if (!ClimateEngine.getInstance().isAssociatedEngineEnabled(gPlayer)) {
+        } else if (!ClimateEngine.getInstance().isClimateEngineEnabled(gPlayer.getAssociatedWorldId())) {
             gPlayer.sendMsg(Lang.ENGINE_DISABLED);
         } else {
             isCommandAllowed = true;
@@ -357,35 +371,48 @@ public class GeneralCommands extends BaseCommand {
     /**
      * Show the player's carbon score as a chat message
      */
-    private static void showCarbonScore(GPlayer gPlayer) {
-        Player player = gPlayer.getPlayer();
-        if (player != null) {
+    public static void showCarbonScore(GPlayer gPlayer) {
+        Player onlinePlayer = gPlayer.getOnlinePlayer();
+        if (onlinePlayer != null) {
             //Do not show scored for worlds with disabled climate-engines:
             // - Note: temperature is based on the player's associated-world (not the current world)
             WorldClimateEngine associatedClimateEngine =
-                  ClimateEngine.getInstance().getAssociatedClimateEngine(player);
+                  ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
 
             if (associatedClimateEngine != null && associatedClimateEngine.isEnabled()) {
                 int score = gPlayer.getCarbonScore();
                 double temperature = associatedClimateEngine.getTemperature();
-                gPlayer.sendMsg(
-                      Lang.SCORE_CHAT,
+                StringBuilder welcomeMessage = new StringBuilder();
+                //Player's carbon score and the global temperature:
+                welcomeMessage.append(String.format(
+                      Lang.SCORE_CHAT.get(),
                       formatScore(score),
-                      formatTemperature(temperature));
+                      formatTemperature(temperature)));
+
+                //What the target is (i.e., a point of reference):
+                welcomeMessage.append("\n");
+                welcomeMessage.append(Lang.TEMPERATURE_AVERAGE.get());
 
                 //Guidance based on the global temperature:
-                if (temperature < LOW_TEMPERATURE_UBOUND) {
-                    gPlayer.sendMsg(Lang.TEMPERATURE_LOW);
-                } else if (temperature < HIGH_TEMPERATURE_LBOUND) {
-                    gPlayer.sendMsg(Lang.TEMPERATURE_BALANCED);
+                if (temperature < WorldTable.LOW_TEMPERATURE_UBOUND) {
+                    welcomeMessage.append("\n");
+                    welcomeMessage.append(Lang.TEMPERATURE_LOW.get());
+                } else if (temperature < WorldTable.HIGH_TEMPERATURE_LBOUND) {
+                    welcomeMessage.append("\n");
+                    welcomeMessage.append(Lang.TEMPERATURE_BALANCED.get());
                 } else {
-                    gPlayer.sendMsg(String.format("%s%s",
-                          Lang.TEMPERATURE_HIGH.get(),
-                          GlobalWarming.getEconomy() == null
-                          ? ""
-                          : Lang.TEMPERATURE_HIGHWITHBOUNTY.get()));
+                    welcomeMessage.append("\n");
+                    welcomeMessage.append(Lang.TEMPERATURE_HIGH.get());
+                    if (GlobalWarming.getEconomy() != null) {
+                        //Tip: create a bounty when the temperature is high:
+                        welcomeMessage.append(Lang.TEMPERATURE_HIGHWITHBOUNTY.get());
+                    }
                 }
+
+                //Send customized welcome message:
+                gPlayer.sendMsg(welcomeMessage.toString());
             } else {
+                //Notification that the climate engine was turned off:
                 gPlayer.sendMsg(Lang.ENGINE_DISABLED);
             }
         }
@@ -395,8 +422,11 @@ public class GeneralCommands extends BaseCommand {
      * Show the top 10 polluters or planters as a chat message
      */
     private static void showTopTen(GPlayer gPlayer, boolean isPolluterList) {
-        if (ClimateEngine.getInstance().isAssociatedEngineEnabled(gPlayer)) {
-            CarbonIndexModel indexModel = ClimateEngine.getInstance().getAssociatedClimateEngine(gPlayer.getPlayer()).getCarbonIndexModel();
+        if (ClimateEngine.getInstance().isClimateEngineEnabled(gPlayer.getAssociatedWorldId())) {
+            WorldClimateEngine associatedClimateEngine =
+                  ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
+
+            CarbonIndexModel indexModel = associatedClimateEngine.getCarbonIndexModel();
             ChatTable chatTable = new ChatTable(isPolluterList ? Lang.TOPTABLE_POLLUTERS.get() : Lang.TOPTABLE_PLANTERS.get());
             chatTable.setGridColor(isPolluterList ? ChatColor.DARK_RED : ChatColor.GREEN);
             chatTable.addHeader(Lang.TOPTABLE_PLAYER.get(), 130);
@@ -436,6 +466,59 @@ public class GeneralCommands extends BaseCommand {
             }
         } else {
             gPlayer.sendMsg(Lang.ENGINE_DISABLED);
+        }
+    }
+
+    /**
+     * Add an instructional booklet to a player's inventory
+     * - Will prevent duplicates
+     */
+    public static void getBooklet(GPlayer gPlayer) {
+        Player onlinePlayer = gPlayer.getOnlinePlayer();
+        if (onlinePlayer != null) {
+            //Prevent duplicates:
+            // - Note that empty inventory slots will be NULL
+            boolean isDuplicate = false;
+            PlayerInventory inventory = onlinePlayer.getInventory();
+            for(ItemStack item : inventory.getContents()) {
+                if (item != null &&
+                      item.getType().equals(Material.WRITTEN_BOOK) &&
+                      item.getItemMeta().getDisplayName().equals(Lang.WIKI_NAME.get())) {
+                    gPlayer.sendMsg(Lang.WIKI_ALREADYADDED);
+                    isDuplicate = true;
+                    break;
+                }
+            }
+
+            //Add the booklet:
+            if (!isDuplicate) {
+                ItemStack wiki = new ItemStack(Material.WRITTEN_BOOK);
+                final BookMeta meta = (BookMeta) wiki.getItemMeta();
+                meta.setDisplayName(Lang.WIKI_NAME.get());
+                meta.setAuthor(Lang.WIKI_AUTHOR.get());
+
+                final ArrayList<String> lore = new ArrayList<>();
+                lore.add(Lang.WIKI_LORE.get());
+                meta.setLore(lore);
+
+                final ArrayList<String> content = new ArrayList<>();
+                content.add(Lang.WIKI_INTRODUCTION.get());
+                content.add(Lang.WIKI_SCORES.get());
+                content.add(Lang.WIKI_EFFECTS.get());
+                content.add(Lang.WIKI_BOUNTY.get());
+                content.add(Lang.WIKI_OTHER.get());
+
+                //Create the book and add to inventory:
+                meta.setPages(content);
+                wiki.setItemMeta(meta);
+                if (onlinePlayer.getInventory().addItem(wiki).isEmpty()) {
+                    //Added:
+                    gPlayer.sendMsg(Lang.WIKI_ADDED);
+                } else {
+                    //Inventory full:
+                    gPlayer.sendMsg(Lang.GENERIC_INVENTORYFULL);
+                }
+            }
         }
     }
 }

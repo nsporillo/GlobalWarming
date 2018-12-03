@@ -1,0 +1,48 @@
+{
+    "display": {
+        "title": {
+            "text": "Global Warming!"
+        },
+        "description": {
+            "text": "CO2 emissions and reductions will be tracked"
+        },
+        "icon": {
+            "item": "minecraft:oxeye_daisy"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false,
+        "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+    },
+    "requirements": [
+        [
+            "welcome_grass",
+            "welcome_air",
+            "welcome_water"
+        ]
+    ],
+    "rewards": {
+        "experience": 2
+    },
+    "criteria": {
+        "welcome_grass": {
+            "trigger": "minecraft:enter_block",
+            "conditions": {
+                "block": "minecraft:grass_block"
+            }
+        },
+        "welcome_air": {
+            "trigger": "minecraft:enter_block",
+            "conditions": {
+                "block": "minecraft:air"
+            }
+        },
+        "welcome_water": {
+            "trigger": "minecraft:enter_block",
+            "conditions": {
+                "block": "minecraft:water"
+            }
+        }
+    }
+}

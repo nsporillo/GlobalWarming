@@ -10,25 +10,26 @@ import java.sql.SQLException;
 
 public class PlayerInsertQuery extends InsertQuery {
 
-	@Getter private GPlayer player;
+    @Getter private GPlayer player;
 
-	public PlayerInsertQuery(GPlayer player) {
-		super("players");
-		this.player = player;
-	}
+    public PlayerInsertQuery(GPlayer player) {
+        super("players");
+        this.player = player;
+    }
 
-	@Override
-	public String getSQL() {
-		return "INSERT INTO players (uniqueID, uuid, firstSeen, carbonScore) VALUES (?,?,?,?)";
-	}
+    @Override
+    public String getSQL() {
+        return "INSERT INTO players (uniqueId, uuid, firstSeen, carbonScore, worldId) VALUES (?,?,?,?,?)";
+    }
 
-	@Override
-	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
-		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setInt(1, player.getUniqueId());
-		preparedStatement.setString(2, player.getUuid().toString());
-		preparedStatement.setLong(3, player.getFirstSeen());
-		preparedStatement.setInt(4, player.getCarbonScore());
-		return preparedStatement;
-	}
+    @Override
+    public PreparedStatement prepareStatement(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
+        preparedStatement.setInt(1, player.getUniqueId());
+        preparedStatement.setString(2, player.getUuid().toString());
+        preparedStatement.setLong(3, player.getFirstSeen());
+        preparedStatement.setInt(4, player.getCarbonScore());
+        preparedStatement.setString(5, player.getWorldId().toString());
+        return preparedStatement;
+    }
 }

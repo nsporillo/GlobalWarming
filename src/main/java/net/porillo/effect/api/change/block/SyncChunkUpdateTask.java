@@ -24,7 +24,7 @@ public class SyncChunkUpdateTask extends BukkitRunnable {
 				Block block = chunk.getBlock(change.getX(), change.getY(), change.getZ());
 				//TODO: Add some more logic to ensure this works perfectly.
 				// Currently works, but there might be edge cases not considered when written
-				block.setType(change.getNewType());
+				block.setType(change.getNewType(), true);
 			}
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();

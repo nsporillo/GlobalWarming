@@ -15,27 +15,25 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.UUID;
+
 @ClimateData(type = ClimateEffectType.PERMANENT_SLOWNESS)
 public class PermanentSlowness extends ScheduleClimateEffect implements Listener {
 
-    private double tempThreshold;
-
-    public PermanentSlowness() {
-        this.setPeriod(5 * 60 * 20);
-    }
+    private int duration;
+    private double temperatureThreshold;
 
     private void updatePlayerSlowness(Player player, double temperature) {
-        if (tempThreshold < temperature) {
-            int potionDuration = 6 * 60 * 20;
-            PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, potionDuration, 1);
+        if (temperature >= temperatureThreshold) {
+            PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, duration, 1);
             player.addPotionEffect(potionEffect);
         }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        String eventWorldName = event.getPlayer().getWorld().getName();
-        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(eventWorldName);
+        UUID worldId = event.getPlayer().getWorld().getUID();
+        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
         if (climateEngine != null && climateEngine.isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
             updatePlayerSlowness(event.getPlayer(), climateEngine.getTemperature());
         }
@@ -44,7 +42,7 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
     @Override
     public void run() {
         for (World world : Bukkit.getWorlds()) {
-            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getName());
+            WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
             if (climateEngine != null && climateEngine.isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS)) {
                 for (Player player : world.getPlayers()) {
                     updatePlayerSlowness(player, climateEngine.getTemperature());
@@ -53,10 +51,11 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
         }
     }
 
-
     @Override
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
-        tempThreshold = jsonModel.get("threshold").getAsDouble();
+        setPeriod(jsonModel.get("period").getAsInt() * 60 * 20);
+        duration = jsonModel.get("duration").getAsInt()  * 60 * 20;
+        temperatureThreshold = jsonModel.get("threshold").getAsDouble();
     }
 }

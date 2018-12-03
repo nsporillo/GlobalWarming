@@ -8,25 +8,26 @@ import net.porillo.engine.api.Model;
 import org.bukkit.entity.EntityType;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class EntityFitnessModel extends Model {
 
-	@Getter
-	private Map<EntityType, Distribution> entityFitnessMap;
+    @Getter private Map<EntityType, Distribution> entityFitnessMap;
 
-	public EntityFitnessModel(String worldName) {
-		super(worldName, "entityFitnessModel.json");
-		this.loadModel();
-	}
+    public EntityFitnessModel(UUID worldId) {
+        super(worldId, "entityFitnessModel.json");
+        this.loadModel();
+    }
 
-	@Override
-	public void loadModel() {
-		this.entityFitnessMap = ClimateEngine.getInstance().getGson().fromJson(
-			super.getContents(),
-			new TypeToken<Map<EntityType, Distribution>>() {}.getType());
+    @Override
+    public void loadModel() {
+        this.entityFitnessMap = ClimateEngine.getInstance().getGson().fromJson(
+              super.getContents(),
+              new TypeToken<Map<EntityType, Distribution>>() {
+              }.getType());
 
-		if (this.entityFitnessMap == null) {
-			throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));
-		}
-	}
+        if (this.entityFitnessMap == null) {
+            throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));
+        }
+    }
 }

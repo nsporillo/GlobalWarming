@@ -1,0 +1,69 @@
+{
+    "display": {
+        "title": {
+            "text": "Green Thumbs Up"
+        },
+        "description": {
+            "text": "Plant a sapling.  Trivia: trees are unique in their ability to lock up large amounts of carbon in their wood, and continue to add carbon as they grow [EPA, 2016]."
+        },
+        "icon": {
+            "item": "minecraft:birch_sapling"
+        },
+        "frame": "goal",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "requirements": [
+        [
+            "green_thumb_oak",
+            "green_thumb_birch",
+            "green_thumb_spruce",
+            "green_thumb_jungle",
+            "green_thumb_acacia",
+            "green_thumb_dark_oak"
+        ]
+    ],
+    "rewards": {
+        "experience": 5
+    },
+    "criteria": {
+        "green_thumb_oak": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:oak_sapling"
+            }
+        },
+        "green_thumb_birch": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:birch_sapling"
+            }
+        },
+        "green_thumb_spruce": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:spruce_sapling"
+            }
+        },
+        "green_thumb_jungle": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:jungle_sapling"
+            }
+        },
+        "green_thumb_acacia": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:acacia_sapling"
+            }
+        },
+        "green_thumb_dark_oak": {
+            "trigger": "minecraft:placed_block",
+            "conditions": {
+                "block": "minecraft:dark_oak_sapling"
+            }
+        }
+    },
+    "parent": "gw:root"
+}

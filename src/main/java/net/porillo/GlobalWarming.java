@@ -29,21 +29,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GlobalWarming extends JavaPlugin {
 
 	private static GlobalWarming instance; // single plugin instance
 
-	@Getter private GlobalWarmingConfig conf;
-	@Getter private ConnectionManager connectionManager;
-	@Getter private TableManager tableManager;
-	@Getter private Random random;
+	@Getter	private GlobalWarmingConfig conf;
+	@Getter	private ConnectionManager connectionManager;
+	@Getter	private TableManager tableManager;
+	@Getter	private Random random;
 	private BukkitCommandManager commandManager;
-	@Getter private Gson gson;
-    @Getter	private GScoreboard scoreboard;
-    @Getter	private CO2Notifications notifications;
-	@Getter private static Economy economy;
+	@Getter	private Gson gson;
+	@Getter	private GScoreboard scoreboard;
+	@Getter	private CO2Notifications notifications;
+	@Getter	private static Economy economy;
 
 	@Override
 	public void onEnable() {
@@ -58,7 +57,9 @@ public class GlobalWarming extends JavaPlugin {
 
 		try {
 			//Load all the table data immediately:
+			// - And create the schemas if required
 			Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
+			AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 			AsyncDBQueue.getInstance().writeSelectQueue(connection);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -97,7 +98,7 @@ public class GlobalWarming extends JavaPlugin {
 
 	/**
 	 * Economy (soft-dependency on Vault)
-	 *  - If a Vault-based economy was not found, disable the bounty system
+	 * - If a Vault-based economy was not found, disable the bounty system
 	 */
 	private static void setupEconomy() {
 		if (Bukkit.getPluginManager().getPlugin("Vault") != null) {

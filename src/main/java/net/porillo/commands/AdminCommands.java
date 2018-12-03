@@ -3,19 +3,15 @@ package net.porillo.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
+import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
-import net.porillo.effect.EffectEngine;
-import net.porillo.effect.api.ClimateEffectType;
-import net.porillo.effect.api.change.block.BlockChange;
-import net.porillo.effect.api.change.block.SyncChunkUpdateTask;
-import net.porillo.effect.negative.SeaLevelRise;
+import net.porillo.database.tables.WorldTable;
+import net.porillo.engine.ClimateEngine;
+import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GPlayer;
+import net.porillo.objects.GWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import java.util.HashSet;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 @CommandAlias("globalwarming|gw")
 public class AdminCommands extends BaseCommand {
@@ -29,41 +25,69 @@ public class AdminCommands extends BaseCommand {
         public void onDatabaseDebug(GPlayer gPlayer, String[] args) {
             boolean value = AsyncDBQueue.getInstance().isDebug();
             AsyncDBQueue.getInstance().setDebug(!value);
-
             if (!value) {
-                gPlayer.sendMsg(ChatColor.GREEN + "Database console logging = " +  ChatColor.YELLOW + "true.");
+                gPlayer.sendMsg(String.format(
+                      "%sDatabase console logging = %strue.",
+                      ChatColor.GREEN,
+                      ChatColor.YELLOW));
             } else {
-                gPlayer.sendMsg(ChatColor.GREEN + "Database console logging = " + ChatColor.GRAY + "false.");
+                gPlayer.sendMsg(String.format(
+                      "%sDatabase console logging = %sfalse.",
+                      ChatColor.GREEN,
+                      ChatColor.GRAY));
             }
         }
 
-        @Subcommand("effect")
-        @CommandPermission("globalwarming.admin.debug.effect")
-        public class EffectCommands extends BaseCommand {
+        /**
+         * Set the temperature to activate / deactivate climate-effects
+         * including sea-level, farm yields, slowness and more
+         */
+        @Subcommand("temperature")
+        @Description("Set the temperature for the current world")
+        @Syntax("[celsius]")
+        public void onTemperature(GPlayer gPlayer, String[] args) {
+            if (args.length == 1) {
+                double temperature;
+                try {
+                    temperature = Math.floor(Double.parseDouble(args[0]));
+                } catch (NumberFormatException e) {
+                    gPlayer.sendMsg(String.format("%sInvalid temperature", ChatColor.RED));
+                    return;
+                }
 
-            @Subcommand("sealevel")
-            @Syntax("[level]")
-            @Description("Force execute Sea Level effect")
-            public void onSeaLevel(GPlayer gPlayer, String[] args) {
-                if (args.length < 2) {
-                    int seaLevel = 62;
-
-                    if (args.length == 1) {
-                        try {
-                            seaLevel = Integer.parseInt(args[0]);
-                        } catch (NumberFormatException e) {
-                            gPlayer.sendMsg(ChatColor.RED + "Invalid SeaLevel");
-                            return;
+                GWorld gWorld = null;
+                WorldClimateEngine climateEngine = null;
+                Player onlinePlayer = gPlayer.getOnlinePlayer();
+                boolean isTemperatureUpdated = false;
+                if (onlinePlayer != null) {
+                    climateEngine = ClimateEngine.getInstance().getClimateEngine(gPlayer.getWorldId());
+                    for (int carbonScore : climateEngine.getScoreTempModel().getTemperatureMap().keySet()) {
+                        if (climateEngine.getScoreTempModel().getTemperatureMap().get(carbonScore) == temperature) {
+                            WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
+                            gWorld = worldTable.getWorld(gPlayer.getWorldId());
+                            gWorld.setCarbonValue(carbonScore);
+                            isTemperatureUpdated = true;
+                            break;
                         }
                     }
-
-                    Player player = gPlayer.getPlayer();
-                    Supplier<HashSet<BlockChange>> changes = EffectEngine.getInstance().getEffect(SeaLevelRise.class, ClimateEffectType.SEA_LEVEL_RISE).execute(player.getLocation().getChunk().getChunkSnapshot(), seaLevel);
-                    new SyncChunkUpdateTask(player.getLocation().getChunk(), CompletableFuture.supplyAsync(changes)).runTaskLater(GlobalWarming.getInstance(), 40L);
-                    gPlayer.sendMsg(ChatColor.GREEN + String.format("Applying sea level rise from y:%d to chunk", seaLevel));
-                } else {
-                    gPlayer.sendMsg(ChatColor.RED + "Invalid Args");
                 }
+
+                if (isTemperatureUpdated) {
+                    //Database update:
+                    WorldUpdateQuery updateQuery = new WorldUpdateQuery(gWorld);
+                    AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+
+                    //Notify:
+                    GlobalWarming.getInstance().getScoreboard().update(gPlayer);
+                    gPlayer.sendMsg(
+                          String.format("World carbon score: [%s], temperature: [%s]",
+                                gWorld.getCarbonValue(),
+                                climateEngine.getTemperature()));
+                } else {
+                    gPlayer.sendMsg("Temperature was not updated");
+                }
+            } else {
+                gPlayer.sendMsg(String.format("%sInvalid arguments", ChatColor.RED));
             }
         }
     }

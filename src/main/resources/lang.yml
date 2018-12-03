@@ -2,8 +2,9 @@ locale: en-US
 lang:
   GENERIC:
     PERMISSION: "§c§OInsufficient permissions for GlobalWarming command"
-    SPAM: "§8§OToo many requests at once"
     INVALIDARGS: "§c§OInvalid command arguments, expecting: §7§O%s"
+    SPAM: "§8§OToo many requests at once"
+    INVENTORYFULL: "§c§OYour inventory is full"
   BOUNTY:
     PLAYER: "PLAYER"
     HUNTER: "HUNTER"
@@ -12,6 +13,7 @@ lang:
     REWARD: "REWARD"
     REWARDREQUIRED: "§c§OA minimum reward of $1 is required"
     JOIN: "§aJOIN"
+    JOINTOOLTIP: "§aClick here to begin this bounty"
     TITLE: "ACTIVE BOUNTIES"
     ERROR: "§c§OError creating the bounty-list table"
     ALREADYHUNTING: "§c§OCannot join: one bounty per player"
@@ -23,12 +25,12 @@ lang:
     MAXCREATED: "§c§OYou cannot create additional bounties at this time"
     ACCEPTED: "§2§OBounty accepted"
     ACCEPTEDBY: "§2§OBounty accepted by: §a§O%s"
-    COMPLETED: "§2§OBounty completed: §a§O$%d"
+    COMPLETED: "§2§OBounty completed: §a§O+$%d"
     COMPLETEDBY: "§2§OBounty completed by: §a§O%s"
     NOTJOINED: "§c§OYou have not joined a bounty"
     ABANDONED: "§2§OBounty abandoned"
     ABANDONEDBY: "§2§OBounty abandoned by: §a§O%s"
-    CANCELLED: "§2§OBounties cancelled: §a§O%s§2§O, refund: §a§O$%d"
+    CANCELLED: "§2§OBounties cancelled: §a§O%s§2§O, refund: §a§O+$%d"
   ENGINE:
     DISABLED: "§8§OGlobalWarming is not enabled for this world"
     NOTFOUND: "Climate engine not found for world: '%s'"
@@ -58,7 +60,7 @@ lang:
       OK: "§fScientists: %sexpect normal snow conditions this year"
       HIGH: "§fScientists: %shigh CO2 is affecting snow conditions"
   SCORE:
-    CHAT: "§fYour carbon footprint: {0}§f, global temperature: {1}§f°C"
+    CHAT: "§fYour carbon footprint: %s§f, global temperature: %s§f°C"
     TEMPERATURE: "§fGlobal Temp: %s%s§f°C"
   TABLE:
     EMPTY: "NO RECORDS FOUND"
@@ -66,7 +68,8 @@ lang:
     LOW: "§fGlobal CO2 levels are too low: §6increase furnace emissions"
     BALANCED: "Global CO2 levels are in balance"
     HIGH: "§fGlobal CO2 levels are too high: §6plant new saplings"
-    HIGHWITHBOUNTY: "\n§fOr see: §6/gw help§f to create a bounty"
+    HIGHWITHBOUNTY: "§fOr see: §6/gw help§f to create a bounty"
+    AVERAGE: "Mean temperature from 1951-80: §614°C §7[GISS]§f, this is your goal"
   TOPTABLE:
     PLAYER: "PLAYER"
     INDEX: "INDEX"
@@ -75,7 +78,8 @@ lang:
     PLANTERS: "TOP 10 TREE PLANTERS"
     ERROR: "§c§OError creating polluter / planter table"
   WIKI:
-    ADDED: "§fThe §6GlobalWarming wiki§f was added to your inventory"
+    ADDED: "§fThe §6GlobalWarming§f wiki was added to your inventory"
+    ALREADYADDED: "§fYou already have the §6GlobalWarming§f wiki"
     NAME: "§fGlobalWarming Wiki"
     AUTHOR: "Team GW"
     LORE: "§8Gameplay and instructions"

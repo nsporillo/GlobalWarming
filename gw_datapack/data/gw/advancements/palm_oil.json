@@ -1,0 +1,37 @@
+{
+    "display": {
+        "title": {
+            "text": "In the Palm of Your Hand"
+        },
+        "description": {
+            "text": "Cut down a jungle tree.  Trivia: when tropical forests are cleared to make way for oil palm plantations, carbon is released into the atmosphere as carbon dioxide [UCS, 2013]."
+        },
+        "icon": {
+            "item": "minecraft:jungle_log"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "rewards": {
+        "experience": 2
+    },
+    "criteria": {
+        "palm_oil_log": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "minecraft:jungle_log",
+                        "count": {
+                            "min": 1,
+                            "max": 1
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "parent": "gw:if_a_tree_falls"
+}

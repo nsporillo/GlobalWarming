@@ -65,7 +65,7 @@
 #  - Connect!
 #  - Type "/gw score" in the Mincraft client chat-box to confirm
 #
-# 7. OTHER
+# 7. ESSENTIALS (ECONOMY)
 #  -For a minimal "Essentials" plugin install (OPTIONAL):
 #  - Edit its config file:
 #  $ vi /home/minecraft/server/plugins/config.yml
@@ -80,13 +80,20 @@
 #  - From the server command line:
 #  > reload
 #
-# 8. SERVER RESTART / COMMANDS / STOP
+# 8. ADVANCEMENTS
+#  - To erase existing advancement progress:
+#   - Disconnect players
+#   - Delete from /home/minecraft/server/world/advancements/
+#   - Reload server (from the server command line, type: reload)
+#   - Reconnect players
+#
+# 9. SERVER RESTART / COMMANDS / STOP
 #  $ sudo su minecraft -c "/home/minecraft/server/launch.sh"
 #  > give [PLAYER_NAME] stick 2 -> gives a player 2 sticks
 #  > reload -> reloads the server
 #  > stop -> stops the server
 #
-# 9. TESTED ON NOV 2018:
+# 10. TESTED ON NOV 2018:
 #  - VirtualBox 5.2.22 VM
 #  - Ubuntu 18.04.1 x64
 
@@ -121,7 +128,7 @@ cd ../server
 sudo su minecraft -c "mv ../build/spigot-1.*.jar spigot.jar"
 
 # Startup script
-sudo su minecraft -c 'echo "cd /home/minecraft/server;java -Xms512M -Xmx1536M -jar spigot.jar" >> /home/minecraft/server/launch.sh'
+sudo su minecraft -c 'echo "cd /home/minecraft/server;java -Xms512M -Xmx1536M -jar spigot.jar" > /home/minecraft/server/launch.sh'
 
 # Make it executable
 sudo su minecraft -c "chmod +x /home/minecraft/server/launch.sh"
@@ -147,10 +154,11 @@ mvn clean compile install
 cd ~/build/GlobalWarming
 sudo su minecraft -c "mkdir /home/minecraft/server/plugins"
 sudo su minecraft -c "cp target/GlobalWarming.jar /home/minecraft/server/plugins/"
+sudo su minecraft -c "mkdir -p /home/minecraft/server/world/datapacks"
+sudo su minecraft -c "cp -r gw_datapack /home/minecraft/server/world/datapacks/"
 
 # Delete any old configuration files (if required)
-sudo su minecraft -c "rm /home/minecraft/server/plugins/GlobalWarming/lang.yml"
-sudo su minecraft -c "rm /home/minecraft/server/plugins/GlobalWarming/config.yml"
+sudo rm -rf /home/minecraft/server/plugins/GlobalWarming/*
 
 # Get Vault.jar (OPTIONAL)
 #  - NOTE: an economy is required by the bounty system

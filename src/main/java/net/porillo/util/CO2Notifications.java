@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.commands.GeneralCommands;
 import net.porillo.config.Lang;
+import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.EffectEngine;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.negative.SeaLevelRise;
@@ -22,10 +23,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Maintain one periodic notification-message per world (uses the scoreboard's worlds)
@@ -34,16 +32,11 @@ import java.util.Map;
  *  - Supports effect-model modifications
  */
 public class CO2Notifications {
-    @Getter
-    private Map<String, BossBar> bossBars;
+    private enum TemperatureRange {LOW, AVERAGE, HIGH}
+
+    @Getter private Map<UUID, BossBar> bossBars;
     private static final long NOTIFICATION_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getNotificationInterval();
     private static final long NOTIFICATION_DURATION_TICKS = GlobalWarming.getInstance().getConf().getNotificationDuration();
-    private static final int NORMAL_SEA_LEVEL = GlobalWarming.getInstance().getConf().getDefaultSeaLevel();
-    private static final double NORMAL_ICE_LEVEL_HEIGHT = GlobalWarming.getInstance().getConf().getDefaultIceLevel();
-    private static final double NORMAL_SNOW_LEVEL_HEIGHT = GlobalWarming.getInstance().getConf().getDefaultSnowLevel();
-    private static final double NORMAL_FARM_YIELD_FITNESS = GlobalWarming.getInstance().getConf().getDefaultFarmYieldFitness();
-    private static final double NORMAL_MOB_FITNESS = GlobalWarming.getInstance().getConf().getDefaultMobFitness();
-    private enum TemperatureRange {LOW, AVERAGE, HIGH}
 
     public CO2Notifications() {
         bossBars = new HashMap<>();
@@ -58,15 +51,15 @@ public class CO2Notifications {
                   synchronized (this) {
                       bossBars.clear();
                       GScoreboard scoreboard = GlobalWarming.getInstance().getScoreboard();
-                      for (String worldName : scoreboard.getScoreboards().keySet()) {
-                          World world = Bukkit.getWorld(worldName);
+                      for (UUID worldId : scoreboard.getScoreboards().keySet()) {
+                          World world = Bukkit.getWorld(worldId);
                           if (world != null) {
                               BossBar bossBar = Bukkit.createBossBar(
-                                    getNotificationMessage(worldName),
+                                    getNotificationMessage(worldId),
                                     BarColor.WHITE,
                                     BarStyle.SOLID);
 
-                              bossBars.put(worldName, bossBar);
+                              bossBars.put(worldId, bossBar);
                               for (Player player : world.getPlayers()) {
                                   bossBar.addPlayer(player);
                               }
@@ -88,24 +81,24 @@ public class CO2Notifications {
               }, 0L, NOTIFICATION_INTERVAL_TICKS);
     }
 
-    private String getNotificationMessage(String worldName) {
+    private String getNotificationMessage(UUID worldId) {
         String message = Lang.ENGINE_DISABLED.get();
-        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(worldName);
+        WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
         if (climateEngine != null && climateEngine.isEnabled()) {
-            message = getTemperatureGuidance(worldName, climateEngine.getTemperature());
+            message = getTemperatureGuidance(worldId, climateEngine.getTemperature());
         }
 
         return message;
     }
 
-    private String getTemperatureGuidance(String worldName, double temperature) {
+    private String getTemperatureGuidance(UUID worldId, double temperature) {
         //Get the temperature range:
         String message = "";
         String optional = "";
-        TemperatureRange range;
-        if (temperature < GeneralCommands.LOW_TEMPERATURE_UBOUND) {
+        final TemperatureRange range;
+        if (temperature < WorldTable.LOW_TEMPERATURE_UBOUND) {
             range = TemperatureRange.LOW;
-        } else if (temperature < GeneralCommands.HIGH_TEMPERATURE_LBOUND) {
+        } else if (temperature < WorldTable.HIGH_TEMPERATURE_LBOUND) {
             range = TemperatureRange.AVERAGE;
         } else {
             range = TemperatureRange.HIGH;
@@ -113,63 +106,70 @@ public class CO2Notifications {
 
         try {
             //Get a message based on current conditions:
-            String index = String.valueOf((int) temperature);
-            double random = GlobalWarming.getInstance().getRandom().nextDouble();
-            WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldName);
+            final double random = GlobalWarming.getInstance().getRandom().nextDouble();
+            final WorldClimateEngine worldClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
             if (worldClimateEngine != null) {
                 if (worldClimateEngine.isEffectEnabled(ClimateEffectType.FARM_YIELD) && random < 0.1) {
                     //Farm yields (with random materials):
-                    FarmYield farmYield = EffectEngine.getInstance().getEffect(FarmYield.class, ClimateEffectType.FARM_YIELD);
-                    List<Material> keys = new ArrayList<>(farmYield.getCropDistribution().keySet());
-                    Material randomMaterial = keys.get(GlobalWarming.getInstance().getRandom().nextInt(keys.size()));
-                    Distribution distribution = farmYield.getCropDistribution().get(randomMaterial);
-                    double farmYieldFitness = distribution.getValue(temperature);
+                    final FarmYield farmYield = EffectEngine.getInstance().getEffect(FarmYield.class, ClimateEffectType.FARM_YIELD);
+                    final List<Material> keys = new ArrayList<>(farmYield.getCropDistribution().keySet());
+                    final Material randomMaterial = keys.get(GlobalWarming.getInstance().getRandom().nextInt(keys.size()));
+                    final Distribution distribution = farmYield.getCropDistribution().get(randomMaterial);
+                    final double farmYieldFitness = distribution.getValue(temperature);
+                    final double normalFarmYieldFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
                     optional = randomMaterial.toString().toLowerCase().replace("_", "");
                     message = getMessage(
-                          farmYieldFitness < NORMAL_FARM_YIELD_FITNESS,
+                          farmYieldFitness < normalFarmYieldFitness,
                           range,
                           Lang.NOTIFICATION_FARM_LOW,
                           Lang.NOTIFICATION_FARM_OK,
                           Lang.NOTIFICATION_FARM_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.ICE_FORMATION) && random < 0.2) {
                     //Ice:
-                    Distribution distribution = EffectEngine.getInstance().getEffect(IceForm.class, ClimateEffectType.ICE_FORMATION).getHeightMap();
-                    double iceFitness = distribution.getValue(temperature);
+                    final Distribution distribution = EffectEngine.getInstance().getEffect(IceForm.class, ClimateEffectType.ICE_FORMATION).getHeightMap();
+                    final double iceFitness = distribution.getValue(temperature);
+                    final double normalIceFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
                     message = getMessage(
-                          iceFitness != NORMAL_ICE_LEVEL_HEIGHT,
+                          iceFitness != normalIceFitness,
                           range,
                           Lang.NOTIFICATION_ICE_LOW,
                           Lang.NOTIFICATION_ICE_OK,
                           Lang.NOTIFICATION_ICE_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.MOB_SPAWN_RATE) && random < 0.3) {
                     //Mob (with random entities):
-                    List<EntityType> keys = new ArrayList<>(worldClimateEngine.getEntityFitnessModel().getEntityFitnessMap().keySet());
-                    EntityType randomEntity = keys.get(GlobalWarming.getInstance().getRandom().nextInt(keys.size()));
-                    Distribution distribution = worldClimateEngine.getEntityFitnessModel().getEntityFitnessMap().get(randomEntity);
-                    double mobFitness = distribution.getValue(temperature);
+                    final List<EntityType> keys = new ArrayList<>(worldClimateEngine.getEntityFitnessModel().getEntityFitnessMap().keySet());
+                    final EntityType randomEntity = keys.get(GlobalWarming.getInstance().getRandom().nextInt(keys.size()));
+                    final Distribution distribution = worldClimateEngine.getEntityFitnessModel().getEntityFitnessMap().get(randomEntity);
+                    final double mobFitness = distribution.getValue(temperature);
+                    final double normalMobFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
                     optional = randomEntity.toString().toLowerCase().replace("_", "");
                     message = getMessage(
-                          mobFitness < NORMAL_MOB_FITNESS,
+                          mobFitness < normalMobFitness,
                           range,
                           Lang.NOTIFICATION_MOB_LOW,
                           Lang.NOTIFICATION_MOB_OK,
                           Lang.NOTIFICATION_MOB_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.SEA_LEVEL_RISE) && random < 0.4) {
                     //Sea-level messages:
-                    SeaLevelRise seaLevelRise = EffectEngine.getInstance().getEffect(SeaLevelRise.class, ClimateEffectType.SEA_LEVEL_RISE);
-                    int seaLevelFitness = seaLevelRise.getJsonModel().get(index).getAsInt();
+                    // Note: sea-level deltas are 0+ (can only rise)
+                    final String temperatureKey = String.valueOf((int) temperature);
+                    final String normalTemperatureKey = String.valueOf((int) WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    final SeaLevelRise seaLevelRise = EffectEngine.getInstance().getEffect(SeaLevelRise.class, ClimateEffectType.SEA_LEVEL_RISE);
+                    final int seaLevelDelta = seaLevelRise.getJsonModel().get(temperatureKey).getAsInt();
+                    final int normalSeaLevelDelta = seaLevelRise.getJsonModel().get(normalTemperatureKey).getAsInt();
                     message = getMessage(
-                          seaLevelFitness != NORMAL_SEA_LEVEL,
+                          seaLevelDelta > normalSeaLevelDelta,
                           range,
                           Lang.NOTIFICATION_SEALEVEL_LOW,
                           Lang.NOTIFICATION_SEALEVEL_OK,
                           Lang.NOTIFICATION_SEALEVEL_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.SNOW_FORMATION) && random < 0.5) {
                     //Snow messages:
-                    Distribution distribution = EffectEngine.getInstance().getEffect(SnowForm.class, ClimateEffectType.SNOW_FORMATION).getHeightMap();
-                    double snowFitness = distribution.getValue(temperature);
+                    final Distribution distribution = EffectEngine.getInstance().getEffect(SnowForm.class, ClimateEffectType.SNOW_FORMATION).getHeightMap();
+                    final double snowFitness = distribution.getValue(temperature);
+                    final double normalSnowFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
                     message = getMessage(
-                          snowFitness != NORMAL_SNOW_LEVEL_HEIGHT,
+                          snowFitness != normalSnowFitness,
                           range,
                           Lang.NOTIFICATION_SNOW_LOW,
                           Lang.NOTIFICATION_SNOW_OK,

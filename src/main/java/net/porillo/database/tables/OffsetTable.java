@@ -7,7 +7,6 @@ import net.porillo.database.api.SelectCallback;
 import net.porillo.database.queries.select.OffsetSelectQuery;
 import net.porillo.database.queries.update.OffsetUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
-import net.porillo.engine.ClimateEngine;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,8 +22,7 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
      * TODO: When an offset bounty is complete, delete from this list
      * TODO: "synchronize" will be required to protect critical
      */
-    @Getter
-    private List<OffsetBounty> offsetList = new ArrayList<>();
+    @Getter private List<OffsetBounty> offsetList = new ArrayList<>();
 
     public OffsetTable() {
         super("offsets");
@@ -44,10 +42,9 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
      */
     private boolean isPlayerHunting(GPlayer gPlayer) {
         boolean isPlayerHunting = false;
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
                   bounty.getHunterId() != null &&
                   bounty.getHunterId().equals(gPlayer.getUniqueId())) {
                 isPlayerHunting = true;
@@ -70,27 +67,27 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
         }
 
         OffsetBounty joinedBounty = null;
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
                   bounty.getUniqueId() == bountyId) {
                 if (bounty.getCreatorId() != null &&
                       bounty.getCreatorId().equals(gPlayer.getUniqueId())) {
                     throw new Exception(Lang.BOUNTY_BOUNTYOWNER.get());
-                } else if (bounty.getHunterId() != null &&
-                      bounty.getHunterId() > 0) {
-                    throw new Exception(Lang.BOUNTY_ANOTHERPLAYER.get());
-                } else {
-                    bounty.setHunterId(gPlayer.getUniqueId());
-                    bounty.setTimeStarted(System.currentTimeMillis());
-
-                    //Database:
-                    OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
-                    AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
-                    joinedBounty = bounty;
                 }
 
+                if (bounty.getHunterId() != null && bounty.getHunterId() > 0) {
+                    throw new Exception(Lang.BOUNTY_ANOTHERPLAYER.get());
+                }
+
+                //Bounty accepted:
+                bounty.setHunterId(gPlayer.getUniqueId());
+                bounty.setTimeStarted(System.currentTimeMillis());
+
+                //Database update:
+                OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
+                AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+                joinedBounty = bounty;
                 break;
             }
         }
@@ -107,16 +104,16 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
      */
     public OffsetBounty unJoin(GPlayer gPlayer) {
         OffsetBounty abandonedBounty = null;
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
                   bounty.getHunterId() != null &&
                   bounty.getHunterId().equals(gPlayer.getUniqueId())) {
+                //Bounty abandoned:
                 bounty.setTimeStarted(0);
                 bounty.setHunterId(null);
 
-                //Database:
+                //Database update:
                 OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
                 AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
                 abandonedBounty = bounty;
@@ -132,17 +129,17 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
      */
     public List<OffsetBounty> cancel(GPlayer gPlayer) {
         List<OffsetBounty> cancelledBounties = new ArrayList<>();
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
                   bounty.getCreatorId() != null &&
                   bounty.getCreatorId().equals(gPlayer.getUniqueId()) &&
                   (bounty.getHunterId() == null ||
                         bounty.getHunterId() == 0)) {
+                //Bounty cancelled:
                 bounty.setTimeCompleted(System.currentTimeMillis());
 
-                //Database:
+                //Database update:
                 OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
                 AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
                 cancelledBounties.add(bounty);
@@ -158,19 +155,19 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
      */
     public OffsetBounty update(GPlayer gPlayer, int blocksCompleted) {
         OffsetBounty updatedBounty = null;
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
                   bounty.getHunterId() != null &&
                   bounty.getHunterId().equals(gPlayer.getUniqueId())) {
+                //Update the blocks remaining:
                 int blocksRemaining = Math.max(bounty.getLogBlocksTarget() - blocksCompleted, 0);
                 bounty.setLogBlocksTarget(blocksRemaining);
                 if (blocksRemaining == 0) {
                     bounty.setTimeCompleted(System.currentTimeMillis());
                 }
 
-                //Database:
+                //Database update:
                 OffsetUpdateQuery updateQuery = new OffsetUpdateQuery(bounty);
                 AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
                 updatedBounty = bounty;
@@ -201,10 +198,9 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
      */
     public int getIncompleteBountyCount(GPlayer gPlayer) {
         int bountyCount = 0;
-        String associatedWorldName = ClimateEngine.getInstance().getAssociatedWorldName(gPlayer.getPlayer());
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldName().equals(associatedWorldName) &&
+                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
                   bounty.getCreatorId() != null &&
                   bounty.getCreatorId().equals(gPlayer.getUniqueId())) {
                 bountyCount++;

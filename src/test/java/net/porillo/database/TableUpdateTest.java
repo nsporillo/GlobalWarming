@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -25,13 +26,14 @@ public class TableUpdateTest {
 		AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 
 		// Create a world and insert it into the DB
-		final Integer uniqueId = random.nextInt();
-		GWorld world = new GWorld(uniqueId, "testworld", 0.0, 0L, 0, 0, 0);
-		AsyncDBQueue.getInstance().queueInsertQuery(new WorldInsertQuery(world));
+		final int uniqueId = random.nextInt();
+		UUID worldId = UUID.randomUUID();
+		GWorld gWorld = new GWorld(uniqueId, worldId, 0L, 0, 0, 0);
+		AsyncDBQueue.getInstance().queueInsertQuery(new WorldInsertQuery(gWorld));
 		AsyncDBQueue.getInstance().writeInsertQueue(connection);
 
 		// Verify the object exists in the DB
-		String select = "SELECT * FROM worlds WHERE uniqueID = ?";
+		String select = "SELECT * FROM worlds WHERE uniqueId = ?";
 		PreparedStatement insertStatement = connection.prepareStatement(select);
 		insertStatement.setLong(1, uniqueId);
 		ResultSet resultSet = insertStatement.executeQuery();
@@ -47,9 +49,9 @@ public class TableUpdateTest {
 		 * is actually executed against the Database.
 		 */
 		for (int i = 1; i <= 10; i++) {
-			world.setCarbonValue(i * 1000);
-			AsyncDBQueue.getInstance().queueUpdateQuery(new WorldUpdateQuery(world));
-	}
+			gWorld.setCarbonValue(i * 1000);
+			AsyncDBQueue.getInstance().queueUpdateQuery(new WorldUpdateQuery(gWorld));
+		}
 
 		GWorld updateQueryWorld = (GWorld) AsyncDBQueue.getInstance().getUpdateQueue().peek().getObject();
 		assertThat("world carbon score incorrect", updateQueryWorld.getCarbonValue().equals(10000));
@@ -57,7 +59,7 @@ public class TableUpdateTest {
 		AsyncDBQueue.getInstance().writeUpdateQueue(connection);
 
 		// Delete the test object from the database
-		String delete = "DELETE FROM worlds WHERE uniqueID = ?";
+		String delete = "DELETE FROM worlds WHERE uniqueId = ?";
 		PreparedStatement deleteStatement = connection.prepareStatement(delete);
 		deleteStatement.setLong(1, uniqueId);
 		deleteStatement.execute();

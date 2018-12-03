@@ -23,14 +23,20 @@ public class ChatTable {
     public enum Section {
         HEADER(0),
         BODY(1);
-        public int get() {return value;}
+
+        public int get() {
+            return value;
+        }
+
         private final int value;
+
         Section(int value) {
             this.value = value;
         }
     }
 
     private enum Alignment {LEFT, CENTER, RIGHT}
+
     private final Map<Character, Integer> charWidth;
     @Setter private String title;
     private List<String> headers;
@@ -73,7 +79,7 @@ public class ChatTable {
         onePixelPad[Section.BODY.get()] = '\u17f2';
 
         //ASCII character sizes:
-        charWidth = new HashMap();
+        charWidth = new HashMap<>();
         charWidth.put(' ', 4);
         charWidth.put('!', 2);
         charWidth.put('"', 4);
@@ -376,7 +382,7 @@ public class ChatTable {
         tableBuilder.append(gridColor);
         tableBuilder.append(delimiters[Section.HEADER.get()]);
         List<String> footers = new ArrayList<>();
-        for (int width: headerWidth) {
+        for (int width : headerWidth) {
             footers.add(pad("", width, Section.HEADER, Alignment.LEFT));
         }
 
@@ -390,10 +396,27 @@ public class ChatTable {
     /**
      * Replaces each token with a clickable-event, while converting the
      * surrounding text to JSON (for use as a tellraw command)
+     *
+     * @param gPlayer    message recipient
+     * @param clickToken generic text to click (e.g., CLICK HERE)
+     * @param command    the command to execute when clicked
+     * @param tooltip    text to display on hover
+     * @param uniqueIds  values to send with each token's command
+     * @return a tellraw command with clickable links
      */
-    public String toJson(GPlayer gPlayer, String clickToken, String command, List<Integer> uniqueIds) {
+    public String toJson(GPlayer gPlayer, String clickToken, String command, String tooltip, List<Integer> uniqueIds) {
         String table = toString();
+
+        //Generic tooltip for each link:
+        String hoverEvent = "";
+        if (!tooltip.isEmpty()) {
+            hoverEvent = String.format(",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"%s\"}", tooltip);
+        }
+
+        //Split the table where we will insert the links:
         String[] textBlocks = table.split(String.format("%s\\b", clickToken));
+
+        //Add clickable links:
         StringBuilder jsonBuilder = new StringBuilder();
         for (String textBlock : textBlocks) {
             //JSON separator:
@@ -410,10 +433,11 @@ public class ChatTable {
             if (uniqueIds.size() > 0) {
                 int id = uniqueIds.remove(0);
                 jsonBuilder.append(String.format(
-                      ", {\"text\":\"%s\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"%s %d\"}}",
+                      ", {\"text\":\"%s\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"%s %d\"}%s}",
                       clickToken,
                       command,
-                      id));
+                      id,
+                      hoverEvent));
             }
         }
 
@@ -421,7 +445,7 @@ public class ChatTable {
         // - Note: escaping newlines prior to execution
         return String.format(
               "tellraw %s [%s]",
-              gPlayer.getPlayer().getName(),
+              gPlayer.getOfflinePlayer().getName(),
               jsonBuilder.toString().replace("\n", "\\n"));
     }
 }

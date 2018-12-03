@@ -25,7 +25,7 @@ public class FarmYield extends ListenerClimateEffect {
 
     @EventHandler
     public void onCropGrow(BlockGrowEvent event) {
-        WorldClimateEngine worldEngine = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getName());
+        WorldClimateEngine worldEngine = ClimateEngine.getInstance().getClimateEngine(event.getBlock().getWorld().getUID());
         if (worldEngine != null && worldEngine.isEffectEnabled(ClimateEffectType.FARM_YIELD)) {
             Distribution distribution = cropDistribution.get(event.getBlock().getType());
             if (distribution != null) {
@@ -41,7 +41,8 @@ public class FarmYield extends ListenerClimateEffect {
     @Override
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
-        this.cropDistribution = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<Map<Material, Distribution>>(){}.getType());
+        this.cropDistribution = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<Map<Material, Distribution>>() {
+        }.getType());
         if (cropDistribution == null) {
             unregister();
         }

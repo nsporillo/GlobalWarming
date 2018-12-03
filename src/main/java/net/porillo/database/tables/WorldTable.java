@@ -12,60 +12,67 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class WorldTable extends Table implements SelectCallback<GWorld> {
 
-	private Map<String, GWorld> worldMap = new HashMap<>();
+    public static final double DEFAULT_WORLD_TEMPERATURE = 14.0;
+    public static final double LOW_TEMPERATURE_UBOUND = DEFAULT_WORLD_TEMPERATURE -
+                GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected();
 
-	public WorldTable() {
-		super("worlds");
-		createIfNotExists();
+    public static final double HIGH_TEMPERATURE_LBOUND = DEFAULT_WORLD_TEMPERATURE +
+          GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected();
 
-		WorldSelectQuery selectQuery = new WorldSelectQuery(this);
-		AsyncDBQueue.getInstance().queueSelectQuery(selectQuery);
-	}
+    private Map<UUID, GWorld> worldMap = new HashMap<>();
 
-	public GWorld getWorld(String name) {
-		if (worldMap.containsKey(name)) {
-			return worldMap.get(name);
-		}
+    public WorldTable() {
+        super("worlds");
+        createIfNotExists();
 
-		return null;
-	}
+        WorldSelectQuery selectQuery = new WorldSelectQuery(this);
+        AsyncDBQueue.getInstance().queueSelectQuery(selectQuery);
+    }
 
-	private void updateWorld(GWorld gWorld) {
-		worldMap.put(gWorld.getWorldName(), gWorld);
-	}
+    public GWorld getWorld(UUID worldId) {
+        if (worldMap.containsKey(worldId)) {
+            return worldMap.get(worldId);
+        }
 
-	public void insertNewWorld(String name) {
-		GWorld gWorld = new GWorld();
-		gWorld.setUniqueID(GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE));
-		gWorld.setWorldName(name);
-		gWorld.setFirstSeen(System.currentTimeMillis());
-		gWorld.setTemperature(14.0);
-		gWorld.setCarbonValue(0);
-		gWorld.setSeaLevel(0);
-		gWorld.setSize(0);
+        return null;
+    }
 
-		updateWorld(gWorld);
+    private void updateWorld(GWorld gWorld) {
+        worldMap.put(gWorld.getWorldId(), gWorld);
+    }
 
-		WorldInsertQuery worldInsertQuery = new WorldInsertQuery(gWorld);
-		AsyncDBQueue.getInstance().queueInsertQuery(worldInsertQuery);
-	}
+    public void insertNewWorld(UUID worldId) {
+        GWorld gWorld = new GWorld();
+        gWorld.setUniqueID(GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE));
+        gWorld.setWorldId(worldId);
+        gWorld.setFirstSeen(System.currentTimeMillis());
+        gWorld.setCarbonValue(0);
+        gWorld.setSeaLevel(0);
+        gWorld.setSize(0);
 
-	@Override
-	public void onSelectionCompletion(List<GWorld> returnList) throws SQLException {
-		if (GlobalWarming.getInstance() != null) {
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					for (GWorld world : returnList) {
-						updateWorld(world);
-					}
-				}
-			}.runTask(GlobalWarming.getInstance());
-		} else {
-			System.out.printf("Selection returned %d worlds.%n", returnList.size());
-		}
-	}
+        updateWorld(gWorld);
+
+        WorldInsertQuery worldInsertQuery = new WorldInsertQuery(gWorld);
+        AsyncDBQueue.getInstance().queueInsertQuery(worldInsertQuery);
+    }
+
+    @Override
+    public void onSelectionCompletion(List<GWorld> returnList) throws SQLException {
+        if (GlobalWarming.getInstance() != null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (GWorld world : returnList) {
+                        updateWorld(world);
+                    }
+                }
+            }.runTask(GlobalWarming.getInstance());
+        } else {
+            System.out.printf("Selection returned %d worlds.%n", returnList.size());
+        }
+    }
 }
