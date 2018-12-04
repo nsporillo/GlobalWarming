@@ -12,6 +12,7 @@ import net.porillo.config.Lang;
 import net.porillo.database.ConnectionManager;
 import net.porillo.database.TableManager;
 import net.porillo.database.queue.AsyncDBQueue;
+import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.EffectEngine;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.listeners.AttributionListener;
@@ -19,9 +20,11 @@ import net.porillo.listeners.CO2Listener;
 import net.porillo.listeners.PlayerListener;
 import net.porillo.listeners.WorldListener;
 import net.porillo.objects.GPlayer;
+import net.porillo.objects.GWorld;
 import net.porillo.util.CO2Notifications;
 import net.porillo.util.GScoreboard;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -56,11 +59,26 @@ public class GlobalWarming extends JavaPlugin {
 		this.tableManager = new TableManager();
 
 		try {
-			//Load all the table data immediately:
-			// - And create the schemas if required
+			//Connect to the database:
+			// - Refer to setup.sh for setup information
 			Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
+
+			//Create the database if it doesn't exist:
+			// - Required for the first run
 			AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
+
+			//Load any stored records back into memory:
 			AsyncDBQueue.getInstance().writeSelectQueue(connection);
+
+			//Confirm that each world has a record:
+			// - Required for the first run
+			WorldTable worldTable = tableManager.getWorldTable();
+			for (World world: Bukkit.getWorlds()) {
+				GWorld gWorld = worldTable.getWorld(world.getUID());
+				if (gWorld == null) {
+					worldTable.insertNewWorld(world.getUID());
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

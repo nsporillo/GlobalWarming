@@ -70,14 +70,21 @@ public class WorldClimateEngine {
 		return contribution;
 	}
 
-	public double getTemperature() throws NullPointerException {
+	public double getTemperature() {
+		double temperature = WorldTable.DEFAULT_WORLD_TEMPERATURE;
 		WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
 		GWorld gWorld = worldTable.getWorld(config.getWorldId());
 		if (gWorld == null) {
-			throw new NullPointerException(String.format("World not found: [%s]", config.getWorldId()));
+			Thread.dumpStack();
+			GlobalWarming.getInstance().getLogger().severe(String.format(
+				"World ID not found in GWorld table [%s]: [%s]",
+				WorldConfig.getDisplayName(config.getWorldId()),
+				config.getWorldId()));
+		} else {
+			temperature = scoreTempModel.getTemperature(gWorld.getCarbonValue());
 		}
 
-		return scoreTempModel.getTemperature(gWorld.getCarbonValue());
+		return temperature;
 	}
 
 	public boolean isEffectEnabled(ClimateEffectType type) {

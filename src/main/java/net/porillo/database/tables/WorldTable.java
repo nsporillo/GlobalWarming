@@ -1,6 +1,7 @@
 package net.porillo.database.tables;
 
 import net.porillo.GlobalWarming;
+import net.porillo.config.WorldConfig;
 import net.porillo.database.api.SelectCallback;
 import net.porillo.database.queries.insert.WorldInsertQuery;
 import net.porillo.database.queries.select.WorldSelectQuery;
@@ -18,7 +19,7 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
 
     public static final double DEFAULT_WORLD_TEMPERATURE = 14.0;
     public static final double LOW_TEMPERATURE_UBOUND = DEFAULT_WORLD_TEMPERATURE -
-                GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected();
+          GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected();
 
     public static final double HIGH_TEMPERATURE_LBOUND = DEFAULT_WORLD_TEMPERATURE +
           GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected();
@@ -58,6 +59,9 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
 
         WorldInsertQuery worldInsertQuery = new WorldInsertQuery(gWorld);
         AsyncDBQueue.getInstance().queueInsertQuery(worldInsertQuery);
+        GlobalWarming.getInstance().getLogger().info(String.format(
+              "Record created for world: [%s]",
+              WorldConfig.getDisplayName(worldId)));
     }
 
     @Override
