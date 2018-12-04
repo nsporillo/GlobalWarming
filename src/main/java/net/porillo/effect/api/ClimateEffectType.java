@@ -17,6 +17,7 @@ public enum ClimateEffectType {
 
 	FARM_YIELD,
 	MOB_SPAWN_RATE,
+	WEATHER,
 
 	PERMANENT_SLOWNESS,
 

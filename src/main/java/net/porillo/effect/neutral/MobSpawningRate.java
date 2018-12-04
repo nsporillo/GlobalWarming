@@ -22,7 +22,7 @@ public class MobSpawningRate extends ListenerClimateEffect {
             if (distribution != null) {
                 double chance = distribution.getValue(worldEngine.getTemperature());
                 double random = GlobalWarming.getInstance().getRandom().nextDouble();
-                if (chance / 100 <= random) {
+                if (chance / 100.f <= random) {
                     //Cancel the mob:
                     event.setCancelled(true);
 

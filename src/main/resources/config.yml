@@ -22,3 +22,5 @@ sea-level:
   chunks-per-period: 8
   queue-ticks: 65
   chunk-ticks: 35
+weather:
+  interval: 1200

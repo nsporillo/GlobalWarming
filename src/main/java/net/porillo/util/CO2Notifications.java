@@ -11,6 +11,7 @@ import net.porillo.effect.negative.SeaLevelRise;
 import net.porillo.effect.negative.formation.IceForm;
 import net.porillo.effect.negative.formation.SnowForm;
 import net.porillo.effect.neutral.FarmYield;
+import net.porillo.effect.neutral.Weather;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.Distribution;
 import net.porillo.engine.api.WorldClimateEngine;
@@ -149,7 +150,19 @@ public class CO2Notifications {
                           Lang.NOTIFICATION_MOB_LOW,
                           Lang.NOTIFICATION_MOB_OK,
                           Lang.NOTIFICATION_MOB_HIGH);
-                } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.SEA_LEVEL_RISE) && random < 0.4) {
+                } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.WEATHER) && random < 0.4) {
+                    //Weather (storms):
+                    final Weather weather = EffectEngine.getInstance().getEffect(Weather.class, ClimateEffectType.WEATHER);
+                    final Distribution distribution = weather.getWeatherDistribution().get(Weather.WeatherData.STORM);
+                    final double weatherFitness = distribution.getValue(temperature);
+                    final double normalWeatherFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    message = getMessage(
+                          weatherFitness > normalWeatherFitness,
+                          range,
+                          Lang.NOTIFICATION_WEATHER_LOW,
+                          Lang.NOTIFICATION_WEATHER_OK,
+                          Lang.NOTIFICATION_WEATHER_HIGH);
+                } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.SEA_LEVEL_RISE) && random < 0.5) {
                     //Sea-level messages:
                     // Note: sea-level deltas are 0+ (can only rise)
                     final String temperatureKey = String.valueOf((int) temperature);
@@ -163,7 +176,7 @@ public class CO2Notifications {
                           Lang.NOTIFICATION_SEALEVEL_LOW,
                           Lang.NOTIFICATION_SEALEVEL_OK,
                           Lang.NOTIFICATION_SEALEVEL_HIGH);
-                } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.SNOW_FORMATION) && random < 0.5) {
+                } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.SNOW_FORMATION) && random < 0.6) {
                     //Snow messages:
                     final Distribution distribution = EffectEngine.getInstance().getEffect(SnowForm.class, ClimateEffectType.SNOW_FORMATION).getHeightMap();
                     final double snowFitness = distribution.getValue(temperature);

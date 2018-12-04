@@ -20,6 +20,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	@Getter private int seaLevelChunksPerPeriod;
 	@Getter private int seaLevelQueueTicks;
 	@Getter private int seaLevelChunkTicks;
+	@Getter private int weatherCheckInterval;
 
 	public GlobalWarmingConfig() {
 		super("config.yml");
@@ -49,6 +50,8 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		this.seaLevelChunksPerPeriod = conf.getInt("sea-level.chunks-per-period", 6);
 		this.seaLevelQueueTicks = conf.getInt("sea-level.queue-ticks", 60);
 		this.seaLevelChunkTicks = conf.getInt("sea-level.chunk-ticks", 30);
+
+		this.weatherCheckInterval = conf.getInt("weather.interval", 3600);
 	}
 
 	public ConnectionManager makeConnectionManager() {

@@ -10,4 +10,5 @@ enabledEffects:
     - AREA_POTION_CLOUD
     - FARM_YIELD
     - MOB_SPAWN_RATE
+    - WEATHER
     - PERMANENT_SLOWNESS
