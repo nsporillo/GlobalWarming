@@ -31,7 +31,7 @@ public class FarmYield extends ListenerClimateEffect {
             if (distribution != null) {
                 double random = GlobalWarming.getInstance().getRandom().nextDouble();
                 double chance = distribution.getValue(worldEngine.getTemperature());
-                if (chance / 100 <= random) {
+                if (chance / 100.f <= random) {
                     event.setCancelled(true);
                 }
             }

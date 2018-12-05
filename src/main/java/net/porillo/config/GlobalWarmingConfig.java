@@ -10,6 +10,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	private String database;
 	private String username, password;
 	@Getter private int maxBounties;
+	@Getter private int chatTableWidth;
 	@Getter private double degreesUntilChangeDetected;
 	@Getter private int spamInterval;
 	@Getter private int databaseInterval;
@@ -19,6 +20,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	@Getter private int seaLevelChunksPerPeriod;
 	@Getter private int seaLevelQueueTicks;
 	@Getter private int seaLevelChunkTicks;
+	@Getter private int weatherCheckInterval;
 
 	public GlobalWarmingConfig() {
 		super("config.yml");
@@ -28,6 +30,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 
 	@Override
 	protected void loadKeys() {
+		this.chatTableWidth = conf.getInt("chat.table-width", 280);
 		this.maxBounties = conf.getInt("bounty.max-created-per-player", 5);
 		this.degreesUntilChangeDetected = conf.getDouble("climate-notification.degrees-until-change-detected", 0.25);
 		this.spamInterval = conf.getInt("commands.spam-interval", 60);
@@ -47,6 +50,8 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		this.seaLevelChunksPerPeriod = conf.getInt("sea-level.chunks-per-period", 6);
 		this.seaLevelQueueTicks = conf.getInt("sea-level.queue-ticks", 60);
 		this.seaLevelChunkTicks = conf.getInt("sea-level.chunk-ticks", 30);
+
+		this.weatherCheckInterval = conf.getInt("weather.interval", 3600);
 	}
 
 	public ConnectionManager makeConnectionManager() {

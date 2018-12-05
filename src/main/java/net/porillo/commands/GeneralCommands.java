@@ -429,9 +429,9 @@ public class GeneralCommands extends BaseCommand {
             CarbonIndexModel indexModel = associatedClimateEngine.getCarbonIndexModel();
             ChatTable chatTable = new ChatTable(isPolluterList ? Lang.TOPTABLE_POLLUTERS.get() : Lang.TOPTABLE_PLANTERS.get());
             chatTable.setGridColor(isPolluterList ? ChatColor.DARK_RED : ChatColor.GREEN);
-            chatTable.addHeader(Lang.TOPTABLE_PLAYER.get(), 130);
-            chatTable.addHeader(Lang.TOPTABLE_INDEX.get(), 75);
-            chatTable.addHeader(Lang.TOPTABLE_SCORE.get(), 75);
+            chatTable.addHeader(Lang.TOPTABLE_PLAYER.get(), (int) (ChatTable.CHAT_WIDTH * 0.464));
+            chatTable.addHeader(Lang.TOPTABLE_INDEX.get(), (int) (ChatTable.CHAT_WIDTH * 0.268));
+            chatTable.addHeader(Lang.TOPTABLE_SCORE.get(), (int) (ChatTable.CHAT_WIDTH * 0.268));
 
             try {
                 PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();

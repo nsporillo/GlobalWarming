@@ -68,7 +68,9 @@ public class WorldConfig extends ConfigLoader {
         String worldName = "UNKNOWN";
         if (worldId != null) {
             World world = Bukkit.getWorld(worldId);
-            worldName = world.getName();
+            if (world != null) {
+                worldName = world.getName();
+            }
         }
 
         return worldName;

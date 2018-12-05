@@ -158,10 +158,10 @@ public class OffsetBounty {
     public static void show(GPlayer gPlayer) {
         ChatTable chatTable = new ChatTable(Lang.BOUNTY_TITLE.get());
         chatTable.setGridColor(ChatColor.BLUE);
-        chatTable.addHeader(Lang.BOUNTY_PLAYER.get(), 75);
-        chatTable.addHeader(Lang.BOUNTY_HUNTER.get(), 75);
-        chatTable.addHeader(Lang.BOUNTY_BLOCKS.get(), 65);
-        chatTable.addHeader(Lang.BOUNTY_REWARD.get(), 65);
+        chatTable.addHeader(Lang.BOUNTY_PLAYER.get(), (int) (ChatTable.CHAT_WIDTH * 0.268));
+        chatTable.addHeader(Lang.BOUNTY_HUNTER.get(), (int) (ChatTable.CHAT_WIDTH * 0.268));
+        chatTable.addHeader(Lang.BOUNTY_BLOCKS.get(), (int) (ChatTable.CHAT_WIDTH * 0.232));
+        chatTable.addHeader(Lang.BOUNTY_REWARD.get(), (int) (ChatTable.CHAT_WIDTH * 0.232));
 
         try {
             List<Integer> clickIds = new ArrayList<>();

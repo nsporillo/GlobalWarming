@@ -1,5 +1,7 @@
 bounty:
   max-created-per-player: 5
+chat:
+  table-width: 280
 climate-notification:
   degrees-until-change-detected: 0.25
 commands:
@@ -20,3 +22,5 @@ sea-level:
   chunks-per-period: 8
   queue-ticks: 65
   chunk-ticks: 35
+weather:
+  interval: 1200

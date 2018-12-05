@@ -12,6 +12,7 @@ import net.porillo.effect.negative.formation.IceForm;
 import net.porillo.effect.negative.formation.SnowForm;
 import net.porillo.effect.neutral.FarmYield;
 import net.porillo.effect.neutral.MobSpawningRate;
+import net.porillo.effect.neutral.Weather;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -30,6 +31,7 @@ public class EffectEngine {
 	private EffectEngine() {
 		registerClass(SeaLevelRise.class);
 		registerClass(MobSpawningRate.class);
+		registerClass(Weather.class);
 		registerClass(FarmYield.class);
 		registerClass(SnowForm.class);
 		registerClass(IceForm.class);
@@ -44,7 +46,6 @@ public class EffectEngine {
 		for (Map.Entry<ClimateEffectType, Class<? extends ClimateEffect>> entry : effectClasses.entrySet()) {
 			if (model.isEnabled(entry.getKey())) {
 				JsonObject data = model.getEffect(entry.getKey());
-
 				ClimateEffect effect;
 				try {
 					effect = entry.getValue().getConstructor().newInstance();

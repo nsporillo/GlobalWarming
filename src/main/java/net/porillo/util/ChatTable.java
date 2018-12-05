@@ -1,6 +1,7 @@
 package net.porillo.util;
 
 import lombok.Setter;
+import net.porillo.GlobalWarming;
 import net.porillo.config.Lang;
 import net.porillo.objects.GPlayer;
 import org.bukkit.ChatColor;
@@ -37,7 +38,8 @@ public class ChatTable {
 
     private enum Alignment {LEFT, CENTER, RIGHT}
 
-    private final Map<Character, Integer> charWidth;
+    public static final int CHAT_WIDTH = GlobalWarming.getInstance().getConf().getChatTableWidth();
+    private final Map<Character, Integer> CHAR_WIDTH;
     @Setter private String title;
     private List<String> headers;
     private List<Integer> headerWidth;
@@ -79,107 +81,107 @@ public class ChatTable {
         onePixelPad[Section.BODY.get()] = '\u17f2';
 
         //ASCII character sizes:
-        charWidth = new HashMap<>();
-        charWidth.put(' ', 4);
-        charWidth.put('!', 2);
-        charWidth.put('"', 4);
-        charWidth.put('#', 6);
-        charWidth.put('$', 6);
-        charWidth.put('%', 6);
-        charWidth.put('&', 6);
-        charWidth.put('\'', 2);
-        charWidth.put('(', 4);
-        charWidth.put(')', 4);
-        charWidth.put('*', 4);
-        charWidth.put('+', 6);
-        charWidth.put(',', 2);
-        charWidth.put('-', 6);
-        charWidth.put('.', 2);
-        charWidth.put('/', 6);
-        charWidth.put('0', 6);
-        charWidth.put('1', 6);
-        charWidth.put('2', 6);
-        charWidth.put('3', 6);
-        charWidth.put('4', 6);
-        charWidth.put('5', 6);
-        charWidth.put('6', 6);
-        charWidth.put('7', 6);
-        charWidth.put('8', 6);
-        charWidth.put('9', 6);
-        charWidth.put(':', 2);
-        charWidth.put(';', 2);
-        charWidth.put('<', 5);
-        charWidth.put('=', 6);
-        charWidth.put('>', 5);
-        charWidth.put('?', 6);
-        charWidth.put('@', 8);
-        charWidth.put('A', 6);
-        charWidth.put('B', 6);
-        charWidth.put('C', 6);
-        charWidth.put('D', 6);
-        charWidth.put('E', 6);
-        charWidth.put('F', 6);
-        charWidth.put('G', 6);
-        charWidth.put('H', 6);
-        charWidth.put('I', 4);
-        charWidth.put('J', 6);
-        charWidth.put('K', 6);
-        charWidth.put('L', 6);
-        charWidth.put('M', 6);
-        charWidth.put('N', 6);
-        charWidth.put('O', 6);
-        charWidth.put('P', 6);
-        charWidth.put('Q', 6);
-        charWidth.put('R', 6);
-        charWidth.put('S', 6);
-        charWidth.put('T', 6);
-        charWidth.put('U', 6);
-        charWidth.put('V', 6);
-        charWidth.put('W', 6);
-        charWidth.put('X', 6);
-        charWidth.put('Y', 6);
-        charWidth.put('Z', 6);
-        charWidth.put('[', 4);
-        charWidth.put('\\', 6);
-        charWidth.put(']', 4);
-        charWidth.put('^', 6);
-        charWidth.put('_', 6);
-        charWidth.put('`', 3);
-        charWidth.put('a', 6);
-        charWidth.put('b', 6);
-        charWidth.put('c', 6);
-        charWidth.put('d', 6);
-        charWidth.put('e', 6);
-        charWidth.put('f', 5);
-        charWidth.put('g', 6);
-        charWidth.put('h', 6);
-        charWidth.put('i', 2);
-        charWidth.put('j', 6);
-        charWidth.put('k', 5);
-        charWidth.put('l', 3);
-        charWidth.put('m', 6);
-        charWidth.put('n', 6);
-        charWidth.put('o', 6);
-        charWidth.put('p', 6);
-        charWidth.put('q', 6);
-        charWidth.put('r', 6);
-        charWidth.put('s', 6);
-        charWidth.put('t', 4);
-        charWidth.put('u', 6);
-        charWidth.put('v', 6);
-        charWidth.put('w', 6);
-        charWidth.put('x', 6);
-        charWidth.put('y', 6);
-        charWidth.put('z', 6);
-        charWidth.put('{', 4);
-        charWidth.put('|', 2);
-        charWidth.put('}', 4);
-        charWidth.put('~', 7);
-        charWidth.put('°', 4);
-        charWidth.put(twoPixelPad[Section.HEADER.get()], 2);
-        charWidth.put(twoPixelPad[Section.BODY.get()], 2);
-        charWidth.put(onePixelPad[Section.HEADER.get()], 1);
-        charWidth.put(onePixelPad[Section.BODY.get()], 1);
+        CHAR_WIDTH = new HashMap<>();
+        CHAR_WIDTH.put(' ', 4);
+        CHAR_WIDTH.put('!', 2);
+        CHAR_WIDTH.put('"', 4);
+        CHAR_WIDTH.put('#', 6);
+        CHAR_WIDTH.put('$', 6);
+        CHAR_WIDTH.put('%', 6);
+        CHAR_WIDTH.put('&', 6);
+        CHAR_WIDTH.put('\'', 2);
+        CHAR_WIDTH.put('(', 4);
+        CHAR_WIDTH.put(')', 4);
+        CHAR_WIDTH.put('*', 4);
+        CHAR_WIDTH.put('+', 6);
+        CHAR_WIDTH.put(',', 2);
+        CHAR_WIDTH.put('-', 6);
+        CHAR_WIDTH.put('.', 2);
+        CHAR_WIDTH.put('/', 6);
+        CHAR_WIDTH.put('0', 6);
+        CHAR_WIDTH.put('1', 6);
+        CHAR_WIDTH.put('2', 6);
+        CHAR_WIDTH.put('3', 6);
+        CHAR_WIDTH.put('4', 6);
+        CHAR_WIDTH.put('5', 6);
+        CHAR_WIDTH.put('6', 6);
+        CHAR_WIDTH.put('7', 6);
+        CHAR_WIDTH.put('8', 6);
+        CHAR_WIDTH.put('9', 6);
+        CHAR_WIDTH.put(':', 2);
+        CHAR_WIDTH.put(';', 2);
+        CHAR_WIDTH.put('<', 5);
+        CHAR_WIDTH.put('=', 6);
+        CHAR_WIDTH.put('>', 5);
+        CHAR_WIDTH.put('?', 6);
+        CHAR_WIDTH.put('@', 8);
+        CHAR_WIDTH.put('A', 6);
+        CHAR_WIDTH.put('B', 6);
+        CHAR_WIDTH.put('C', 6);
+        CHAR_WIDTH.put('D', 6);
+        CHAR_WIDTH.put('E', 6);
+        CHAR_WIDTH.put('F', 6);
+        CHAR_WIDTH.put('G', 6);
+        CHAR_WIDTH.put('H', 6);
+        CHAR_WIDTH.put('I', 4);
+        CHAR_WIDTH.put('J', 6);
+        CHAR_WIDTH.put('K', 6);
+        CHAR_WIDTH.put('L', 6);
+        CHAR_WIDTH.put('M', 6);
+        CHAR_WIDTH.put('N', 6);
+        CHAR_WIDTH.put('O', 6);
+        CHAR_WIDTH.put('P', 6);
+        CHAR_WIDTH.put('Q', 6);
+        CHAR_WIDTH.put('R', 6);
+        CHAR_WIDTH.put('S', 6);
+        CHAR_WIDTH.put('T', 6);
+        CHAR_WIDTH.put('U', 6);
+        CHAR_WIDTH.put('V', 6);
+        CHAR_WIDTH.put('W', 6);
+        CHAR_WIDTH.put('X', 6);
+        CHAR_WIDTH.put('Y', 6);
+        CHAR_WIDTH.put('Z', 6);
+        CHAR_WIDTH.put('[', 4);
+        CHAR_WIDTH.put('\\', 6);
+        CHAR_WIDTH.put(']', 4);
+        CHAR_WIDTH.put('^', 6);
+        CHAR_WIDTH.put('_', 6);
+        CHAR_WIDTH.put('`', 3);
+        CHAR_WIDTH.put('a', 6);
+        CHAR_WIDTH.put('b', 6);
+        CHAR_WIDTH.put('c', 6);
+        CHAR_WIDTH.put('d', 6);
+        CHAR_WIDTH.put('e', 6);
+        CHAR_WIDTH.put('f', 5);
+        CHAR_WIDTH.put('g', 6);
+        CHAR_WIDTH.put('h', 6);
+        CHAR_WIDTH.put('i', 2);
+        CHAR_WIDTH.put('j', 6);
+        CHAR_WIDTH.put('k', 5);
+        CHAR_WIDTH.put('l', 3);
+        CHAR_WIDTH.put('m', 6);
+        CHAR_WIDTH.put('n', 6);
+        CHAR_WIDTH.put('o', 6);
+        CHAR_WIDTH.put('p', 6);
+        CHAR_WIDTH.put('q', 6);
+        CHAR_WIDTH.put('r', 6);
+        CHAR_WIDTH.put('s', 6);
+        CHAR_WIDTH.put('t', 4);
+        CHAR_WIDTH.put('u', 6);
+        CHAR_WIDTH.put('v', 6);
+        CHAR_WIDTH.put('w', 6);
+        CHAR_WIDTH.put('x', 6);
+        CHAR_WIDTH.put('y', 6);
+        CHAR_WIDTH.put('z', 6);
+        CHAR_WIDTH.put('{', 4);
+        CHAR_WIDTH.put('|', 2);
+        CHAR_WIDTH.put('}', 4);
+        CHAR_WIDTH.put('~', 7);
+        CHAR_WIDTH.put('°', 4);
+        CHAR_WIDTH.put(twoPixelPad[Section.HEADER.get()], 2);
+        CHAR_WIDTH.put(twoPixelPad[Section.BODY.get()], 2);
+        CHAR_WIDTH.put(onePixelPad[Section.HEADER.get()], 1);
+        CHAR_WIDTH.put(onePixelPad[Section.BODY.get()], 1);
     }
 
     public void setTextColor(Section section, ChatColor color) {
@@ -221,7 +223,7 @@ public class ChatTable {
         int width = 0;
         String cleanValue = value.replaceAll("§\\w", "");
         for (Character chr : cleanValue.toCharArray()) {
-            Integer size = charWidth.get(chr);
+            Integer size = CHAR_WIDTH.get(chr);
             width += size == null ? 0 : size;
         }
 
@@ -231,7 +233,7 @@ public class ChatTable {
     private String getPadding(int pixelWidth, Section section) {
         //Pad:
         StringBuilder padding = new StringBuilder();
-        Integer padPixels = charWidth.get(decoration[section.get()]);
+        Integer padPixels = CHAR_WIDTH.get(decoration[section.get()]);
         if (padPixels != null && padPixels > 0) {
             int count = pixelWidth / padPixels;
             for (int i = 0; i < count; i++) {
@@ -303,8 +305,8 @@ public class ChatTable {
     public String toString() {
         //Delimiters:
         int delimiterWidth;
-        int headerDelimiterWidth = charWidth.get(delimiter[Section.HEADER.get()]);
-        int bodyDelimiterWidth = charWidth.get(delimiter[Section.BODY.get()]);
+        int headerDelimiterWidth = CHAR_WIDTH.get(delimiter[Section.HEADER.get()]);
+        int bodyDelimiterWidth = CHAR_WIDTH.get(delimiter[Section.BODY.get()]);
         String delimiters[] = new String[2];
         if (headerDelimiterWidth > bodyDelimiterWidth) {
             delimiterWidth = headerDelimiterWidth;
