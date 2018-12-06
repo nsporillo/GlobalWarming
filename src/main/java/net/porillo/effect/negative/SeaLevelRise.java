@@ -154,7 +154,8 @@ public class SeaLevelRise extends ListenerClimateEffect {
                         } else if (isOverride) {
                             //ABOVE CUSTOM SEA LEVEL AND REPAIRING (i.e., after a server reload)
                             // - Re-tag all blocks so water doesn't fill back into removed blocks
-                            // - Note: this is destructive (i.e., will remove all pre-existing water)
+                            // - Note: this is destructive (i.e., leads to the removal any pre-existing water
+                            //   between sea level and the maximum config height)
                             if (block.getType() == Material.WATER ||
                                   block.getType() == Material.ICE ||
                                   block.getType() == Material.PACKED_ICE ||
