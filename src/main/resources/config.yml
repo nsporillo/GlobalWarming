@@ -18,9 +18,3 @@ notification:
   duration: 300
 scoreboard:
   interval: 20
-sea-level:
-  chunks-per-period: 8
-  queue-ticks: 65
-  chunk-ticks: 35
-weather:
-  interval: 1200

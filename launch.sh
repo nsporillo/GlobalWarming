@@ -1,3 +1,4 @@
+#!/bin/sh
 #--------------------------------------------------------------------------------
 # BUILD GLOBALWARMING (UBUNTU)
 #
@@ -19,8 +20,8 @@
 #--------------------------------------------------------------------------------
 
 LPAREN="\e[0m[\e[1;94m"
-RPAREN="\e[0;21m]"
-echo -e "${LPAREN}BUILDING${RPAREN} (CTRL+C TO EXIT)"
+RPAREN="\e[21;0m]"
+echo -e "${LPAREN}BUILDING${RPAREN} (CTRL+C TO EXIT)" &&
 mvn clean compile install &&
 if [[ $1 == CLEAN ]]; then
 echo -e "${LPAREN}DELETING THE PLUGIN CONFIGURATION${RPAREN}" &&

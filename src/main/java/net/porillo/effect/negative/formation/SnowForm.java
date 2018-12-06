@@ -35,8 +35,11 @@ public class SnowForm extends ListenerClimateEffect {
     @Override
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
-        this.heightMap = GlobalWarming.getInstance().getGson().fromJson(jsonModel, new TypeToken<Distribution>() {
-        }.getType());
+        this.heightMap = GlobalWarming.getInstance().getGson().fromJson(
+              jsonModel,
+              new TypeToken<Distribution>() {
+              }.getType());
+
         if (this.heightMap == null) {
             unregister();
         }

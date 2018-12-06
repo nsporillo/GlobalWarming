@@ -1,6 +1,7 @@
 package net.porillo.effect.negative;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ScheduleClimateEffect;
@@ -21,7 +22,7 @@ import java.util.UUID;
 public class PermanentSlowness extends ScheduleClimateEffect implements Listener {
 
     private int duration;
-    private double temperatureThreshold;
+    @Getter private double temperatureThreshold;
 
     private void updatePlayerSlowness(Player player, double temperature) {
         if (temperature >= temperatureThreshold) {
@@ -54,8 +55,8 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
     @Override
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
-        setPeriod(jsonModel.get("period").getAsInt() * 60 * 20);
-        duration = jsonModel.get("duration").getAsInt()  * 60 * 20;
+        setPeriod(jsonModel.get("interval").getAsInt());
+        duration = jsonModel.get("duration").getAsInt();
         temperatureThreshold = jsonModel.get("threshold").getAsDouble();
     }
 }

@@ -1,11 +1,12 @@
 package net.porillo.engine.api;
 
+import lombok.Getter;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 public class Distribution {
 
-	private double[] temp;
+	@Getter private double[] temp;
 	private double[] fitness;
 	private transient PolynomialSplineFunction splineFunction;
 
