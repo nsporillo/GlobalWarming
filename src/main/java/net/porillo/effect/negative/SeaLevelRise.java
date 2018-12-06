@@ -136,20 +136,33 @@ public class SeaLevelRise extends ListenerClimateEffect {
                             block.setType(Material.WATER, false);
                             block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
                         }
-                    } else if (block.hasMetadata(SEALEVEL_BLOCK) || isOverride) {
-                        //ABOVE CUSTOM SEA LEVEL AND TAGGED
-                        // - Lowering the sea level (WATER TO AIR)
-                        // - Remove tagged water blocks above the custom sea level
-                        // - Update selected block-types only in case of unexpected changes
-                        if (block.getType() == Material.WATER ||
-                              block.getType() == Material.ICE ||
-                              block.getType() == Material.PACKED_ICE ||
-                              block.getType() == Material.TALL_SEAGRASS ||
-                              block.getType() == Material.KELP_PLANT) {
-                            block.setType(Material.AIR, false);
-                        }
+                    } else {
+                        if (block.hasMetadata(SEALEVEL_BLOCK)) {
+                            //ABOVE CUSTOM SEA LEVEL AND TAGGED
+                            // - Lowering the sea level (WATER TO AIR)
+                            // - Remove tagged water blocks above the custom sea level
+                            // - Update selected block-types only in case of unexpected changes
+                            if (block.getType() == Material.WATER ||
+                                  block.getType() == Material.ICE ||
+                                  block.getType() == Material.PACKED_ICE ||
+                                  block.getType() == Material.TALL_SEAGRASS ||
+                                  block.getType() == Material.KELP_PLANT) {
+                                block.setType(Material.AIR, false);
+                            }
 
-                        block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
+                            block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
+                        } else if (isOverride) {
+                            //ABOVE CUSTOM SEA LEVEL AND REPAIRING (i.e., after a server reload)
+                            // - Re-tag all blocks so water doesn't fill back into removed blocks
+                            // - Note: this is destructive (i.e., will remove all pre-existing water)
+                            if (block.getType() == Material.WATER ||
+                                  block.getType() == Material.ICE ||
+                                  block.getType() == Material.PACKED_ICE ||
+                                  block.getType() == Material.TALL_SEAGRASS ||
+                                  block.getType() == Material.KELP_PLANT) {
+                                block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
+                            }
+                        }
                     }
                 }
             }
