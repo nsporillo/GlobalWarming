@@ -128,11 +128,11 @@ public class SeaLevelRise extends ListenerClimateEffect {
             for (int z = 0; z < 16; z++) {
                 for (int y = 0; y < maxHeight; y++) {
                     Block block = world.getChunkAt(snapshot.getX(), snapshot.getZ()).getBlock(x, y, z);
-                    if (y <= customSeaLevel && deltaSeaLevel > 0) {
+                    if (y <= customSeaLevel) {
                         //BELOW CUSTOM SEA LEVEL
                         // - Raising the sea level (AIR to WATER)
                         // - Fill any air pockets below sea level
-                        if (block.getType() == Material.AIR) {
+                        if (deltaSeaLevel > 0 && block.getType() == Material.AIR) {
                             block.setType(Material.WATER, false);
                             block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
                         }
