@@ -20,10 +20,12 @@ public class ScoreTempModel extends Model {
      * Carbon sensitivity
      * - LOW: [-1M, 1M] (e.g., many players)
      * - HIGH: [-50K, 50K] (e.g., fewer players)
+     * - VERY_HIGH: [-800, 1200] (e.g., demo)
      */
     public enum CarbonSensitivity {
         LOW,
-        HIGH
+        HIGH,
+        VERY_HIGH
     }
 
     @Getter private Map<Integer, Double> indexMap;

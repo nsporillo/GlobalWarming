@@ -126,11 +126,11 @@ public class SeaLevelRise extends ListenerClimateEffect {
         //Scan chunk-blocks within the sea-level's range:
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                for (int y = baseSeaLevel; y < maxHeight; y++) {
+                for (int y = 0; y < maxHeight; y++) {
                     Block block = world.getChunkAt(snapshot.getX(), snapshot.getZ()).getBlock(x, y, z);
-                    if (y <= customSeaLevel) {
+                    if (y <= customSeaLevel && deltaSeaLevel > 0) {
                         //BELOW CUSTOM SEA LEVEL
-                        // - Rising the sea level (AIR to WATER)
+                        // - Raising the sea level (AIR to WATER)
                         // - Fill any air pockets below sea level
                         if (block.getType() == Material.AIR) {
                             block.setType(Material.WATER, false);
@@ -140,8 +140,8 @@ public class SeaLevelRise extends ListenerClimateEffect {
                         if (block.hasMetadata(SEALEVEL_BLOCK)) {
                             //ABOVE CUSTOM SEA LEVEL AND TAGGED
                             // - Lowering the sea level (WATER TO AIR)
-                            // - Remove tagged water blocks above the custom sea level
-                            // - Update selected block-types only in case of unexpected changes
+                            // - Removing tagged water blocks above the custom sea level
+                            // - Ignore unexpected changes
                             if (block.getType() == Material.WATER ||
                                   block.getType() == Material.ICE ||
                                   block.getType() == Material.PACKED_ICE ||
@@ -171,37 +171,40 @@ public class SeaLevelRise extends ListenerClimateEffect {
     }
 
     /**
-     * Replacing a sea-level-block with will remove it from the set
+     * Replacing sea-level-blocks will remove them from the tracked set
      */
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (event.getBlock().hasMetadata(SEALEVEL_BLOCK)) {
-            event.getBlock().removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
-        }
+        event.getBlock().removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
     }
 
     /**
      * Emptying a bucket (water or lava) will remove the adjacent block
-     * from the sea-level-block set
+     * from the tracked set
      */
     @EventHandler
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
         Block adjacent = event.getBlockClicked().getRelative(event.getBlockFace());
-        if (adjacent.hasMetadata(SEALEVEL_BLOCK)) {
-            adjacent.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
-        }
+        adjacent.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
     }
 
     /**
-     * This is the game-changer event:
-     * - Prevents the sea-level-rise blocks from filling other areas
-     * - This reduces all of the confusion as to which blocks are ours,
-     * and which were pre-existing
+     * Only allow sea-level blocks to flow if they are below the custom sea-level
+     * - Track any new blocks originating from sea-level blocks
      */
     @EventHandler
     public void onBlockFromToEvent(BlockFromToEvent event) {
         if (event.getBlock().hasMetadata(SEALEVEL_BLOCK)) {
-            event.setCancelled(true);
+            final World world = event.getBlock().getWorld();
+            final WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
+            final int baseSeaLevel = world.getSeaLevel() - 1;
+            final int deltaSeaLevel = (int) seaMap.getValue(climateEngine.getTemperature());
+            final int customSeaLevel = baseSeaLevel + deltaSeaLevel;
+            if (event.getBlock().getY() > customSeaLevel) {
+                event.setCancelled(true);
+            } else {
+                event.getToBlock().setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
+            }
         }
     }
 
