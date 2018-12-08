@@ -127,43 +127,43 @@ public class SeaLevelRise extends ListenerClimateEffect {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 for (int y = 0; y < maxHeight; y++) {
+                    //--------------------------------------------------------------------------------------------------
+                    //  TYPE  |  SEALEVEL  |  REPAIR  | TASK
+                    //--------------------------------------------------------------------------------------------------
+                    //    W   |   (ABOVE)  |     T    | [1] Set to AIR, clear tag
+                    //    W   |   (ABOVE)  |     F    | [2] If owner, set to air, clear tag
+                    //    W   |   [BELOW]  |     T    | [3] If not base-sea-level, set to air, clear tag
+                    //    W   |   [BELOW]  |     F    | [4] If owner and sea-level == 0, set to air, clear tag
+                    //    A   |   (ABOVE)  |     T    | Ignore
+                    //    A   |   (ABOVE)  |     F    | Ignore
+                    //    A   |   [BELOW]  |     T    | Ignore
+                    //    A   |   [BELOW]  |     F    | [5] If sea-level > 0, set to water, add tag
+                    //--------------------------------------------------------------------------------------------------
                     Block block = world.getChunkAt(snapshot.getX(), snapshot.getZ()).getBlock(x, y, z);
-                    if (y <= customSeaLevel) {
-                        //BELOW CUSTOM SEA LEVEL
-                        // - Raising the sea level (AIR to WATER)
-                        // - Fill any air pockets below sea level
-                        if (deltaSeaLevel > 0 && block.getType() == Material.AIR) {
+                    if (block.getType() == Material.AIR) {
+                        if (deltaSeaLevel > 0 && y <= customSeaLevel && !isOverride) {
+                            //Set any air-blocks below-and-at sea-level to water
+                            //as long as the sea-level is above normal [5]
                             block.setType(Material.WATER, false);
                             block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
                         }
-                    } else {
-                        if (block.hasMetadata(SEALEVEL_BLOCK)) {
-                            //ABOVE CUSTOM SEA LEVEL AND TAGGED
-                            // - Lowering the sea level (WATER TO AIR)
-                            // - Removing tagged water blocks above the custom sea level
-                            // - Ignore unexpected changes
-                            if (block.getType() == Material.WATER ||
-                                  block.getType() == Material.ICE ||
-                                  block.getType() == Material.PACKED_ICE ||
-                                  block.getType() == Material.TALL_SEAGRASS ||
-                                  block.getType() == Material.KELP_PLANT) {
-                                block.setType(Material.AIR, false);
-                            }
-
+                    } else if (block.getType() == Material.WATER ||
+                          block.getType() == Material.ICE ||
+                          block.getType() == Material.PACKED_ICE ||
+                          block.getType() == Material.TALL_SEAGRASS ||
+                          block.getType() == Material.KELP_PLANT) {
+                        if ((isOverride && y != baseSeaLevel) ||
+                              (block.hasMetadata(SEALEVEL_BLOCK) && (y > customSeaLevel || deltaSeaLevel == 0))) {
+                            //Set water-to-air when:
+                            // - Repairing, except the base-sea-level [1, 3]
+                            // - Owner of block above sea-level [2]
+                            // - Owner of block below sea-level when sea-level is normal [4]
+                            block.setType(Material.AIR, false);
                             block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
-                        } else if (isOverride) {
-                            //ABOVE CUSTOM SEA LEVEL AND REPAIRING (i.e., after a server reload)
-                            // - Re-tag all blocks so water doesn't fill back into removed blocks
-                            // - Note: this is destructive (i.e., leads to the removal any pre-existing water
-                            //   between sea level and the maximum config height)
-                            if (block.getType() == Material.WATER ||
-                                  block.getType() == Material.ICE ||
-                                  block.getType() == Material.PACKED_ICE ||
-                                  block.getType() == Material.TALL_SEAGRASS ||
-                                  block.getType() == Material.KELP_PLANT) {
-                                block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
-                            }
                         }
+                    } else {
+                        //Release ownership of altered blocks:
+                        block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
                     }
                 }
             }
@@ -195,12 +195,17 @@ public class SeaLevelRise extends ListenerClimateEffect {
     @EventHandler
     public void onBlockFromToEvent(BlockFromToEvent event) {
         if (event.getBlock().hasMetadata(SEALEVEL_BLOCK)) {
-            final World world = event.getBlock().getWorld();
-            final WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
-            final int baseSeaLevel = world.getSeaLevel() - 1;
-            final int deltaSeaLevel = (int) seaMap.getValue(climateEngine.getTemperature());
-            final int customSeaLevel = baseSeaLevel + deltaSeaLevel;
-            if (event.getBlock().getY() > customSeaLevel) {
+            boolean isWaterFixed = isOverride;
+            if (!isWaterFixed) {
+                final World world = event.getBlock().getWorld();
+                final WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
+                final int baseSeaLevel = world.getSeaLevel() - 1;
+                final int deltaSeaLevel = (int) seaMap.getValue(climateEngine.getTemperature());
+                final int customSeaLevel = baseSeaLevel + deltaSeaLevel;
+                isWaterFixed = event.getBlock().getY() > customSeaLevel;
+            }
+
+            if (isWaterFixed) {
                 event.setCancelled(true);
             } else {
                 event.getToBlock().setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
