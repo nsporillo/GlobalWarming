@@ -6,6 +6,7 @@ import net.porillo.effect.api.ClimateEffect;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ListenerClimateEffect;
 import net.porillo.effect.api.ScheduleClimateEffect;
+import net.porillo.effect.negative.Fire;
 import net.porillo.effect.negative.PermanentSlowness;
 import net.porillo.effect.negative.SeaLevelRise;
 import net.porillo.effect.negative.formation.IceForm;
@@ -36,6 +37,7 @@ public class EffectEngine {
 		registerClass(SnowForm.class);
 		registerClass(IceForm.class);
 		registerClass(PermanentSlowness.class);
+		registerClass(Fire.class);
 
 		this.model = new EffectModel();
 

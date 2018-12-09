@@ -5,7 +5,7 @@ import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ListenerClimateEffect;
 import net.porillo.engine.ClimateEngine;
-import net.porillo.engine.api.AlternateDistribution;
+import net.porillo.engine.api.MobDistribution;
 import net.porillo.engine.api.WorldClimateEngine;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ public class MobSpawningRate extends ListenerClimateEffect {
     public void onMobSpawn(EntitySpawnEvent event) {
         WorldClimateEngine worldEngine = ClimateEngine.getInstance().getClimateEngine(event.getLocation().getWorld().getUID());
         if (worldEngine != null && worldEngine.isEffectEnabled(ClimateEffectType.MOB_SPAWN_RATE)) {
-            AlternateDistribution distribution = worldEngine.getEntityFitnessModel().getEntityFitnessMap().get(event.getEntityType());
+            MobDistribution distribution = worldEngine.getEntityFitnessModel().getEntityFitnessMap().get(event.getEntityType());
             if (distribution != null) {
                 double chance = distribution.getValue(worldEngine.getTemperature());
                 double random = GlobalWarming.getInstance().getRandom().nextDouble();

@@ -12,3 +12,4 @@ enabledEffects:
     - MOB_SPAWN_RATE
     - WEATHER
     - PERMANENT_SLOWNESS
+    - FIRE

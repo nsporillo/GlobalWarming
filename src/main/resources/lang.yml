@@ -43,6 +43,10 @@ lang:
       LOW: "§fFarmers: %slow CO2 is hurting our %s crops"
       OK: "§fFarmers: %shaving bumper crops this year"
       HIGH: "§fFarmers: %shigh CO2 is hurting our %s crops"
+    FIRE:
+      LOW: "§fForest Service: %sfire restrictions are in effect!"
+      OK: "§fForest Service: %sthe risk of fire is low"
+      HIGH: "§fForest Service: %sfire restrictions are in effect!"
     ICE:
       LOW: "§fScientists: %slow CO2 is affecting ice conditions"
       OK: "§fScientists: %sexpect normal ice conditions this year"
@@ -52,15 +56,19 @@ lang:
       OK: "§fZoologists: %s%s populations are thriving"
       HIGH: "§fZoologists: %shigh CO2 is affecting %s populations"
     SEALEVEL:
-      LOW: "§fScientists: %slow CO2, worried about sea levels!"
-      OK: "§fScientists: %snot concerned about sea levels!"
-      HIGH: "§fScientists: %shigh CO2, observed ice caps melting!"
+      LOW: "§fOceanographers: %slow CO2, worried about sea levels!"
+      OK: "§fOceanographers: %snot concerned about sea levels!"
+      HIGH: "§fOceanographers: %shigh CO2, observed ice caps melting!"
     SNOW:
       LOW: "§fScientists: %slow CO2 is affecting snow conditions"
       OK: "§fScientists: %sexpect normal snow conditions this year"
       HIGH: "§fScientists: %shigh CO2 is affecting snow conditions"
+    SLOWNESS:
+      LOW: "§fDoctors: %sreporting increased respiratory issues"
+      OK: "§fDoctors: %san apple a day is a great snack"
+      HIGH: "§fDoctors: %sreporting increased respiratory issues"
     WEATHER:
-      LOW: "§fMeteorologists: %expect more storms this year"
+      LOW: "§fMeteorologists: %sexpect more storms this year"
       OK: "§fMeteorologists: %swind is mild; seas, a light chop"
       HIGH: "§fMeteorologists: %sexpect more storms this year"
   SCORE:

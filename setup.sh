@@ -93,91 +93,122 @@
 #  > reload -> reloads the server
 #  > stop -> stops the server
 #
-# 10. TESTED ON NOV 2018:
-#  - VirtualBox 5.2.22 VM
-#  - Ubuntu 18.04.1 x64
+# 10. TESTED IN DEC 2018:
+#  - Clean install / re-install: VirtualBox 5.2.22 VM, Ubuntu 18.04.1 x64
+#  - Re-install: Ubuntu 18.04.1 x64 Desktop
 
-read -p "By running this script you agree to the Minecraft EULA (https://account.mojang.com/documents/minecraft_eula)"
+LPAREN="\e[0m[\e[1;94m"
+RPAREN="\e[21;0m]"
+
+# Minecraft EULA
+echo -e "${LPAREN}MINECRAFT EULA${RPAREN} (CTRL+C TO EXIT)" &&
+read -p "By running this script you agree to the Minecraft EULA (https://account.mojang.com/documents/minecraft_eula)" &&
 
 # System update
-sudo apt-get -y update && sudo apt-get -y upgrade
+#  - Note: if you have a test VM snapshot, you might consider disabling
+#    its daily update so there isn't a /var/lib/dpkg/lock to deal with
+#    at startup
+echo -e "${LPAREN}SYSTEM UPDATE${RPAREN}" &&
+{ sudo apt-get -y update || return; } &&
+{ sudo apt-get -y upgrade || return; } &&
 
 # Install git
-sudo apt-get -y install git
+echo -e "${LPAREN}INSTALL GIT${RPAREN}" &&
+{ sudo apt-get -y install git || return; } &&
 
 # Java (need 1.8)
-sudo add-apt-repository -y ppa:webupd8team/java
-sudo apt-get -y update
-sudo apt-get -y install oracle-java8-installer
+echo -e "${LPAREN}INSTALL JAVA 1.8${RPAREN}" &&
+sudo add-apt-repository -y ppa:webupd8team/java &&
+{ sudo apt-get -y update || return; } &&
+{ sudo apt-get -y install oracle-java8-installer || return; } &&
 
 # Minecraft user
-sudo adduser minecraft
+echo -e "${LPAREN}MINECRAFT USER${RPAREN}" &&
+{ sudo adduser minecraft || true; } &&
+{ sudo mkhomedir_helper minecraft || true; } &&
+sudo chown minecraft /home/minecraft &&
 
 # Build Spigot
-sudo su minecraft -c "mkdir /home/minecraft/build"
-cd /home/minecraft/build
-sudo su minecraft -c "rm BuildTools.jar"
-sudo su minecraft -c "wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar"
-sudo su minecraft -c "java -jar BuildTools.jar --rev 1.13"
+echo -e "${LPAREN}BUILD SPIGOT${RPAREN}" &&
+sudo su minecraft -c "mkdir -p /home/minecraft/build" &&
+cd /home/minecraft/build &&
+sudo su minecraft -c "rm -f BuildTools.jar" &&
+sudo su minecraft -c "wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar" &&
+sudo su minecraft -c "java -jar BuildTools.jar --rev 1.13" &&
 
 # Create a server directory
-sudo su minecraft -c "mkdir ../server"
+echo -e "${LPAREN}SERVER DIRECTORY${RPAREN}" &&
+sudo su minecraft -c "mkdir -p ../server" &&
 
 # Move Spigot there
-cd ../server
+echo -e "${LPAREN}COPY SPIGOT TO SERVER DIR${RPAREN}" &&
+cd ../server &&
 sudo su minecraft -c "mv ../build/spigot-1.*.jar spigot.jar"
 
 # Startup script
-sudo su minecraft -c 'echo "cd /home/minecraft/server;java -Xms512M -Xmx1536M -jar spigot.jar" > /home/minecraft/server/launch.sh'
+echo -e "${LPAREN}STARTUP SCRIPT${RPAREN}" &&
+sudo su minecraft -c 'echo "cd /home/minecraft/server;java -Xms512M -Xmx1536M -jar spigot.jar" > /home/minecraft/server/launch.sh' &&
 
 # Make it executable
-sudo su minecraft -c "chmod +x /home/minecraft/server/launch.sh"
+sudo su minecraft -c "chmod +x /home/minecraft/server/launch.sh" &&
 
 # Initialize the server
-sudo su minecraft -c "java -Xms512M -Xmx1536M -jar spigot.jar"
-sudo su minecraft -c "echo 'eula=true' > eula.txt"
+echo -e "${LPAREN}SERVER INITIALIZATION${RPAREN}" &&
+sudo su minecraft -c "echo 'eula=true' > eula.txt" &&
 
 # Install Maven
-sudo apt-get -y install maven
+echo -e "${LPAREN}INSTALL MAVEN${RPAREN}" &&
+{ sudo apt-get -y install maven || return; } &&
 
 # Clone the project
-cd ~
-mkdir build
-cd build
-git clone https://github.com/nsporillo/GlobalWarming.git
+echo -e "${LPAREN}CLONE PROJECT${RPAREN}" &&
+cd ~ &&
+mkdir -p build &&
+cd build &&
+sudo rm -rf GlobalWarming &&
+git clone https://github.com/nsporillo/GlobalWarming.git &&
 
-#Build
-cd GlobalWarming
-mvn clean compile install
+# Build
+echo -e "${LPAREN}BUILD PROJECT${RPAREN}" &&
+cd GlobalWarming &&
+mvn clean compile install &&
 
 # Copy the plugin
-cd ~/build/GlobalWarming
-sudo su minecraft -c "mkdir /home/minecraft/server/plugins"
-sudo su minecraft -c "cp target/GlobalWarming.jar /home/minecraft/server/plugins/"
-sudo su minecraft -c "mkdir -p /home/minecraft/server/world/datapacks"
-sudo su minecraft -c "cp -r gw_datapack /home/minecraft/server/world/datapacks/"
+echo -e "${LPAREN}COPY PLUGIN TO SERVER${RPAREN}" &&
+cd ~/build/GlobalWarming &&
+sudo su minecraft -c "mkdir -p /home/minecraft/server/plugins" &&
+sudo su minecraft -c "cp target/GlobalWarming.jar /home/minecraft/server/plugins/" &&
+sudo su minecraft -c "mkdir -p /home/minecraft/server/world/datapacks" &&
+sudo su minecraft -c "cp -r gw_datapack /home/minecraft/server/world/datapacks/" &&
 
 # Delete any old configuration files (if required)
-sudo rm -rf /home/minecraft/server/plugins/GlobalWarming/*
+echo -e "${LPAREN}DELETE OLD GLOBAL WARMING CONFIG${RPAREN}" &&
+sudo rm -rf /home/minecraft/server/plugins/GlobalWarming/* &&
 
 # Get Vault.jar (OPTIONAL)
 #  - NOTE: an economy is required by the bounty system
-sudo su minecraft -c "wget https://media.forgecdn.net/files/2615/750/Vault.jar -P /home/minecraft/server/plugins/"
+echo -e "${LPAREN}ADD VAULT (OPTIONAL)${RPAREN}" &&
+sudo su minecraft -c "wget https://media.forgecdn.net/files/2615/750/Vault.jar -P /home/minecraft/server/plugins/" &&
 
 # Get Essentials.jar (OPTIONAL)
 #  - NOTE: an economy is required by the bounty system
-sudo su minecraft -c "wget https://hub.spigotmc.org/jenkins/job/spigot-essentials/lastSuccessfulBuild/artifact/Essentials/target/Essentials-2.x-SNAPSHOT.jar -O /home/minecraft/server/plugins/Essentials.jar"
+echo -e "${LPAREN}ADD ESSENTIALS (OPTIONAL)${RPAREN}" &&
+sudo su minecraft -c "wget https://hub.spigotmc.org/jenkins/job/spigot-essentials/lastSuccessfulBuild/artifact/Essentials/target/Essentials-2.x-SNAPSHOT.jar -O /home/minecraft/server/plugins/Essentials.jar" &&
 
 # Install MySQL server and client
-sudo apt-get -y install mysql-server-5.7
-sudo apt-get -y install mysql-client-5.7
+echo -e "${LPAREN}INSTALL MYSQL${RPAREN}" &&
+{ sudo apt-get -y install mysql-server-5.7 || return; } &&
+{ sudo apt-get -y install mysql-client-5.7 || return; } &&
 
 # Delete the old database (if it exists)
-sudo mysql -u root -Bse "DROP DATABASE IF EXISTS GlobalWarming;DROP USER IF EXISTS 'user'@'localhost';"
+echo -e "${LPAREN}DELETE OLD DATABASE${RPAREN}" &&
+sudo mysql -u root -Bse "DROP DATABASE IF EXISTS GlobalWarming;DROP USER IF EXISTS 'user'@'localhost';" &&
 
 # Create the database
-sudo mysql -u root -Bse "CREATE DATABASE GlobalWarming;USE GlobalWarming;CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass'; GRANT ALL PRIVILEGES ON GlobalWarming.* TO 'user'@'localhost';"
+echo -e "${LPAREN}CREATE NEW DATABASE / USER / PERMISSIONS${RPAREN}" &&
+sudo mysql -u root -Bse "CREATE DATABASE GlobalWarming;USE GlobalWarming;CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass'; GRANT ALL PRIVILEGES ON GlobalWarming.* TO 'user'@'localhost';" &&
 
 # Start the server
-cd ~
+echo -e "${LPAREN}START THE SERVER${RPAREN}" &&
+cd ~ &&
 sudo su minecraft -c "/home/minecraft/server/launch.sh"

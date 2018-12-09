@@ -2,11 +2,14 @@ package net.porillo.effect.negative;
 
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
+import lombok.Setter;
 import net.porillo.GlobalWarming;
 import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ListenerClimateEffect;
 import net.porillo.engine.ClimateEngine;
+import net.porillo.engine.api.Distribution;
 import net.porillo.engine.api.WorldClimateEngine;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -17,9 +20,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.Map;
 import java.util.Queue;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -38,19 +39,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @ClimateData(type = ClimateEffectType.SEA_LEVEL_RISE)
 public class SeaLevelRise extends ListenerClimateEffect {
 
-    private Map<Integer, Integer> deltaSeaLevels;
+    @Getter private Distribution seaMap;
+    @Getter @Setter private boolean isOverride;
+    private int chunkTicks;
+    private int chunksPerPeriod;
+    private int queueTicks;
     private ConcurrentLinkedQueue<ChunkSnapshot> requestQueue;
-    private static final int MAX_TEMPERATURE = 20; //TODO (could scan for this)
-    private static final int CHUNKS_PER_PERIOD = GlobalWarming.getInstance().getConf().getSeaLevelChunksPerPeriod();
-    private static final int SEA_LEVEL_QUEUE_TICKS = GlobalWarming.getInstance().getConf().getSeaLevelQueueTicks();
-    private static final int SEA_LEVEL_CHUNK_TICKS = GlobalWarming.getInstance().getConf().getSeaLevelChunkTicks();
+    private int maxTemperature;
     private static final MetadataValue BLOCK_TAG = new FixedMetadataValue(GlobalWarming.getInstance(), true);
     private static final String SEALEVEL_BLOCK = "S";
 
     public SeaLevelRise() {
+        isOverride = false;
         requestQueue = new ConcurrentLinkedQueue<>();
-        startQueueLoader();
-        debounceChunkUpdates();
     }
 
     /**
@@ -76,7 +77,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
                           }
                       }
                   }
-              }, 0L, SEA_LEVEL_QUEUE_TICKS);
+              }, 0L, queueTicks);
     }
 
     /**
@@ -92,7 +93,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
                   synchronized (this) {
                       if (!requestQueue.isEmpty()) {
                           chunkSnapshots = new ConcurrentLinkedQueue<>();
-                          while (chunkSnapshots.size() < CHUNKS_PER_PERIOD && !requestQueue.isEmpty()) {
+                          while (chunkSnapshots.size() < chunksPerPeriod && !requestQueue.isEmpty()) {
                               chunkSnapshots.add(requestQueue.poll());
                           }
                       }
@@ -104,7 +105,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
                           updateChunk(chunkSnapshot);
                       }
                   }
-              }, 0L, SEA_LEVEL_CHUNK_TICKS);
+              }, 0L, chunkTicks);
     }
 
     /**
@@ -118,36 +119,50 @@ public class SeaLevelRise extends ListenerClimateEffect {
         World world = Bukkit.getWorld(snapshot.getWorldName());
         WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
         final int baseSeaLevel = world.getSeaLevel() - 1;
-        final int deltaSeaLevel = deltaSeaLevels.get((int) climateEngine.getTemperature());
+        final int deltaSeaLevel = (int) seaMap.getValue(climateEngine.getTemperature());
         final int customSeaLevel = baseSeaLevel + deltaSeaLevel;
-        final int maxHeight = baseSeaLevel + deltaSeaLevels.get(MAX_TEMPERATURE);
+        final int maxHeight = baseSeaLevel + (int) seaMap.getValue(maxTemperature);
 
         //Scan chunk-blocks within the sea-level's range:
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                for (int y = baseSeaLevel; y < maxHeight; y++) {
+                for (int y = 0; y < maxHeight; y++) {
+                    //--------------------------------------------------------------------------------------------------
+                    //  TYPE  |  SEALEVEL  |  REPAIR  | TASK
+                    //--------------------------------------------------------------------------------------------------
+                    //    W   |   (ABOVE)  |     T    | [1] Set to AIR, clear tag
+                    //    W   |   (ABOVE)  |     F    | [2] If owner, set to air, clear tag
+                    //    W   |   [BELOW]  |     T    | [3] If not base-sea-level, set to air, clear tag
+                    //    W   |   [BELOW]  |     F    | [4] If owner and sea-level == 0, set to air, clear tag
+                    //    A   |   (ABOVE)  |     T    | Ignore
+                    //    A   |   (ABOVE)  |     F    | Ignore
+                    //    A   |   [BELOW]  |     T    | Ignore
+                    //    A   |   [BELOW]  |     F    | [5] If sea-level > 0, set to water, add tag
+                    //--------------------------------------------------------------------------------------------------
                     Block block = world.getChunkAt(snapshot.getX(), snapshot.getZ()).getBlock(x, y, z);
-                    if (y <= customSeaLevel) {
-                        //BELOW CUSTOM SEA LEVEL
-                        // - Rising the sea level (AIR to WATER)
-                        // - Fill any air pockets below sea level
-                        if (block.getType() == Material.AIR) {
+                    if (block.getType() == Material.AIR) {
+                        if (deltaSeaLevel > 0 && y <= customSeaLevel && !isOverride) {
+                            //Set any air-blocks below-and-at sea-level to water
+                            //as long as the sea-level is above normal [5]
                             block.setType(Material.WATER, false);
                             block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
                         }
-                    } else if (block.hasMetadata(SEALEVEL_BLOCK)) {
-                        //ABOVE CUSTOM SEA LEVEL AND TAGGED
-                        // - Lowering the sea level (WATER TO AIR)
-                        // - Remove tagged water blocks above the custom sea level
-                        // - Update selected block-types only in case of unexpected changes
-                        if (block.getType() == Material.WATER ||
-                              block.getType() == Material.ICE ||
-                              block.getType() == Material.PACKED_ICE ||
-                              block.getType() == Material.TALL_SEAGRASS ||
-                              block.getType() == Material.KELP_PLANT) {
+                    } else if (block.getType() == Material.WATER ||
+                          block.getType() == Material.ICE ||
+                          block.getType() == Material.PACKED_ICE ||
+                          block.getType() == Material.TALL_SEAGRASS ||
+                          block.getType() == Material.KELP_PLANT) {
+                        if ((isOverride && y != baseSeaLevel) ||
+                              (block.hasMetadata(SEALEVEL_BLOCK) && (y > customSeaLevel || deltaSeaLevel == 0))) {
+                            //Set water-to-air when:
+                            // - Repairing, except the base-sea-level [1, 3]
+                            // - Owner of block above sea-level [2]
+                            // - Owner of block below sea-level when sea-level is normal [4]
                             block.setType(Material.AIR, false);
+                            block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
                         }
-
+                    } else {
+                        //Release ownership of altered blocks:
                         block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
                     }
                 }
@@ -156,53 +171,68 @@ public class SeaLevelRise extends ListenerClimateEffect {
     }
 
     /**
-     * Replacing a sea-level-block with will remove it from the set
+     * Replacing sea-level-blocks will remove them from the tracked set
      */
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (event.getBlock().hasMetadata(SEALEVEL_BLOCK)) {
-            event.getBlock().removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
-        }
+        event.getBlock().removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
     }
 
     /**
      * Emptying a bucket (water or lava) will remove the adjacent block
-     * from the sea-level-block set
+     * from the tracked set
      */
     @EventHandler
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
         Block adjacent = event.getBlockClicked().getRelative(event.getBlockFace());
-        if (adjacent.hasMetadata(SEALEVEL_BLOCK)) {
-            adjacent.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
-        }
+        adjacent.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
     }
 
     /**
-     * This is the game-changer event:
-     * - Prevents the sea-level-rise blocks from filling other areas
-     * - This reduces all of the confusion as to which blocks are ours,
-     * and which were pre-existing
+     * Only allow sea-level blocks to flow if they are below the custom sea-level
+     * - Track any new blocks originating from sea-level blocks
      */
     @EventHandler
     public void onBlockFromToEvent(BlockFromToEvent event) {
         if (event.getBlock().hasMetadata(SEALEVEL_BLOCK)) {
-            event.setCancelled(true);
+            boolean isWaterFixed = isOverride;
+            if (!isWaterFixed) {
+                final World world = event.getBlock().getWorld();
+                final WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
+                final int baseSeaLevel = world.getSeaLevel() - 1;
+                final int deltaSeaLevel = (int) seaMap.getValue(climateEngine.getTemperature());
+                final int customSeaLevel = baseSeaLevel + deltaSeaLevel;
+                isWaterFixed = event.getBlock().getY() > customSeaLevel;
+            }
+
+            if (isWaterFixed) {
+                event.setCancelled(true);
+            } else {
+                event.getToBlock().setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
+            }
         }
     }
 
     /**
-     * Load the model
+     * Load the sea-level distribution model
      */
     @Override
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
-        deltaSeaLevels = GlobalWarming.getInstance().getGson().fromJson(
-              jsonModel,
-              new TypeToken<TreeMap<Integer, Integer>>() {
+        seaMap = GlobalWarming.getInstance().getGson().fromJson(
+              jsonModel.get("distribution"),
+              new TypeToken<Distribution>() {
               }.getType());
 
-        if (deltaSeaLevels == null) {
+        if (seaMap == null) {
             unregister();
+        } else {
+            maxTemperature = (int) seaMap.getTemp()[seaMap.getTemp().length - 1];
+            chunkTicks = jsonModel.get("chunk-ticks").getAsInt();
+            chunksPerPeriod = jsonModel.get("chunks-per-period").getAsInt();
+            queueTicks = jsonModel.get("queue-ticks").getAsInt();
+            startQueueLoader();
+            debounceChunkUpdates();
         }
     }
 }
