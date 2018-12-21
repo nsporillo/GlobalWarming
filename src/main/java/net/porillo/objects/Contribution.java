@@ -44,7 +44,7 @@ public class Contribution {
         this.contributer = rs.getInt(2);
         this.contributionKey = rs.getInt(3);
         this.worldId = UUID.fromString(rs.getString(4));
-        this.contributionValue = rs.getInt(5);
+        this.contributionValue = rs.getInt(6);
     }
 
     @Override
