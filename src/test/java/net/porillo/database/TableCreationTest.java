@@ -1,6 +1,7 @@
 package net.porillo.database;
 
 import net.porillo.database.queue.AsyncDBQueue;
+import net.porillo.database.tables.Table;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,9 +21,14 @@ public class TableCreationTest {
         dropTable("offsets");
     }
 
-    @Test
+    @Test(priority = 2)
     public void testTableCreation() throws SQLException, ClassNotFoundException {
         Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
+        for (Table table : TableManager.getInstance().getTables()) {
+            System.out.println("Testing table create for " + table.getTableName());
+            table.createIfNotExists();
+        }
+
         AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 
         tableAssertions("players");

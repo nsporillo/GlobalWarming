@@ -1,37 +1,33 @@
 package net.porillo;
 
 import net.porillo.engine.models.*;
-import static net.porillo.engine.models.ScoreTempModel.CarbonSensitivity;
-
 import org.testng.annotations.Test;
 
-import java.util.UUID;
+import static net.porillo.engine.models.ScoreTempModel.CarbonSensitivity;
 
 @Test
 public class ModelTest {
 
+    private static final String world = "world";
+
     @Test
     public void testContributionModel() {
-        UUID worldId = UUID.randomUUID();
-        ContributionModel model = new ContributionModel(worldId);
+        ContributionModel model = new ContributionModel(world);
     }
 
     @Test
     public void testReductionModel() {
-        UUID worldId = UUID.randomUUID();
-        ReductionModel model = new ReductionModel(worldId);
+        ReductionModel model = new ReductionModel(world);
     }
 
     @Test
     public void testEntityFitnessModel() {
-        UUID worldId = UUID.randomUUID();
-        EntityFitnessModel model = new EntityFitnessModel(worldId);
+        EntityFitnessModel model = new EntityFitnessModel(world);
     }
 
     @Test
     public void testScoreTempModel() {
-        UUID worldId = UUID.randomUUID();
-        ScoreTempModel model = new ScoreTempModel(worldId, CarbonSensitivity.LOW);
+        ScoreTempModel model = new ScoreTempModel(world, CarbonSensitivity.LOW);
 
         // Test the interpolator
         // If any of the points aren't monotonically increasing, an exception is thrown
@@ -41,8 +37,7 @@ public class ModelTest {
     }
 
     public void testScoreIndexModel() {
-        UUID worldId = UUID.randomUUID();
-        CarbonIndexModel model = new CarbonIndexModel(worldId);
+        CarbonIndexModel model = new CarbonIndexModel(world);
         model.loadModel();
 
         // Test the interpolator

@@ -8,14 +8,13 @@ import net.porillo.engine.api.Model;
 import org.bukkit.Material;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class ReductionModel extends Model {
 
     @Getter private Map<Material, Double> reductionMap;
 
-    public ReductionModel(UUID worldId) {
-        super(worldId, "reductionModel.json");
+    public ReductionModel(String worldName) {
+        super(worldName, "reductionModel.json");
         this.loadModel();
     }
 

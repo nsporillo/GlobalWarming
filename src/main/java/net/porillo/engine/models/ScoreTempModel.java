@@ -12,7 +12,6 @@ import java.lang.reflect.Type;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 
 public class ScoreTempModel extends Model {
 
@@ -33,8 +32,8 @@ public class ScoreTempModel extends Model {
     private CarbonSensitivity sensitivity;
     Map<CarbonSensitivity, Map<Integer, Double>> temperatureMap;
 
-    public ScoreTempModel(UUID worldId, CarbonSensitivity sensitivity) {
-        super(worldId, "scoreTempModel.json");
+    public ScoreTempModel(String worldName, CarbonSensitivity sensitivity) {
+        super(worldName, "scoreTempModel.json");
         this.sensitivity = sensitivity;
         this.loadModel();
     }

@@ -24,7 +24,7 @@ public class TestUtility {
         gWorld.setUniqueID(random.nextInt(Integer.MAX_VALUE));
         gWorld.setWorldId(UUID.randomUUID());
         gWorld.setFirstSeen(random.nextLong());
-        gWorld.setCarbonValue(random.nextInt(16777215));
+        gWorld.setCarbonValue(random.nextInt(8388607));
         gWorld.setSeaLevel(random.nextInt(255));
         gWorld.setSize(random.nextInt(65535));
         return gWorld;
@@ -34,7 +34,7 @@ public class TestUtility {
         GPlayer gPlayer = new GPlayer();
         gPlayer.setUniqueId(random.nextInt(Integer.MAX_VALUE));
         gPlayer.setUuid(UUID.randomUUID());
-        gPlayer.setCarbonScore(random.nextInt(16777215));
+        gPlayer.setCarbonScore(random.nextInt(8388607));
         gPlayer.setFirstSeen(0);
         gPlayer.setWorldId(UUID.randomUUID());
         return gPlayer;

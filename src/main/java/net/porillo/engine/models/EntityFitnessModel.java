@@ -8,14 +8,13 @@ import net.porillo.engine.api.Model;
 import org.bukkit.entity.EntityType;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class EntityFitnessModel extends Model {
 
     @Getter private Map<EntityType, MobDistribution> entityFitnessMap;
 
-    public EntityFitnessModel(UUID worldId) {
-        super(worldId, "entityFitnessModel.json");
+    public EntityFitnessModel(String worldName) {
+        super(worldName, "entityFitnessModel.json");
         this.loadModel();
     }
 

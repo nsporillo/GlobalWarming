@@ -7,6 +7,7 @@ import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.engine.models.*;
 import net.porillo.objects.*;
+import org.bukkit.Bukkit;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
@@ -28,11 +29,12 @@ public class WorldClimateEngine {
 		this.config = config;
 
 		// Worlds load their own model file
-		this.scoreTempModel = new ScoreTempModel(config.getWorldId(), config.getSensitivity());
-		this.contributionModel = new ContributionModel(config.getWorldId());
-		this.reductionModel = new ReductionModel(config.getWorldId());
-		this.entityFitnessModel = new EntityFitnessModel(config.getWorldId());
-		this.carbonIndexModel = new CarbonIndexModel(config.getWorldId());
+		String worldName = Bukkit.getWorld(config.getWorldId()).getName();
+		this.scoreTempModel = new ScoreTempModel(worldName, config.getSensitivity());
+		this.contributionModel = new ContributionModel(worldName);
+		this.reductionModel = new ReductionModel(worldName);
+		this.entityFitnessModel = new EntityFitnessModel(worldName);
+		this.carbonIndexModel = new CarbonIndexModel(worldName);
 	}
 
 	public Reduction treeGrow(Tree tree, TreeType treeType, List<BlockState> blocks) {
@@ -71,7 +73,7 @@ public class WorldClimateEngine {
 	}
 
 	public double getTemperature() {
-		double temperature = WorldTable.DEFAULT_WORLD_TEMPERATURE;
+		double temperature = 14.0;
 		WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
 		GWorld gWorld = worldTable.getWorld(config.getWorldId());
 		if (gWorld == null) {

@@ -4,10 +4,8 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.porillo.GlobalWarming;
-
 import net.porillo.config.Lang;
 import net.porillo.database.tables.PlayerTable;
-import net.porillo.database.tables.WorldTable;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.engine.models.CarbonIndexModel;
@@ -394,10 +392,10 @@ public class GeneralCommands extends BaseCommand {
                 welcomeMessage.append(Lang.TEMPERATURE_AVERAGE.get());
 
                 //Guidance based on the global temperature:
-                if (temperature < WorldTable.LOW_TEMPERATURE_UBOUND) {
+                if (temperature < (14.0 - GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected())) {
                     welcomeMessage.append("\n");
                     welcomeMessage.append(Lang.TEMPERATURE_LOW.get());
-                } else if (temperature < WorldTable.HIGH_TEMPERATURE_LBOUND) {
+                } else if (temperature < (14.0 + GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected())) {
                     welcomeMessage.append("\n");
                     welcomeMessage.append(Lang.TEMPERATURE_BALANCED.get());
                 } else {

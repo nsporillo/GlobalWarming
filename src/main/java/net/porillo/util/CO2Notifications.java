@@ -4,7 +4,6 @@ import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.commands.GeneralCommands;
 import net.porillo.config.Lang;
-import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.EffectEngine;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.negative.Fire;
@@ -99,9 +98,9 @@ public class CO2Notifications {
         String message = "";
         String optional = "";
         final TemperatureRange range;
-        if (temperature < WorldTable.LOW_TEMPERATURE_UBOUND) {
+        if (temperature < (14.0 - GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected())) {
             range = TemperatureRange.LOW;
-        } else if (temperature < WorldTable.HIGH_TEMPERATURE_LBOUND) {
+        } else if (temperature < (14.0 + GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected())) {
             range = TemperatureRange.AVERAGE;
         } else {
             range = TemperatureRange.HIGH;
@@ -119,7 +118,7 @@ public class CO2Notifications {
                     final Material randomMaterial = keys.get(GlobalWarming.getInstance().getRandom().nextInt(keys.size()));
                     final Distribution distribution = farmYield.getCropDistribution().get(randomMaterial);
                     final double farmYieldFitness = distribution.getValue(temperature);
-                    final double normalFarmYieldFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    final double normalFarmYieldFitness = distribution.getValue(14.0);
                     optional = randomMaterial.toString().toLowerCase().replace("_", "");
                     message = getMessage(
                           farmYieldFitness < normalFarmYieldFitness,
@@ -131,7 +130,7 @@ public class CO2Notifications {
                     //Fire:
                     final Distribution distribution = EffectEngine.getInstance().getEffect(Fire.class, ClimateEffectType.FIRE).getFireMap();
                     final double fireFitness = distribution.getValue(temperature);
-                    final double normalFireFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    final double normalFireFitness = distribution.getValue(14.0);
                     message = getMessage(
                           fireFitness != normalFireFitness,
                           range,
@@ -142,7 +141,7 @@ public class CO2Notifications {
                     //Ice:
                     final Distribution distribution = EffectEngine.getInstance().getEffect(IceForm.class, ClimateEffectType.ICE_FORMATION).getHeightMap();
                     final double iceFitness = distribution.getValue(temperature);
-                    final double normalIceFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    final double normalIceFitness = distribution.getValue(14.0);
                     message = getMessage(
                           iceFitness != normalIceFitness,
                           range,
@@ -155,7 +154,7 @@ public class CO2Notifications {
                     final EntityType randomEntity = keys.get(GlobalWarming.getInstance().getRandom().nextInt(keys.size()));
                     final Distribution distribution = worldClimateEngine.getEntityFitnessModel().getEntityFitnessMap().get(randomEntity);
                     final double mobFitness = distribution.getValue(temperature);
-                    final double normalMobFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    final double normalMobFitness = distribution.getValue(14.0);
                     optional = randomEntity.toString().toLowerCase().replace("_", "");
                     message = getMessage(
                           mobFitness < normalMobFitness,
@@ -169,7 +168,7 @@ public class CO2Notifications {
                     final SeaLevelRise seaLevelRise = EffectEngine.getInstance().getEffect(SeaLevelRise.class, ClimateEffectType.SEA_LEVEL_RISE);
                     final Distribution distribution = seaLevelRise.getSeaMap();
                     final int seaLevelDelta = (int) distribution.getValue(temperature);
-                    final int normalSeaLevelDelta = (int) distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    final int normalSeaLevelDelta = (int) distribution.getValue(14.0);
                     message = getMessage(
                           seaLevelDelta > normalSeaLevelDelta,
                           range,
@@ -189,7 +188,7 @@ public class CO2Notifications {
                     //Snow messages:
                     final Distribution distribution = EffectEngine.getInstance().getEffect(SnowForm.class, ClimateEffectType.SNOW_FORMATION).getHeightMap();
                     final double snowFitness = distribution.getValue(temperature);
-                    final double normalSnowFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    final double normalSnowFitness = distribution.getValue(14.0);
                     message = getMessage(
                           snowFitness != normalSnowFitness,
                           range,
@@ -201,7 +200,7 @@ public class CO2Notifications {
                     final Weather weather = EffectEngine.getInstance().getEffect(Weather.class, ClimateEffectType.WEATHER);
                     final Distribution distribution = weather.getWeatherDistribution().get(Weather.WeatherData.STORM);
                     final double weatherFitness = distribution.getValue(temperature);
-                    final double normalWeatherFitness = distribution.getValue(WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                    final double normalWeatherFitness = distribution.getValue(14.0);
                     message = getMessage(
                           weatherFitness > normalWeatherFitness,
                           range,

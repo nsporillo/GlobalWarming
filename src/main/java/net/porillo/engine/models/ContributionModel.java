@@ -7,14 +7,13 @@ import net.porillo.engine.api.Model;
 import org.bukkit.Material;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class ContributionModel extends Model {
 
     @Getter private Map<Material, Double> contributionMap;
 
-    public ContributionModel(UUID worldId) {
-        super(worldId, "contributionModel.json");
+    public ContributionModel(String worldName) {
+        super(worldName, "contributionModel.json");
         this.loadModel();
     }
 

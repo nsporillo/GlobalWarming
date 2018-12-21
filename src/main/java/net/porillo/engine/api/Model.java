@@ -2,25 +2,22 @@ package net.porillo.engine.api;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 
 public abstract class Model {
 
-    @Getter private final UUID worldId;
+    @Getter private final String worldName;
     @Getter private final String modelName;
     private Path modelsPath;
 
-    public Model(UUID worldId, String modelName) {
+    public Model(String worldName, String modelName) {
         this.modelName = modelName;
-        this.worldId = worldId;
+        this.worldName = worldName;
 
         if (GlobalWarming.getInstance() != null) {
             this.modelsPath = GlobalWarming.getInstance().getDataFolder().toPath().resolve("models");
@@ -34,8 +31,7 @@ public abstract class Model {
     }
 
     public Path getPath() {
-        World world = Bukkit.getWorld(worldId);
-        return this.modelsPath.resolve(world.getName()).resolve(modelName);
+        return this.modelsPath.resolve(worldName).resolve(modelName);
     }
 
     public String getContents() {
@@ -70,8 +66,7 @@ public abstract class Model {
 
             try {
                 // Copy resource from JAR to the correct path
-                World world = Bukkit.getWorld(worldId);
-                Files.createDirectories(modelsPath.resolve(world.getName()));
+                Files.createDirectories(modelsPath.resolve(worldName));
                 Files.copy(GlobalWarming.getInstance().getResource(String.format("models/%s", modelName)), path);
             } catch (IOException e) {
                 e.printStackTrace();

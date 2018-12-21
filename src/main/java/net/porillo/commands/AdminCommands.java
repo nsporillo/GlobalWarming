@@ -84,7 +84,7 @@ public class AdminCommands extends BaseCommand {
                     if (climateEngine != null) {
                         SeaLevelRise seaLevelRise = EffectEngine.getInstance().getEffect(SeaLevelRise.class, ClimateEffectType.SEA_LEVEL_RISE);
                         seaLevelRise.setOverride(isOverride);
-                        updateTemperature(gPlayer, WorldTable.DEFAULT_WORLD_TEMPERATURE);
+                        updateTemperature(gPlayer, 14.0);
                     } else {
                         gPlayer.sendMsg(String.format("%sInvalid arguments", ChatColor.RED));
                     }

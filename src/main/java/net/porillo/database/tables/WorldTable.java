@@ -17,13 +17,6 @@ import java.util.UUID;
 
 public class WorldTable extends Table implements SelectCallback<GWorld> {
 
-    public static final double DEFAULT_WORLD_TEMPERATURE = 14.0;
-    public static final double LOW_TEMPERATURE_UBOUND = DEFAULT_WORLD_TEMPERATURE -
-          GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected();
-
-    public static final double HIGH_TEMPERATURE_LBOUND = DEFAULT_WORLD_TEMPERATURE +
-          GlobalWarming.getInstance().getConf().getDegreesUntilChangeDetected();
-
     private Map<UUID, GWorld> worldMap = new HashMap<>();
 
     public WorldTable() {

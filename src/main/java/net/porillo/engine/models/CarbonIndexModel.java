@@ -10,7 +10,6 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 
 public class CarbonIndexModel extends Model {
 
@@ -19,8 +18,8 @@ public class CarbonIndexModel extends Model {
     private double[] indices;
     private PolynomialSplineFunction splineFunction;
 
-    public CarbonIndexModel(UUID worldId) {
-        super(worldId, "carbonIndexModel.json");
+    public CarbonIndexModel(String worldName) {
+        super(worldName, "carbonIndexModel.json");
         this.loadModel();
     }
 
