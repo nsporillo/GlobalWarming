@@ -1,100 +1,100 @@
 locale: en-US
 lang:
   GENERIC:
-    PERMISSION: "§c§OInsufficient permissions for GlobalWarming command"
-    INVALIDARGS: "§c§OInvalid command arguments, expecting: §7§O%s"
-    SPAM: "§8§OToo many requests at once"
-    INVENTORYFULL: "§c§OYour inventory is full"
+    PERMISSION: §c§OInsufficient permissions for GlobalWarming command
+    INVALIDARGS: '§c§OInvalid command arguments, expecting: §7§O%s'
+    SPAM: §8§OToo many requests at once
+    INVENTORYFULL: §c§OYour inventory is full
   BOUNTY:
-    PLAYER: "PLAYER"
-    HUNTER: "HUNTER"
-    BLOCKS: "BLOCKS"
-    BLOCKSREQUIRED: "§c§OA minimum of one block is required"
-    REWARD: "REWARD"
-    REWARDREQUIRED: "§c§OA minimum reward of $1 is required"
-    JOIN: "§aJOIN"
-    JOINTOOLTIP: "§aClick here to begin this bounty"
-    TITLE: "ACTIVE BOUNTIES"
-    ERROR: "§c§OError creating the bounty-list table"
-    ALREADYHUNTING: "§c§OCannot join: one bounty per player"
-    NOTFOUND: "§c§OCannot join: bounty not found"
-    ANOTHERPLAYER: "§c§OCannot join: accepted by another player"
-    BOUNTYOWNER: "§c§OCannot join: you own this bounty"
-    CREATED: "§2§OBounty created §a§O(new balance: $%.2f)"
-    NOTCREATED: "§c§OUnable to create bounty §7§O(balance: $%.2f)"
-    MAXCREATED: "§c§OYou cannot create additional bounties at this time"
-    ACCEPTED: "§2§OBounty accepted"
-    ACCEPTEDBY: "§2§OBounty accepted by: §a§O%s"
-    COMPLETED: "§2§OBounty completed: §a§O+$%d"
-    COMPLETEDBY: "§2§OBounty completed by: §a§O%s"
-    NOTJOINED: "§c§OYou have not joined a bounty"
-    ABANDONED: "§2§OBounty abandoned"
-    ABANDONEDBY: "§2§OBounty abandoned by: §a§O%s"
-    CANCELLED: "§2§OBounties cancelled: §a§O%s§2§O, refund: §a§O+$%d"
+    PLAYER: PLAYER
+    HUNTER: HUNTER
+    BLOCKS: BLOCKS
+    BLOCKSREQUIRED: §c§OA minimum of one block is required
+    REWARD: REWARD
+    REWARDREQUIRED: §c§OA minimum reward of $1 is required
+    JOIN: §aJOIN
+    JOINTOOLTIP: §aClick here to begin this bounty
+    TITLE: ACTIVE BOUNTIES
+    ERROR: §c§OError creating the bounty-list table
+    ALREADYHUNTING: '§c§OCannot join: one bounty per player'
+    NOTFOUND: '§c§OCannot join: bounty not found'
+    ANOTHERPLAYER: '§c§OCannot join: accepted by another player'
+    BOUNTYOWNER: '§c§OCannot join: you own this bounty'
+    CREATED: '§2§OBounty created §a§O(new balance: $%.2f)'
+    NOTCREATED: '§c§OUnable to create bounty §7§O(balance: $%.2f)'
+    MAXCREATED: §c§OYou cannot create additional bounties at this time
+    ACCEPTED: §2§OBounty accepted
+    ACCEPTEDBY: '§2§OBounty accepted by: §a§O%s'
+    COMPLETED: '§2§OBounty completed: §a§O+$%d'
+    COMPLETEDBY: '§2§OBounty completed by: §a§O%s'
+    NOTJOINED: §c§OYou have not joined a bounty
+    ABANDONED: §2§OBounty abandoned
+    ABANDONEDBY: '§2§OBounty abandoned by: §a§O%s'
+    CANCELLED: '§2§OBounties cancelled: §a§O%s§2§O, refund: §a§O+$%d'
   ENGINE:
-    DISABLED: "§8§OGlobalWarming is not enabled for this world"
-    NOTFOUND: "Climate engine not found for world: '%s'"
+    DISABLED: §8§OGlobalWarming is not enabled for this world
+    NOTFOUND: 'Climate engine not found for world: ''%s'''
   NOTIFICATION:
     DEFAULT:
-      LOW: "§fSteve says: %sno more trees, it's time to build!"
-      OK: "§fSteve says: %sour world is in great shape!"
-      HIGH: "§fSteve says: %slet's plant more trees!"
+      LOW: '§fSteve says: %sno more trees, it''s time to build!'
+      OK: '§fSteve says: %sour world is in great shape!'
+      HIGH: '§fSteve says: %slet''s plant more trees!'
     FARM:
-      LOW: "§fFarmers: %slow CO2 is hurting our %s crops"
-      OK: "§fFarmers: %shaving bumper crops this year"
-      HIGH: "§fFarmers: %shigh CO2 is hurting our %s crops"
+      LOW: '§fFarmers: %slow CO2 is hurting our %s crops'
+      OK: '§fFarmers: %shaving bumper crops this year'
+      HIGH: '§fFarmers: %shigh CO2 is hurting our %s crops'
     FIRE:
-      LOW: "§fForest Service: %sfire restrictions are in effect!"
-      OK: "§fForest Service: %sthe risk of fire is low"
-      HIGH: "§fForest Service: %sfire restrictions are in effect!"
+      LOW: '§fForest Service: %sfire restrictions are in effect!'
+      OK: '§fForest Service: %sthe risk of fire is low'
+      HIGH: '§fForest Service: %sfire restrictions are in effect!'
     ICE:
-      LOW: "§fScientists: %slow CO2 is affecting ice conditions"
-      OK: "§fScientists: %sexpect normal ice conditions this year"
-      HIGH: "§fScientists: %shigh CO2 is affecting ice conditions"
+      LOW: '§fScientists: %slow CO2 is affecting ice conditions'
+      OK: '§fScientists: %sexpect normal ice conditions this year'
+      HIGH: '§fScientists: %shigh CO2 is affecting ice conditions'
     MOB:
-      LOW: "§fZoologists: %slow CO2 is affecting %s populations"
-      OK: "§fZoologists: %s%s populations are thriving"
-      HIGH: "§fZoologists: %shigh CO2 is affecting %s populations"
+      LOW: '§fZoologists: %slow CO2 is affecting %s populations'
+      OK: '§fZoologists: %s%s populations are thriving'
+      HIGH: '§fZoologists: %shigh CO2 is affecting %s populations'
     SEALEVEL:
-      LOW: "§fOceanographers: %slow CO2, worried about sea levels!"
-      OK: "§fOceanographers: %snot concerned about sea levels!"
-      HIGH: "§fOceanographers: %shigh CO2, observed ice caps melting!"
+      LOW: '§fOceanographers: %slow CO2, worried about sea levels!'
+      OK: '§fOceanographers: %snot concerned about sea levels!'
+      HIGH: '§fOceanographers: %shigh CO2, observed ice caps melting!'
     SNOW:
-      LOW: "§fScientists: %slow CO2 is affecting snow conditions"
-      OK: "§fScientists: %sexpect normal snow conditions this year"
-      HIGH: "§fScientists: %shigh CO2 is affecting snow conditions"
+      LOW: '§fScientists: %slow CO2 is affecting snow conditions'
+      OK: '§fScientists: %sexpect normal snow conditions this year'
+      HIGH: '§fScientists: %shigh CO2 is affecting snow conditions'
     SLOWNESS:
-      LOW: "§fDoctors: %sreporting increased respiratory issues"
-      OK: "§fDoctors: %san apple a day is a great snack"
-      HIGH: "§fDoctors: %sreporting increased respiratory issues"
+      LOW: '§fDoctors: %sreporting increased respiratory issues'
+      OK: '§fDoctors: %san apple a day is a great snack'
+      HIGH: '§fDoctors: %sreporting increased respiratory issues'
     WEATHER:
-      LOW: "§fMeteorologists: %sexpect more storms this year"
-      OK: "§fMeteorologists: %swind is mild; seas, a light chop"
-      HIGH: "§fMeteorologists: %sexpect more storms this year"
+      LOW: '§fMeteorologists: %sexpect more storms this year'
+      OK: '§fMeteorologists: %swind is mild; seas, a light chop'
+      HIGH: '§fMeteorologists: %sexpect more storms this year'
   SCORE:
-    CHAT: "§fYour carbon footprint: %s§f, global temperature: %s§f°C"
-    TEMPERATURE: "§fGlobal Temp: %s%s§f°C"
+    CHAT: '§fYour carbon footprint: %s§f, global temperature: %s§f°C'
+    TEMPERATURE: '§fGlobal Temp: %s%s§f°C'
   TABLE:
-    EMPTY: "NO RECORDS FOUND"
+    EMPTY: NO RECORDS FOUND
   TEMPERATURE:
-    LOW: "§fGlobal CO2 levels are too low: §6increase furnace emissions"
-    BALANCED: "Global CO2 levels are in balance"
-    HIGH: "§fGlobal CO2 levels are too high: §6plant new saplings"
-    HIGHWITHBOUNTY: "§fOr see: §6/gw help§f to create a bounty"
-    AVERAGE: "Mean temperature from 1951-80: §614°C §7[GISS]§f, this is your goal"
+    LOW: '§fGlobal CO2 levels are too low: §6increase furnace emissions'
+    BALANCED: Global CO2 levels are in balance
+    HIGH: '§fGlobal CO2 levels are too high: §6plant new saplings'
+    HIGHWITHBOUNTY: '§fOr see: §6/gw help§f to create a bounty'
+    AVERAGE: 'Mean temperature from 1951-80: §614°C §7[GISS]§f, this is your goal'
   TOPTABLE:
-    PLAYER: "PLAYER"
-    INDEX: "INDEX"
-    SCORE: "SCORE"
-    POLLUTERS: "TOP 10 POLLUTERS"
-    PLANTERS: "TOP 10 TREE PLANTERS"
-    ERROR: "§c§OError creating polluter / planter table"
+    PLAYER: PLAYER
+    INDEX: INDEX
+    SCORE: SCORE
+    POLLUTERS: TOP 10 POLLUTERS
+    PLANTERS: TOP 10 TREE PLANTERS
+    ERROR: §c§OError creating polluter / planter table
   WIKI:
-    ADDED: "§fThe §6GlobalWarming§f wiki was added to your inventory"
-    ALREADYADDED: "§fYou already have the §6GlobalWarming§f wiki"
-    NAME: "§fGlobalWarming Wiki"
-    AUTHOR: "Team GW"
-    LORE: "§8Gameplay and instructions"
+    ADDED: §fThe §6GlobalWarming§f wiki was added to your inventory
+    ALREADYADDED: §fYou already have the §6GlobalWarming§f wiki
+    NAME: §fGlobalWarming Wiki
+    AUTHOR: Team GW
+    LORE: §8Gameplay and instructions
     INTRODUCTION: |
       §0GOAL:§8
       Prevent global warming by offsetting furnace emissions
