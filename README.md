@@ -9,7 +9,7 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 - Pull requests welcome! This is a very new project and I appreciate contributions.
 
 ## Builds
-- <a href="http://jenkins.porillo.net/job/GlobalWarming/">Snapshots on <img src="https://i.imgur.com/3FtNxcM.png" height="30"></a>
+- <strike><a href="http://jenkins.porillo.net/job/GlobalWarming/">Snapshots on <img src="https://i.imgur.com/3FtNxcM.png" height="30"></a><strike/> Jenkins was exploited with RCE, currently down for maintenence.
 
 ## Overview
 + Adds the concept of greenhouse gases (CO2) in the worlds atmosphere 
