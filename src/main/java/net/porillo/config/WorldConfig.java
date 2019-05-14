@@ -28,6 +28,10 @@ public class WorldConfig extends ConfigLoader {
         super.load();
     }
 
+    public String getName() {
+        return super.getFileName().substring(0, super.getFileName().indexOf("."));
+    }
+
     @Override
     protected void loadKeys() {
         sensitivity = CarbonSensitivity.LOW;

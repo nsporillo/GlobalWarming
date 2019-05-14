@@ -1,5 +1,6 @@
 package net.porillo.config;
 
+import lombok.Getter;
 import net.porillo.GlobalWarming;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,7 +10,7 @@ import java.io.*;
 public abstract class ConfigLoader {
 
     FileConfiguration conf;
-    private String fileName;
+    @Getter private String fileName;
     private File configFile;
 
     ConfigLoader(String fileName, String resource) {
