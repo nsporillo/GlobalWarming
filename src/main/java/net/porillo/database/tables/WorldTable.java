@@ -9,7 +9,6 @@ import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.GWorld;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +57,7 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
     }
 
     @Override
-    public void onSelectionCompletion(List<GWorld> returnList) throws SQLException {
+    public void onSelectionCompletion(List<GWorld> returnList) {
         if (GlobalWarming.getInstance() != null) {
             new BukkitRunnable() {
                 @Override
