@@ -16,6 +16,7 @@ import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.*;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -50,6 +51,7 @@ public class CO2Listener implements Listener {
 
 		//Setup:
 		Location location = event.getBlock().getLocation();
+		Material furnaceType = event.getBlock().getType();
 		FurnaceTable furnaceTable = GlobalWarming.getInstance().getTableManager().getFurnaceTable();
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
 		Furnace furnace = null;
@@ -102,7 +104,7 @@ public class CO2Listener implements Listener {
 		if (affectedClimateEngine != null && affectedClimateEngine.isEnabled()) {
 			//Carbon contribution record:
 			int contributionValue = 0;
-			Contribution contribution = eventClimateEngine.furnaceBurn(furnace, event.getFuel());
+			Contribution contribution = eventClimateEngine.furnaceBurn(furnace, furnaceType, event.getFuel());
 			if (contribution != null) {
 				//Queue an insert into the contributions table:
 				ContributionInsertQuery insertQuery = new ContributionInsertQuery(contribution);

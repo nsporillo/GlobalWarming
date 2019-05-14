@@ -1,6 +1,7 @@
 enabled: true
 association: world
 carbonSensitivity: LOW
+blastFurnaceMultiplier: 1.2
 enabledEffects:
     - SEA_LEVEL_RISE
     - ICE_MELT

@@ -19,6 +19,7 @@ public class WorldConfig extends ConfigLoader {
     @Getter private Set<ClimateEffectType> enabledEffects;
     @Getter private UUID associatedWorldId;
     @Getter private CarbonSensitivity sensitivity;
+    @Getter private double blastFurnaceMultiplier;
 
     public WorldConfig(UUID worldId) {
         super(String.format("%s.yml", Bukkit.getWorld(worldId).getName()), "world.yml");
@@ -46,6 +47,8 @@ public class WorldConfig extends ConfigLoader {
         this.enabled = this.conf.getBoolean("enabled");
         this.associatedWorldId = Bukkit.getWorld(this.conf.getString("association")).getUID();
         this.enabledEffects = new HashSet<>();
+        this.blastFurnaceMultiplier = this.conf.getDouble("blastFurnaceMultiplier", 1.2);
+
         for (String effect : this.conf.getStringList("enabledEffects")) {
             try {
                 this.enabledEffects.add(ClimateEffectType.valueOf(effect));

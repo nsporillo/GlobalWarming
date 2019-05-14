@@ -33,8 +33,10 @@ public class AttributionListener implements Listener {
      */
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        Material bType = event.getBlockPlaced().getType();
+
         //Ignore blocks that aren't furnaces or saplings:
-        if (event.getBlockPlaced().getType() != Material.FURNACE && !event.getBlockPlaced().getType().name().endsWith("SAPLING")) {
+        if ((bType != Material.FURNACE && bType != Material.BLAST_FURNACE && bType != Material.SMOKER) && !bType.name().endsWith("SAPLING")) {
             return;
         }
 
@@ -50,7 +52,7 @@ public class AttributionListener implements Listener {
         Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 
         //Block handlers:
-        if (event.getBlockPlaced().getType() == Material.FURNACE) {
+        if (bType == Material.FURNACE || bType == Material.BLAST_FURNACE || bType == Material.SMOKER) {
             //Furnaces:
             FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
             Furnace furnace = new Furnace(uniqueId, player.getUniqueId(), location, true);
@@ -68,7 +70,7 @@ public class AttributionListener implements Listener {
             //Database update:
             FurnaceInsertQuery insertQuery = new FurnaceInsertQuery(furnace);
             AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
-        } else if (event.getBlockPlaced().getType().name().endsWith("SAPLING")) {
+        } else if (bType.name().endsWith("SAPLING")) {
             //Saplings:
             // - Tracked to credit their planter or bounty
             // - Saplings are trees of size 0
@@ -99,8 +101,10 @@ public class AttributionListener implements Listener {
      */
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        Material bType = event.getBlock().getType();
+
         //Ignore blocks that aren't furnaces or saplings:
-        if (event.getBlock().getType() != Material.FURNACE && !event.getBlock().getType().name().endsWith("SAPLING")) {
+        if ((bType != Material.FURNACE && bType != Material.BLAST_FURNACE && bType != Material.SMOKER) && !bType.name().endsWith("SAPLING")) {
             return;
         }
 
@@ -111,7 +115,7 @@ public class AttributionListener implements Listener {
 
         //Delete tracked records:
         Location location = event.getBlock().getLocation();
-        if (event.getBlock().getType() == Material.FURNACE) {
+        if (bType == Material.FURNACE || bType == Material.BLAST_FURNACE || bType == Material.SMOKER) {
             //Furnace destroyed:
             // - Any "contribution" records based on a deleted furnace will
             //   no longer be able to look it up (this is OK, just be aware)

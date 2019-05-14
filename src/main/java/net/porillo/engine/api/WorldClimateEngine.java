@@ -8,6 +8,7 @@ import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.engine.models.*;
 import net.porillo.objects.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +54,7 @@ public class WorldClimateEngine {
 		return reduction;
 	}
 
-	public Contribution furnaceBurn(Furnace furnace, ItemStack fuel) {
+	public Contribution furnaceBurn(Furnace furnace, Material furnaceType, ItemStack fuel) {
 		Contribution contribution = null;
 		if (furnace == null) {
 			GlobalWarming.getInstance().getLogger().severe("Furnace null");
@@ -66,7 +67,11 @@ public class WorldClimateEngine {
 			contribution.setWorldId(config.getWorldId());
 			contribution.setContributer(furnace.getOwnerId());
 			contribution.setContributionKey(furnace.getUniqueId());
-			contribution.setContributionValue((int) contributionModel.getContribution(fuel.getType()));
+			double contribValue = contributionModel.getContribution(fuel.getType());
+			if (furnaceType == Material.BLAST_FURNACE) {
+				contribValue *= config.getBlastFurnaceMultiplier();
+			}
+			contribution.setContributionValue((int) contribValue);
 		}
 
 		return contribution;
