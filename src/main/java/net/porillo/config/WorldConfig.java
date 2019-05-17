@@ -19,7 +19,6 @@ public class WorldConfig extends ConfigLoader {
     @Getter private Set<ClimateEffectType> enabledEffects;
     @Getter private UUID associatedWorldId;
     @Getter private CarbonSensitivity sensitivity;
-    @Getter private double blastFurnaceMultiplier;
     @Getter private double methaneTicksLivedModifier;
     @Getter private boolean bonemealReductionAllowed;
     @Getter private double bonemealReductionModifier;
@@ -54,7 +53,6 @@ public class WorldConfig extends ConfigLoader {
         this.enabled = this.conf.getBoolean("enabled");
         this.associatedWorldId = Bukkit.getWorld(this.conf.getString("association")).getUID();
         this.enabledEffects = new HashSet<>();
-        this.blastFurnaceMultiplier = this.conf.getDouble("blastFurnaceMultiplier", 1.2);
         this.methaneTicksLivedModifier = this.conf.getDouble("methaneTicksLivedModifier", 0.01);
         this.bonemealReductionAllowed = this.conf.getBoolean("bonemealReductionAllowed", true);
         this.bonemealReductionModifier = this.conf.getDouble("bonemealReductionModifier", 0.5);
