@@ -39,12 +39,12 @@ public class CO2Listener implements Listener {
 	 *
 	 * @param event furnace burn
 	 */
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onFurnaceSmelt(FurnaceBurnEvent event) {
 		//Ignore if the block's world-climate is disabled:
 		UUID worldId = event.getBlock().getWorld().getUID();
 		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
-		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
+		if (eventClimateEngine == null || !eventClimateEngine.isEnabled() || event.isCancelled()) {
 			return;
 		}
 
@@ -137,12 +137,12 @@ public class CO2Listener implements Listener {
 	 *
 	 * @param event structure grow event (tree grow)
 	 */
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
 		//Ignore if the location's world-climate is disabled:
 		UUID worldId = event.getLocation().getWorld().getUID();
 		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
-		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
+		if (eventClimateEngine == null || !eventClimateEngine.isEnabled() || event.isCancelled()) {
 			return;
 		}
 
