@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class PlayerTable extends Table implements SelectCallback<GPlayer> {
     }
 
     @Override
-    public void onSelectionCompletion(List<GPlayer> returnList) throws SQLException {
+    public void onSelectionCompletion(List<GPlayer> returnList) {
         if (GlobalWarming.getInstance() != null) {
             new BukkitRunnable() {
                 @Override

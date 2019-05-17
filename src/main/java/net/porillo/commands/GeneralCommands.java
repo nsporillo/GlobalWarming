@@ -11,6 +11,7 @@ import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.engine.models.CarbonIndexModel;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
+import net.porillo.util.AlertManager;
 import net.porillo.util.ChatTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -164,6 +165,22 @@ public class GeneralCommands extends BaseCommand {
         public void onShow(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
                 GlobalWarming.getInstance().getScoreboard().show(gPlayer, true);
+            }
+        }
+
+        @Subcommand("alerts")
+        @Description("Sends message alerts on all carbon activities")
+        @Syntax("")
+        @CommandPermission("globalwarming.score.alerts")
+        public void onAlert(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                if (!AlertManager.getInstance().isSubscribed(gPlayer.getUuid())) {
+                    AlertManager.getInstance().subscribe(gPlayer.getUuid());
+                    gPlayer.sendMsg(Lang.ALERT_SUBSCRIBE.get());
+                } else {
+                    AlertManager.getInstance().unsubscribe(gPlayer.getUuid());
+                    gPlayer.sendMsg(Lang.ALERT_UNSUBSCRIBE.get());
+                }
             }
         }
 

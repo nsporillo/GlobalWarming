@@ -5,6 +5,13 @@ lang:
     INVALIDARGS: '§c§OInvalid command arguments, expecting: §7§O%s'
     SPAM: §8§OToo many requests at once
     INVENTORYFULL: §c§OYour inventory is full
+  ALERT:
+    SUBSCRIBE: '§2Subscribed to real time carbon score alerts'
+    UNSUBSCRIBE: '§cUnsubscribed from real time carbon score alerts'
+    TREEREDUCE: '§2[Alert] Tree grown. §f(§ablocks: %d§f, §breduction: %d§f)'
+    TREEREDUCEBONEMEAL: '§2[Alert] Tree grown with §cbonemeal. §f(§ablocks: %d§f, §b%reduction: %d§f)'
+    BURNCONTRIB: '§c[Alert] §O%s burned. §4(contribution: %d)'
+    FARMCONTRIB: '§c[Alert] §c§OBred %s killed. §4(contribution: %d )'
   BOUNTY:
     PLAYER: PLAYER
     HUNTER: HUNTER

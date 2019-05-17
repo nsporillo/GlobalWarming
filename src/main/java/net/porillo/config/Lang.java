@@ -11,6 +11,12 @@ public enum Lang {
     /**
      * See lang.yml for translations
      */
+    ALERT_SUBSCRIBE(""),
+    ALERT_UNSUBSCRIBE(""),
+    ALERT_TREEREDUCE(""),
+    ALERT_TREEREDUCEBONEMEAL(""),
+    ALERT_BURNCONTRIB(""),
+    ALERT_FARMCONTRIB(""),
     BOUNTY_PLAYER(""),
     BOUNTY_HUNTER(""),
     BOUNTY_BLOCKS(""),

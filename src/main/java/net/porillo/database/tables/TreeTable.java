@@ -9,7 +9,6 @@ import net.porillo.objects.Tree;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class TreeTable extends TrackedBlockTable implements SelectCallback<Tree> {
@@ -21,7 +20,7 @@ public class TreeTable extends TrackedBlockTable implements SelectCallback<Tree>
     }
 
     @Override
-    public void onSelectionCompletion(List<Tree> returnList) throws SQLException {
+    public void onSelectionCompletion(List<Tree> returnList) {
         if (GlobalWarming.getInstance() != null) {
             new BukkitRunnable() {
                 @Override

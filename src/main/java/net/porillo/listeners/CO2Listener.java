@@ -1,13 +1,13 @@
 package net.porillo.listeners;
 
 import net.porillo.GlobalWarming;
+import net.porillo.config.Lang;
 import net.porillo.database.queries.insert.ContributionInsertQuery;
 import net.porillo.database.queries.insert.FurnaceInsertQuery;
 import net.porillo.database.queries.insert.ReductionInsertQuery;
 import net.porillo.database.queries.insert.TreeInsertQuery;
 import net.porillo.database.queries.update.PlayerUpdateQuery;
 import net.porillo.database.queries.update.TreeUpdateQuery;
-import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.PlayerTable;
@@ -15,7 +15,9 @@ import net.porillo.database.tables.TreeTable;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.*;
+import net.porillo.util.AlertManager;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -39,17 +41,18 @@ public class CO2Listener implements Listener {
 	 *
 	 * @param event furnace burn
 	 */
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onFurnaceSmelt(FurnaceBurnEvent event) {
 		//Ignore if the block's world-climate is disabled:
 		UUID worldId = event.getBlock().getWorld().getUID();
 		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
-		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
+		if (eventClimateEngine == null || !eventClimateEngine.isEnabled() || event.isCancelled()) {
 			return;
 		}
 
 		//Setup:
 		Location location = event.getBlock().getLocation();
+		Material furnaceType = event.getBlock().getType();
 		FurnaceTable furnaceTable = GlobalWarming.getInstance().getTableManager().getFurnaceTable();
 		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
 		Furnace furnace = null;
@@ -102,12 +105,17 @@ public class CO2Listener implements Listener {
 		if (affectedClimateEngine != null && affectedClimateEngine.isEnabled()) {
 			//Carbon contribution record:
 			int contributionValue = 0;
-			Contribution contribution = eventClimateEngine.furnaceBurn(furnace, event.getFuel());
+			Contribution contribution = eventClimateEngine.furnaceBurn(furnace, furnaceType, event.getFuel());
 			if (contribution != null) {
 				//Queue an insert into the contributions table:
 				ContributionInsertQuery insertQuery = new ContributionInsertQuery(contribution);
 				AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
 				contributionValue = contribution.getContributionValue();
+
+				// Execute real time player notification if they're subscribed with /gw score alerts
+				AlertManager.getInstance().alert(polluter,
+						String.format(Lang.ALERT_BURNCONTRIB.get(), event.getFuel().getType().name().toLowerCase(),
+								contribution.getContributionValue()));
 			}
 
 			//Polluter carbon scores:
@@ -122,7 +130,7 @@ public class CO2Listener implements Listener {
 			}
 
 			//Update the affected world's carbon levels:
-			updateWorldCarbonValue(affectedWorldId, contributionValue);
+			GlobalWarming.getInstance().getTableManager().getWorldTable().updateWorldCarbonValue(affectedWorldId, contributionValue);
 
 			//Update the scoreboard:
 			gw.getScoreboard().update(polluter);
@@ -136,14 +144,15 @@ public class CO2Listener implements Listener {
 	 *
 	 * @param event structure grow event (tree grow)
 	 */
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
 		//Ignore if the location's world-climate is disabled:
 		UUID worldId = event.getLocation().getWorld().getUID();
 		WorldClimateEngine eventClimateEngine = ClimateEngine.getInstance().getClimateEngine(worldId);
-		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
+		if (eventClimateEngine == null || !eventClimateEngine.isEnabled() || event.isCancelled()) {
 			return;
 		}
+
 
 		//Setup:
 		Location location = event.getLocation();
@@ -203,7 +212,7 @@ public class CO2Listener implements Listener {
 		WorldClimateEngine affectedClimateEngine = ClimateEngine.getInstance().getClimateEngine(affectedWorldId);
 		if (affectedClimateEngine != null && affectedClimateEngine.isEnabled()) {
 			//Carbon reduction record:
-			Reduction reduction = eventClimateEngine.treeGrow(tree, event.getSpecies(), event.getBlocks());
+			Reduction reduction = eventClimateEngine.treeGrow(tree, event.getBlocks(), event.isFromBonemeal());
 
 			//Queue an insert into the contributions table:
 			ReductionInsertQuery insertQuery = new ReductionInsertQuery(reduction);
@@ -230,23 +239,22 @@ public class CO2Listener implements Listener {
 				AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
 			}
 
+			// Execute real time player notification if they're subscribed with /gw score alerts
+			if (event.isFromBonemeal()) {
+				AlertManager.getInstance().alert(planter,
+						String.format(Lang.ALERT_TREEREDUCE.get(),
+								reduction.getNumBlocks(), reduction.getReductionValue()));
+			} else {
+				AlertManager.getInstance().alert(planter,
+						String.format(Lang.ALERT_TREEREDUCEBONEMEAL.get(),
+								reduction.getNumBlocks(), reduction.getReductionValue()));
+			}
+
 			//Update the affected world's carbon levels:
-			updateWorldCarbonValue(affectedWorldId, -reductionValue);
+			GlobalWarming.getInstance().getTableManager().getWorldTable().updateWorldCarbonValue(affectedWorldId, -reductionValue);
 
 			//Update the scoreboard:
 			gw.getScoreboard().update(affectedPlayer);
-		}
-	}
-
-	private void updateWorldCarbonValue(UUID worldId, int value) {
-		GWorld affectedWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(worldId);
-		if (affectedWorld != null) {
-			int carbon = affectedWorld.getCarbonValue();
-			affectedWorld.setCarbonValue(carbon + value);
-
-			//Queue an update to the world table:
-			WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(affectedWorld);
-			AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
 		}
 	}
 

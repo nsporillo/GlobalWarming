@@ -11,8 +11,13 @@ public class ModelTest {
     private static final String world = "world";
 
     @Test
-    public void testContributionModel() {
-        ContributionModel model = new ContributionModel(world);
+    public void testFuelModel() {
+        FuelModel model = new FuelModel(world);
+    }
+
+    @Test
+    public void testMethaneModel() {
+        EntityMethaneModel methaneModel = new EntityMethaneModel(world);
     }
 
     @Test

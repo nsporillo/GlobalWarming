@@ -27,12 +27,13 @@ public class MobSpawningRate extends ListenerClimateEffect {
                     event.setCancelled(true);
 
                     //Spawn an alternative, if available:
-                    if (!distribution.getAlternate().isEmpty()) {
+                    String alternative = distribution.getAlternate();
+                    if (alternative != null && !alternative.isEmpty()) {
                         try {
                             //Spawn:
                             Entity entity = event.getLocation().getWorld().spawn(
                                   event.getLocation(),
-                                  EntityType.fromName(distribution.getAlternate()).getEntityClass());
+                                  EntityType.fromName(alternative).getEntityClass());
 
                             //Make it a baby, if possible (for fun):
                             if (entity instanceof Ageable) {

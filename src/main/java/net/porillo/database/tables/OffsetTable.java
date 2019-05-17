@@ -11,7 +11,6 @@ import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,7 +178,7 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
     }
 
     @Override
-    public void onSelectionCompletion(List<OffsetBounty> returnList) throws SQLException {
+    public void onSelectionCompletion(List<OffsetBounty> returnList) {
         if (GlobalWarming.getInstance() != null) {
             new BukkitRunnable() {
                 @Override
