@@ -64,6 +64,10 @@
                             <shadedPattern>net.porillo.shade.aikar</shadedPattern>
                         </relocation>
                         <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>net.porillo.shade.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
                             <pattern>org.apache</pattern>
                             <shadedPattern>net.porillo.shade.apache</shadedPattern>
                         </relocation>
@@ -140,11 +144,21 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>1.5</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>CodeMC</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
         <repository>
             <id>aikar</id>
