@@ -64,8 +64,8 @@ These are just a sample of the possible effects, these will be configurable and 
 
 
 ## Roadmap
-+ Education Edition support
-+ Incorporate Methane, since CO2 is not the only greenhouse gas that matters.
++ Support for non-spigot platforms.
++ <strike>Incorporate Methane, since CO2 is not the only greenhouse gas that matters.</strike> Done!
 
 ## Related Science of Climate Change
 ### Atmosphere warms with more CO2 because of Greenhouse Effect
