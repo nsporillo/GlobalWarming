@@ -78,7 +78,10 @@ public class GlobalWarming extends JavaPlugin {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			AsyncDBQueue.getInstance().setDemo(true);
+			getLogger().severe("MySQL connection not found.");
+			getLogger().severe("Data won't persist after restarts!");
+			getLogger().severe("Please update config.yml and restart the server.");
 		}
 
 		ClimateEngine.getInstance().loadWorldClimateEngines();
@@ -97,7 +100,10 @@ public class GlobalWarming extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
-		AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
+		if (!AsyncDBQueue.getInstance().isDemo()) {
+			AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
+
+		}
 
 		Metrics metrics = new Metrics(this);
 	}
