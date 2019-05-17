@@ -8,29 +8,29 @@ import org.bukkit.Material;
 
 import java.util.Map;
 
-public class ContributionModel extends Model {
+public class FuelModel extends Model {
 
-    @Getter private Map<Material, Double> contributionMap;
+    @Getter private Map<Material, Double> fuelMap;
 
-    public ContributionModel(String worldName) {
-        super(worldName, "contributionModel.json");
+    public FuelModel(String worldName) {
+        super(worldName, "fuelModel.json");
         this.loadModel();
     }
 
     @Override
     public void loadModel() {
-        this.contributionMap = ClimateEngine.getInstance().getGson()
+        this.fuelMap = ClimateEngine.getInstance().getGson()
               .fromJson(super.getContents(), new TypeToken<Map<Material, Double>>() {
               }.getType());
 
-        if (this.contributionMap == null) {
+        if (this.fuelMap == null) {
             throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));
         }
     }
 
     public double getContribution(Material fuelType) {
-        if (contributionMap.containsKey(fuelType)) {
-            return contributionMap.get(fuelType);
+        if (fuelMap.containsKey(fuelType)) {
+            return fuelMap.get(fuelType);
         } else {
             throw new NullPointerException(String.format("No contribution defined in the model for: [%s]", fuelType.name()));
         }

@@ -2,6 +2,7 @@ enabled: true
 association: world
 carbonSensitivity: LOW
 blastFurnaceMultiplier: 1.2
+methaneTicksLivedModifier: 0.001
 enabledEffects:
     - SEA_LEVEL_RISE
     - ICE_MELT

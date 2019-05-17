@@ -10,6 +10,7 @@ import net.porillo.objects.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,7 +22,8 @@ public class WorldClimateEngine {
 
 	// Models
 	@Getter private ScoreTempModel scoreTempModel;
-	private ContributionModel contributionModel;
+	private FuelModel fuelModel;
+	private EntityMethaneModel methaneModel;
 	private ReductionModel reductionModel;
 	@Getter private EntityFitnessModel entityFitnessModel;
 	@Getter private CarbonIndexModel carbonIndexModel;
@@ -30,12 +32,21 @@ public class WorldClimateEngine {
 		this.config = config;
 
 		// Worlds load their own model file
-		String worldName = Bukkit.getWorld(config.getWorldId()).getName();
-		this.scoreTempModel = new ScoreTempModel(worldName, config.getSensitivity());
-		this.contributionModel = new ContributionModel(worldName);
-		this.reductionModel = new ReductionModel(worldName);
-		this.entityFitnessModel = new EntityFitnessModel(worldName);
-		this.carbonIndexModel = new CarbonIndexModel(worldName);
+		World world = Bukkit.getWorld(config.getWorldId());
+
+		if (world != null) {
+			String worldName = Bukkit.getWorld(config.getWorldId()).getName();
+			this.scoreTempModel = new ScoreTempModel(worldName, config.getSensitivity());
+			this.fuelModel = new FuelModel(worldName);
+			this.methaneModel = new EntityMethaneModel(worldName);
+			this.reductionModel = new ReductionModel(worldName);
+			this.entityFitnessModel = new EntityFitnessModel(worldName);
+			this.carbonIndexModel = new CarbonIndexModel(worldName);
+		} else {
+			GlobalWarming.getInstance().getLogger().warning(
+					String.format("Could not load climate engine for world id [%s]", config.getWorldId()));
+		}
+
 	}
 
 	public Reduction treeGrow(Tree tree, TreeType treeType, List<BlockState> blocks) {
@@ -67,13 +78,33 @@ public class WorldClimateEngine {
 			contribution.setWorldId(config.getWorldId());
 			contribution.setContributer(furnace.getOwnerId());
 			contribution.setContributionKey(furnace.getUniqueId());
-			double contribValue = contributionModel.getContribution(fuel.getType());
+			double contribValue = fuelModel.getContribution(fuel.getType());
 			if (furnaceType == Material.BLAST_FURNACE) {
 				contribValue *= config.getBlastFurnaceMultiplier();
 			}
 			contribution.setContributionValue((int) contribValue);
 		}
 
+		return contribution;
+	}
+
+	public Contribution methaneRelease(TrackedEntity entity) {
+		Contribution contribution = null;
+		if (entity == null) {
+			GlobalWarming.getInstance().getLogger().severe("Entity null!");
+		} else {
+			Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
+			contribution = new Contribution();
+			contribution.setUniqueID(uniqueId);
+			contribution.setWorldId(config.getWorldId());
+			contribution.setContributer(entity.getBreederId());
+			contribution.setContributionKey(entity.getUniqueId());
+
+			double contribValue = methaneModel.getContribution(entity.getEntityType());
+			double modifier = config.getMethaneTicksLivedModifier();
+			contribValue += (int)(entity.getTicksLived()/20/60 * modifier);
+			contribution.setContributionValue((int) contribValue);
+		}
 		return contribution;
 	}
 

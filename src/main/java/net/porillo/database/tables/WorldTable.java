@@ -5,6 +5,7 @@ import net.porillo.config.WorldConfig;
 import net.porillo.database.api.SelectCallback;
 import net.porillo.database.queries.insert.WorldInsertQuery;
 import net.porillo.database.queries.select.WorldSelectQuery;
+import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.GWorld;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -54,6 +55,19 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
         GlobalWarming.getInstance().getLogger().info(String.format(
               "Record created for world: [%s]",
               WorldConfig.getDisplayName(worldId)));
+    }
+
+    public void updateWorldCarbonValue(UUID worldId, int value) {
+        GWorld affectedWorld = this.getWorld(worldId);
+
+        if (affectedWorld != null) {
+            int carbon = affectedWorld.getCarbonValue();
+            affectedWorld.setCarbonValue(carbon + value);
+
+            //Queue an update to the world table:
+            WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(affectedWorld);
+            AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
+        }
     }
 
     @Override

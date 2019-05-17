@@ -7,7 +7,6 @@ import net.porillo.database.queries.insert.ReductionInsertQuery;
 import net.porillo.database.queries.insert.TreeInsertQuery;
 import net.porillo.database.queries.update.PlayerUpdateQuery;
 import net.porillo.database.queries.update.TreeUpdateQuery;
-import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.FurnaceTable;
 import net.porillo.database.tables.PlayerTable;
@@ -124,7 +123,7 @@ public class CO2Listener implements Listener {
 			}
 
 			//Update the affected world's carbon levels:
-			updateWorldCarbonValue(affectedWorldId, contributionValue);
+			GlobalWarming.getInstance().getTableManager().getWorldTable().updateWorldCarbonValue(affectedWorldId, contributionValue);
 
 			//Update the scoreboard:
 			gw.getScoreboard().update(polluter);
@@ -146,6 +145,7 @@ public class CO2Listener implements Listener {
 		if (eventClimateEngine == null || !eventClimateEngine.isEnabled()) {
 			return;
 		}
+
 
 		//Setup:
 		Location location = event.getLocation();
@@ -233,22 +233,10 @@ public class CO2Listener implements Listener {
 			}
 
 			//Update the affected world's carbon levels:
-			updateWorldCarbonValue(affectedWorldId, -reductionValue);
+			GlobalWarming.getInstance().getTableManager().getWorldTable().updateWorldCarbonValue(affectedWorldId, -reductionValue);
 
 			//Update the scoreboard:
 			gw.getScoreboard().update(affectedPlayer);
-		}
-	}
-
-	private void updateWorldCarbonValue(UUID worldId, int value) {
-		GWorld affectedWorld = GlobalWarming.getInstance().getTableManager().getWorldTable().getWorld(worldId);
-		if (affectedWorld != null) {
-			int carbon = affectedWorld.getCarbonValue();
-			affectedWorld.setCarbonValue(carbon + value);
-
-			//Queue an update to the world table:
-			WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(affectedWorld);
-			AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
 		}
 	}
 
