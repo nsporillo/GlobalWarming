@@ -1,6 +1,7 @@
 package net.porillo.listeners;
 
 import net.porillo.GlobalWarming;
+import net.porillo.config.Lang;
 import net.porillo.database.queries.insert.ContributionInsertQuery;
 import net.porillo.database.queries.insert.EntityInsertQuery;
 import net.porillo.database.queries.update.PlayerUpdateQuery;
@@ -12,6 +13,7 @@ import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.Contribution;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.TrackedEntity;
+import net.porillo.util.AlertManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -97,6 +99,11 @@ public class CH4Listener implements Listener {
                 ContributionInsertQuery insertQuery = new ContributionInsertQuery(contribution);
                 AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
                 contributionValue = contribution.getContributionValue();
+
+                // Execute real time player notification if they're subscribed with /gw score alerts
+                AlertManager.getInstance().alert(polluter,
+                        String.format(Lang.ALERT_FARMCONTRIB.get(),
+                                entity.getEntityType().name().toLowerCase(), contribution.getContributionValue()));
             }
 
             //Polluter carbon scores:

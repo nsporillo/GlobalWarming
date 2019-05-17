@@ -50,15 +50,24 @@ public class WorldClimateEngine {
 
 	public Reduction treeGrow(Tree tree, List<BlockState> blocks, boolean bonemealUsed) {
 		int reductionValue = 0;
+		int numBlocks = 0;
 		if (bonemealUsed && !config.isBonemealReductionAllowed()) {
 			return null;
 		} else if (bonemealUsed) {
 			for (BlockState bs : blocks) {
-				reductionValue += (config.getBonemealReductionModifier() * reductionModel.getReduction(bs.getType()));
+				double reduction = reductionModel.getReduction(bs.getType());
+				if (reduction > 0.0) {
+					reductionValue += (config.getBonemealReductionModifier() * reduction);
+					numBlocks++;
+				}
 			}
 		} else {
 			for (BlockState bs : blocks) {
-				reductionValue += reductionModel.getReduction(bs.getType());
+				double reduction = reductionModel.getReduction(bs.getType());
+				if (reduction > 0.0) {
+					reductionValue += reduction;
+					numBlocks++;
+				}
 			}
 		}
 
@@ -69,6 +78,7 @@ public class WorldClimateEngine {
 		reduction.setReductioner(tree.getOwnerId());
 		reduction.setReductionKey(tree.getUniqueId());
 		reduction.setReductionValue(reductionValue);
+		reduction.setNumBlocks(numBlocks);
 		return reduction;
 	}
 

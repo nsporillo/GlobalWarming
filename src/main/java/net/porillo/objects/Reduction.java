@@ -37,6 +37,11 @@ public class Reduction {
      */
     private Integer reductionValue;
 
+    /**
+     * Number of blocks in the tree growth, if this reduction is a tree growth
+     */
+    private Integer numBlocks;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

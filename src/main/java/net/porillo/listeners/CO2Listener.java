@@ -1,6 +1,7 @@
 package net.porillo.listeners;
 
 import net.porillo.GlobalWarming;
+import net.porillo.config.Lang;
 import net.porillo.database.queries.insert.ContributionInsertQuery;
 import net.porillo.database.queries.insert.FurnaceInsertQuery;
 import net.porillo.database.queries.insert.ReductionInsertQuery;
@@ -14,6 +15,7 @@ import net.porillo.database.tables.TreeTable;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.*;
+import net.porillo.util.AlertManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -109,6 +111,11 @@ public class CO2Listener implements Listener {
 				ContributionInsertQuery insertQuery = new ContributionInsertQuery(contribution);
 				AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);
 				contributionValue = contribution.getContributionValue();
+
+				// Execute real time player notification if they're subscribed with /gw score alerts
+				AlertManager.getInstance().alert(polluter,
+						String.format(Lang.ALERT_BURNCONTRIB.get(), event.getFuel().getType().name().toLowerCase(),
+								contribution.getContributionValue()));
 			}
 
 			//Polluter carbon scores:
@@ -230,6 +237,17 @@ public class CO2Listener implements Listener {
 				//Queue an update to the player table:
 				PlayerUpdateQuery updateQuery = new PlayerUpdateQuery(affectedPlayer);
 				AsyncDBQueue.getInstance().queueUpdateQuery(updateQuery);
+			}
+
+			// Execute real time player notification if they're subscribed with /gw score alerts
+			if (event.isFromBonemeal()) {
+				AlertManager.getInstance().alert(planter,
+						String.format(Lang.ALERT_TREEREDUCE.get(),
+								reduction.getNumBlocks(), reduction.getReductionValue()));
+			} else {
+				AlertManager.getInstance().alert(planter,
+						String.format(Lang.ALERT_TREEREDUCEBONEMEAL.get(),
+								reduction.getNumBlocks(), reduction.getReductionValue()));
 			}
 
 			//Update the affected world's carbon levels:
