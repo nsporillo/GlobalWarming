@@ -9,7 +9,6 @@ import net.porillo.engine.models.*;
 import net.porillo.objects.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
@@ -49,10 +48,18 @@ public class WorldClimateEngine {
 
 	}
 
-	public Reduction treeGrow(Tree tree, TreeType treeType, List<BlockState> blocks) {
+	public Reduction treeGrow(Tree tree, List<BlockState> blocks, boolean bonemealUsed) {
 		int reductionValue = 0;
-		for (BlockState bs : blocks) {
-			reductionValue += reductionModel.getReduction(bs.getType());
+		if (bonemealUsed && !config.isBonemealReductionAllowed()) {
+			return null;
+		} else if (bonemealUsed) {
+			for (BlockState bs : blocks) {
+				reductionValue += (config.getBonemealReductionModifier() * reductionModel.getReduction(bs.getType()));
+			}
+		} else {
+			for (BlockState bs : blocks) {
+				reductionValue += reductionModel.getReduction(bs.getType());
+			}
 		}
 
 		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);

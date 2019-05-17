@@ -205,7 +205,7 @@ public class CO2Listener implements Listener {
 		WorldClimateEngine affectedClimateEngine = ClimateEngine.getInstance().getClimateEngine(affectedWorldId);
 		if (affectedClimateEngine != null && affectedClimateEngine.isEnabled()) {
 			//Carbon reduction record:
-			Reduction reduction = eventClimateEngine.treeGrow(tree, event.getSpecies(), event.getBlocks());
+			Reduction reduction = eventClimateEngine.treeGrow(tree, event.getBlocks(), event.isFromBonemeal());
 
 			//Queue an insert into the contributions table:
 			ReductionInsertQuery insertQuery = new ReductionInsertQuery(reduction);
