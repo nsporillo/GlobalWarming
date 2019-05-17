@@ -19,12 +19,19 @@ public class WorldConfig extends ConfigLoader {
     @Getter private Set<ClimateEffectType> enabledEffects;
     @Getter private UUID associatedWorldId;
     @Getter private CarbonSensitivity sensitivity;
+    @Getter private double methaneTicksLivedModifier;
+    @Getter private boolean bonemealReductionAllowed;
+    @Getter private double bonemealReductionModifier;
 
     public WorldConfig(UUID worldId) {
         super(String.format("%s.yml", Bukkit.getWorld(worldId).getName()), "world.yml");
         super.saveIfNotExist();
         this.worldId = worldId;
         super.load();
+    }
+
+    public String getName() {
+        return super.getFileName().substring(0, super.getFileName().indexOf("."));
     }
 
     @Override
@@ -46,6 +53,10 @@ public class WorldConfig extends ConfigLoader {
         this.enabled = this.conf.getBoolean("enabled");
         this.associatedWorldId = Bukkit.getWorld(this.conf.getString("association")).getUID();
         this.enabledEffects = new HashSet<>();
+        this.methaneTicksLivedModifier = this.conf.getDouble("methaneTicksLivedModifier", 0.01);
+        this.bonemealReductionAllowed = this.conf.getBoolean("bonemealReductionAllowed", true);
+        this.bonemealReductionModifier = this.conf.getDouble("bonemealReductionModifier", 0.5);
+
         for (String effect : this.conf.getStringList("enabledEffects")) {
             try {
                 this.enabledEffects.add(ClimateEffectType.valueOf(effect));

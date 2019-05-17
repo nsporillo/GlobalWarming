@@ -9,7 +9,6 @@ import net.porillo.objects.Furnace;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class FurnaceTable extends TrackedBlockTable implements SelectCallback<Furnace> {
@@ -23,7 +22,7 @@ public class FurnaceTable extends TrackedBlockTable implements SelectCallback<Fu
     }
 
     @Override
-    public void onSelectionCompletion(List<Furnace> returnList) throws SQLException {
+    public void onSelectionCompletion(List<Furnace> returnList) {
         if (GlobalWarming.getInstance() != null) {
             new BukkitRunnable() {
                 @Override

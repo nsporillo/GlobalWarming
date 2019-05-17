@@ -41,6 +41,12 @@ public class ClimateEngine {
             //Engine status notification:
             final UUID worldId = config.getWorldId();
             final World world = Bukkit.getWorld(worldId);
+
+            if (world == null) {
+                GlobalWarming.getInstance().getLogger().warning(String.format("Failed to load config for: [%s]", config.getName()));
+                continue;
+            }
+
             if (config.isEnabled()) {
                 GlobalWarming.getInstance().getLogger().info(String.format("Loading climate engine for: [%s]", world.getName()));
             } else {

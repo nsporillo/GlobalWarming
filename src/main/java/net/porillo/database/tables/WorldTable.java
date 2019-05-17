@@ -5,11 +5,11 @@ import net.porillo.config.WorldConfig;
 import net.porillo.database.api.SelectCallback;
 import net.porillo.database.queries.insert.WorldInsertQuery;
 import net.porillo.database.queries.select.WorldSelectQuery;
+import net.porillo.database.queries.update.WorldUpdateQuery;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.objects.GWorld;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +57,21 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
               WorldConfig.getDisplayName(worldId)));
     }
 
+    public void updateWorldCarbonValue(UUID worldId, int value) {
+        GWorld affectedWorld = this.getWorld(worldId);
+
+        if (affectedWorld != null) {
+            int carbon = affectedWorld.getCarbonValue();
+            affectedWorld.setCarbonValue(carbon + value);
+
+            //Queue an update to the world table:
+            WorldUpdateQuery worldUpdateQuery = new WorldUpdateQuery(affectedWorld);
+            AsyncDBQueue.getInstance().queueUpdateQuery(worldUpdateQuery);
+        }
+    }
+
     @Override
-    public void onSelectionCompletion(List<GWorld> returnList) throws SQLException {
+    public void onSelectionCompletion(List<GWorld> returnList) {
         if (GlobalWarming.getInstance() != null) {
             new BukkitRunnable() {
                 @Override

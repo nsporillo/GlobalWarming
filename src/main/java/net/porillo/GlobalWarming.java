@@ -15,10 +15,7 @@ import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.EffectEngine;
 import net.porillo.engine.ClimateEngine;
-import net.porillo.listeners.AttributionListener;
-import net.porillo.listeners.CO2Listener;
-import net.porillo.listeners.PlayerListener;
-import net.porillo.listeners.WorldListener;
+import net.porillo.listeners.*;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
 import net.porillo.util.CO2Notifications;
@@ -31,7 +28,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
-import java.util.*;
+import java.util.Random;
 
 public class GlobalWarming extends JavaPlugin {
 
@@ -95,6 +92,7 @@ public class GlobalWarming extends JavaPlugin {
 
 		Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
+		Bukkit.getPluginManager().registerEvents(new CH4Listener(this), this);
 		Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
