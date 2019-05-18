@@ -32,14 +32,14 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
             return worldMap.get(worldId);
         }
 
-        return null;
+        return insertNewWorld(worldId);
     }
 
     private void updateWorld(GWorld gWorld) {
         worldMap.put(gWorld.getWorldId(), gWorld);
     }
 
-    public void insertNewWorld(UUID worldId) {
+    public GWorld insertNewWorld(UUID worldId) {
         GWorld gWorld = new GWorld();
         gWorld.setUniqueID(GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE));
         gWorld.setWorldId(worldId);
@@ -55,6 +55,7 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
         GlobalWarming.getInstance().getLogger().info(String.format(
               "Record created for world: [%s]",
               WorldConfig.getDisplayName(worldId)));
+        return gWorld;
     }
 
     public void updateWorldCarbonValue(UUID worldId, int value) {

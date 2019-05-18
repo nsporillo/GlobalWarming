@@ -25,6 +25,7 @@ public class AlertManager {
     }
 
     public void alert(GPlayer player, String message) {
+        if (player == null) return;
         if (subscribers.contains(player.getUuid())) {
             player.sendMsg(message);
         }
