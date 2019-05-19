@@ -58,7 +58,6 @@ public abstract class Model {
 
     private void createIfNotExists() {
         Path path = getPath();
-        System.out.println(path.toString());
         if (!Files.exists(path)) {
             GlobalWarming.getInstance().getLogger().info(String.format(
                   "Model: [%s] does not exist at: [%s], creating.",
