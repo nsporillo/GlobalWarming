@@ -54,11 +54,16 @@ public class WorldConfig extends ConfigLoader {
         String association = this.conf.getString("association", "world");
 
         if (association != null) {
-            World associatedWorld = Bukkit.getWorld(association);
+            try {
+                World associatedWorld = Bukkit.getWorld(association);
 
-            if (associatedWorld != null) {
-                this.associatedWorldId = associatedWorld.getUID();
-            } else {
+                if (associatedWorld != null) {
+                    this.associatedWorldId = associatedWorld.getUID();
+                } else {
+                    GlobalWarming.getInstance().getLogger().severe("Associated world not found in file: " + getDisplayName(worldId));
+                    this.associatedWorldId = worldId;
+                }
+            } catch (NullPointerException ex) {
                 GlobalWarming.getInstance().getLogger().severe("Associated world not found in file: " + getDisplayName(worldId));
                 this.associatedWorldId = worldId;
             }
