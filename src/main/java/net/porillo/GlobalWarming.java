@@ -106,6 +106,8 @@ public class GlobalWarming extends JavaPlugin {
 		}
 
 		Metrics metrics = new Metrics(this);
+		metrics.addCustomChart(new Metrics.SimplePie("demo",
+				() -> String.valueOf(AsyncDBQueue.getInstance().isDemo())));
 	}
 
 	@Override
