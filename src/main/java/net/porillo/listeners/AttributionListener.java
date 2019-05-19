@@ -36,7 +36,7 @@ public class AttributionListener implements Listener {
         Material bType = event.getBlockPlaced().getType();
 
         //Ignore blocks that aren't furnaces or saplings:
-        if ((bType != Material.FURNACE) && !bType.name().endsWith("SAPLING")) {
+        if ((bType != Material.FURNACE && bType != Material.BLAST_FURNACE && bType != Material.SMOKER) && !bType.name().endsWith("SAPLING")) {
             return;
         }
 
@@ -52,7 +52,7 @@ public class AttributionListener implements Listener {
         Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 
         //Block handlers:
-        if (bType == Material.FURNACE) {
+        if (bType == Material.FURNACE || bType == Material.BLAST_FURNACE || bType == Material.SMOKER) {
             //Furnaces:
             FurnaceTable furnaceTable = gw.getTableManager().getFurnaceTable();
             Furnace furnace = new Furnace(uniqueId, player.getUniqueId(), location, true);
@@ -104,7 +104,7 @@ public class AttributionListener implements Listener {
         Material bType = event.getBlock().getType();
 
         //Ignore blocks that aren't furnaces or saplings:
-        if ((bType != Material.FURNACE) && !bType.name().endsWith("SAPLING")) {
+        if ((bType != Material.FURNACE && bType != Material.BLAST_FURNACE && bType != Material.SMOKER) && !bType.name().endsWith("SAPLING")) {
             return;
         }
 
@@ -115,7 +115,7 @@ public class AttributionListener implements Listener {
 
         //Delete tracked records:
         Location location = event.getBlock().getLocation();
-        if (bType == Material.FURNACE) {
+        if (bType == Material.FURNACE || bType == Material.BLAST_FURNACE || bType == Material.SMOKER) {
             //Furnace destroyed:
             // - Any "contribution" records based on a deleted furnace will
             //   no longer be able to look it up (this is OK, just be aware)
