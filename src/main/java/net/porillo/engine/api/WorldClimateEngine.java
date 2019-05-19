@@ -96,9 +96,6 @@ public class WorldClimateEngine {
 			contribution.setContributer(furnace.getOwnerId());
 			contribution.setContributionKey(furnace.getUniqueId());
 			double contribValue = fuelModel.getContribution(fuel.getType());
-			if (furnaceType == Material.BLAST_FURNACE) {
-				contribValue *= config.getBlastFurnaceMultiplier();
-			}
 			contribution.setContributionValue((int) contribValue);
 		}
 

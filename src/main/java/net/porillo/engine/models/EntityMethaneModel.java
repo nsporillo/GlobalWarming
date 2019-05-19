@@ -1,5 +1,6 @@
 package net.porillo.engine.models;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import net.porillo.GlobalWarming;
@@ -20,10 +21,17 @@ public class EntityMethaneModel extends Model {
 
     @Override
     public void loadModel() {
-        this.entityMethaneMap = ClimateEngine.getInstance().getGson().fromJson(
-              super.getContents(),
-              new TypeToken<Map<EntityType, Double>>() {
-              }.getType());
+        try {
+            this.entityMethaneMap = ClimateEngine.getInstance().getGson().fromJson(
+                    super.getContents(),
+                    new TypeToken<Map<EntityType, Double>>() {
+                    }.getType());
+        } catch (JsonSyntaxException ex) {
+            ex.printStackTrace();
+            GlobalWarming.getInstance().getLogger().severe("Error loading model file: " + super.getPath());
+            GlobalWarming.getInstance().getLogger().severe("Could not load into the expected <EntityType, MobDistribution> mapping.");
+            GlobalWarming.getInstance().getLogger().severe("Please check the formatting and verify the types are correct.");
+        }
 
         if (this.entityMethaneMap == null) {
             throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));

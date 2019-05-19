@@ -27,7 +27,7 @@ public class EntityInsertQuery extends InsertQuery {
         preparedStatement.setInt(1, entity.getUniqueId());
         preparedStatement.setString(2, entity.getUuid().toString());
         preparedStatement.setInt(3, entity.getBreederId());
-        preparedStatement.setString(4, entity.getEntityType().getKey().getKey());
+        preparedStatement.setString(4, entity.getEntityType().name());
         preparedStatement.setLong(5, entity.getTicksLived());
         preparedStatement.setBoolean(6, entity.isAlive());
         return preparedStatement;
