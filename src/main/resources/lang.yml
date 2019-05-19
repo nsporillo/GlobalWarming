@@ -104,14 +104,15 @@ lang:
     LORE: §8Gameplay and instructions
     INTRODUCTION: |
       §0GOAL:§8
-      Prevent global warming by offsetting furnace emissions
+      Prevent global warming by balancing GreenHouse Gases
 
       §0GAMEPLAY:§8
        - §6Furnaces§8 emit CO2 when smelting
        - §6Saplings§8 absorb CO2 while growing
+       - §6Farmed animals§8 emit CH4 when killed
 
       §0CHALLENGE:§8
-      Work together to maintain CO2 levels
+      Work together to maintain GHG levels
     SCORES: |
       §0PLAYER SCORES:§8
       Each player has a carbon footprint score
