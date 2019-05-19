@@ -51,7 +51,15 @@ public class WorldConfig extends ConfigLoader {
         }
 
         this.enabled = this.conf.getBoolean("enabled");
-        this.associatedWorldId = Bukkit.getWorld(this.conf.getString("association")).getUID();
+        World associatedWorld = Bukkit.getWorld(this.conf.getString("association"));
+
+        if (associatedWorld != null) {
+            this.associatedWorldId = associatedWorld.getUID();
+        } else {
+            GlobalWarming.getInstance().getLogger().severe("Associated world not found in file: " + getDisplayName(worldId));
+            this.associatedWorldId = worldId;
+        }
+
         this.enabledEffects = new HashSet<>();
         this.methaneTicksLivedModifier = this.conf.getDouble("methaneTicksLivedModifier", 0.01);
         this.bonemealReductionAllowed = this.conf.getBoolean("bonemealReductionAllowed", true);
