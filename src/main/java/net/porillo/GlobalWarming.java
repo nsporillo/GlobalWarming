@@ -104,7 +104,6 @@ public class GlobalWarming extends JavaPlugin {
 
 		if (!AsyncDBQueue.getInstance().isDemo()) {
 			AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
-
 		}
 
 		Metrics metrics = new Metrics(this);

@@ -28,14 +28,9 @@ import static org.bukkit.ChatColor.*;
 
 @CommandAlias("gw")
 public class GeneralCommands extends BaseCommand {
-    private static final long SPAM_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getSpamInterval();
-    private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
-    private List<UUID> playerRequestList;
 
-    public GeneralCommands() {
-        playerRequestList = new ArrayList<>();
-        debounceRequests();
-    }
+    private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
+    private Map<UUID, Long> playerSpamTime = new HashMap<>();
 
     @HelpCommand
     public void onHelp(GPlayer gPlayer, CommandHelp help) {
@@ -182,7 +177,6 @@ public class GeneralCommands extends BaseCommand {
 
         @Subcommand("hide")
         @Description("Hide the scoreboard")
-        @Syntax("")
         @CommandPermission("globalwarming.score.hide")
         public void onHide(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
@@ -246,6 +240,7 @@ public class GeneralCommands extends BaseCommand {
             gPlayer.sendMsg(Lang.ENGINE_DISABLED);
         } else {
             isCommandAllowed = true;
+            playerSpamTime.put(gPlayer.getUuid(), System.currentTimeMillis());
         }
 
         return isCommandAllowed;
@@ -257,30 +252,13 @@ public class GeneralCommands extends BaseCommand {
      * - The player-request list is cleared periodically
      */
     private boolean isSpamming(GPlayer gPlayer) {
-        boolean isSpamming = true;
-        if (gPlayer != null) {
-            synchronized (this) {
-                if (!playerRequestList.contains(gPlayer.getUuid())) {
-                    playerRequestList.add(gPlayer.getUuid());
-                    isSpamming = false;
-                }
-            }
+        if (playerSpamTime.containsKey(gPlayer.getUuid())) {
+            Long lastCmd = playerSpamTime.get(gPlayer.getUuid());
+            return System.currentTimeMillis() - lastCmd <= GlobalWarming.getInstance().getConf().getSpamInterval() * 50;
+        } else {
+            playerSpamTime.put(gPlayer.getUuid(), System.currentTimeMillis());
+            return false;
         }
-
-        return isSpamming;
-    }
-
-    /**
-     * Clear the spam list periodically
-     */
-    private void debounceRequests() {
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
-              GlobalWarming.getInstance(),
-              () -> {
-                  synchronized (this) {
-                      playerRequestList.clear();
-                  }
-              }, 0L, SPAM_INTERVAL_TICKS);
     }
 
     /**
@@ -311,11 +289,11 @@ public class GeneralCommands extends BaseCommand {
      * - Maximum of two decimal places
      */
     private static String formatTemperature(double temperature) {
-        ChatColor color = getTemperatureColor(temperature);
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        String format = GlobalWarming.getInstance().getConf().getTemperatureFormat();
+        DecimalFormat decimalFormat = new DecimalFormat(format);
         return String.format("%s%s",
-              color,
-              decimalFormat.format(temperature));
+                getTemperatureColor(temperature),
+                decimalFormat.format(temperature));
     }
 
     /**

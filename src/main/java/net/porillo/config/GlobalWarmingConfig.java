@@ -17,6 +17,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	@Getter private int notificationInterval;
 	@Getter private int notificationDuration;
 	@Getter private int scoreboardInterval;
+	@Getter private String temperatureFormat;
 
 	public GlobalWarmingConfig() {
 		super("config.yml");
@@ -42,6 +43,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		this.notificationDuration = conf.getInt("notification.duration", 300);
 
 		this.scoreboardInterval = conf.getInt("scoreboard.interval", 20);
+		this.temperatureFormat = conf.getString("temperature.format", "#.##");
 	}
 
 	public ConnectionManager makeConnectionManager() {
