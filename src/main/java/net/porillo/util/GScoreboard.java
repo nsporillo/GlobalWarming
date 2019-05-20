@@ -74,8 +74,8 @@ public class GScoreboard {
                 //Objective (scoreboard title / group):
                 Objective objective = scoreboard.registerNewObjective(
                       GLOBAL_WARMING,
-                      "dummy",
-                      "[TITLE]");
+                      "scores",
+                      "Carbon Score");
 
                 objective.setDisplaySlot(DisplaySlot.SIDEBAR);
             }
@@ -100,7 +100,7 @@ public class GScoreboard {
                 Scoreboard scoreboard = getScoreboard(gPlayer);
                 onlinePlayer.setScoreboard(scoreboard);
                 Team team = scoreboard.registerNewTeam(onlinePlayer.getName());
-                team.addPlayer(onlinePlayer);
+                team.addEntry(onlinePlayer.getName());
                 update(gPlayer);
             }
         }
@@ -119,17 +119,17 @@ public class GScoreboard {
         if (scoreboard != null) {
             //Remove the team (i.e., player-color)
             OfflinePlayer player = Bukkit.getOfflinePlayer(gPlayer.getUuid());
-            Team team = scoreboard.getPlayerTeam(player);
+            Team team = scoreboard.getTeam(player.getName());
             if (team != null) {
-                team.removePlayer(player);
+                team.removeEntry(player.getName());
                 team.unregister();
             }
 
             //Remove the player's score:
-            scoreboard.resetScores(player);
+            scoreboard.resetScores(player.getName());
 
             //Delete unused scoreboards:
-            if (scoreboard.getPlayers().size() == 0) {
+            if (scoreboard.getEntries().size() == 0) {
                 scoreboards.remove(associatedWorldId);
             }
         }
@@ -184,7 +184,8 @@ public class GScoreboard {
                 //Update the title to show this world's temperature:
                 if (objective != null) {
                     double temperature = climateEngine.getTemperature();
-                    DecimalFormat decimalFormat = new DecimalFormat("#.##");
+                    String format = GlobalWarming.getInstance().getConf().getTemperatureFormat();
+                    DecimalFormat decimalFormat = new DecimalFormat(format);
                     objective.setDisplayName(String.format(
                           Lang.SCORE_TEMPERATURE.get(),
                           GeneralCommands.getTemperatureColor(temperature),
