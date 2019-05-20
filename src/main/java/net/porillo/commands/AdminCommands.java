@@ -17,14 +17,14 @@ import net.porillo.objects.GWorld;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-@CommandAlias("globalwarming|gw")
+@CommandAlias("gw")
 public class AdminCommands extends BaseCommand {
 
     @Subcommand("debug")
     @CommandPermission("globalwarming.admin.debug")
     public class DebugCommands extends BaseCommand {
 
-        @Subcommand("database|db")
+        @Subcommand("db")
         @Description("Toggles database console logging")
         public void onDatabaseDebug(GPlayer gPlayer, String[] args) {
             boolean value = AsyncDBQueue.getInstance().isDebug();
@@ -46,7 +46,7 @@ public class AdminCommands extends BaseCommand {
          * Set the temperature to activate / deactivate climate-effects
          * including sea-level, farm yields, slowness and more
          */
-        @Subcommand("temperature")
+        @Subcommand("temp")
         @Description("Set the temperature for the current world")
         @Syntax("[celsius]")
         public void onTemperature(GPlayer gPlayer, String[] args) {
@@ -69,7 +69,7 @@ public class AdminCommands extends BaseCommand {
          * Use this to force the sea to reset (i.e., server-reloads will lose block-meta data)
          * - WARNING: affects *all* water above sea level to the max config height
          */
-        @Subcommand("sea")
+        @Subcommand("")
         @Description("After a reload, sea-meta-data is lost, this deletes loaded water above sea level to the max config height")
         @Syntax("[repair|resume]")
         public void onRepairSea(GPlayer gPlayer, String[] args) {
