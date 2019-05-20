@@ -26,7 +26,7 @@ import java.util.*;
 
 import static org.bukkit.ChatColor.*;
 
-@CommandAlias("globalwarming|gw")
+@CommandAlias("gw")
 public class GeneralCommands extends BaseCommand {
     private static final long SPAM_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getSpamInterval();
     private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
@@ -41,6 +41,15 @@ public class GeneralCommands extends BaseCommand {
     public void onHelp(GPlayer gPlayer, CommandHelp help) {
         if (isCommandAllowed(gPlayer)) {
             help.showHelp();
+        }
+    }
+
+    @Subcommand("booklet")
+    @Description("Add the instructional booklet to your inventory")
+    @CommandPermission("globalwarming.booklet")
+    public void onBooklet(GPlayer gPlayer) {
+        if (isCommandAllowed(gPlayer)) {
+            getBooklet(gPlayer);
         }
     }
 
@@ -148,9 +157,7 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("globalwarming.score")
     public class ScoreCommand extends BaseCommand {
 
-        @Subcommand("")
         @Description("Get your carbon score")
-        @Syntax("")
         @CommandPermission("globalwarming.score")
         public void onScore(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
@@ -158,19 +165,8 @@ public class GeneralCommands extends BaseCommand {
             }
         }
 
-        @Subcommand("show")
-        @Description("Show the scoreboard")
-        @Syntax("")
-        @CommandPermission("globalwarming.score.show")
-        public void onShow(GPlayer gPlayer) {
-            if (isCommandAllowed(gPlayer)) {
-                GlobalWarming.getInstance().getScoreboard().show(gPlayer, true);
-            }
-        }
-
         @Subcommand("alerts")
-        @Description("Sends message alerts on all carbon activities")
-        @Syntax("")
+        @Description("Sends alerts on all carbon activities")
         @CommandPermission("globalwarming.score.alerts")
         public void onAlert(GPlayer gPlayer) {
             if (isCommandAllowed(gPlayer)) {
@@ -193,6 +189,15 @@ public class GeneralCommands extends BaseCommand {
                 GlobalWarming.getInstance().getScoreboard().show(gPlayer, false);
             }
         }
+
+        @Subcommand("show")
+        @Description("Show the scoreboard")
+        @CommandPermission("globalwarming.score.show")
+        public void onShow(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                GlobalWarming.getInstance().getScoreboard().show(gPlayer, true);
+            }
+        }
     }
 
     @Subcommand("top")
@@ -209,15 +214,6 @@ public class GeneralCommands extends BaseCommand {
             }
         }
 
-        @Subcommand("polluter")
-        @Description("Display the top ten polluters")
-        @CommandPermission("globalwarming.top.polluter")
-        public void onTopPolluter(GPlayer gPlayer) {
-            if (isCommandAllowed(gPlayer)) {
-                showTopTen(gPlayer, true);
-            }
-        }
-
         @Subcommand("planter")
         @Description("Display the top ten tree-planters")
         @CommandPermission("globalwarming.top.planter")
@@ -226,14 +222,14 @@ public class GeneralCommands extends BaseCommand {
                 showTopTen(gPlayer, false);
             }
         }
-    }
 
-    @Subcommand("booklet")
-    @Description("Add the instructional booklet to your inventory")
-    @CommandPermission("globalwarming.booklet")
-    public void onBooklet(GPlayer gPlayer) {
-        if (isCommandAllowed(gPlayer)) {
-            getBooklet(gPlayer);
+        @Subcommand("polluter")
+        @Description("Display the top ten polluters")
+        @CommandPermission("globalwarming.top.polluter")
+        public void onTopPolluter(GPlayer gPlayer) {
+            if (isCommandAllowed(gPlayer)) {
+                showTopTen(gPlayer, true);
+            }
         }
     }
 

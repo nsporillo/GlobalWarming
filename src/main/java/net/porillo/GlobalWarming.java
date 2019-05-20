@@ -1,6 +1,7 @@
 package net.porillo;
 
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.MessageType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import net.porillo.util.CO2Notifications;
 import net.porillo.util.GScoreboard;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -117,6 +119,7 @@ public class GlobalWarming extends JavaPlugin {
 
 	private void registerCommands() {
 		commandManager.enableUnstableAPI("help");
+		commandManager.setFormat(MessageType.HELP, ChatColor.GREEN, ChatColor.DARK_GREEN, ChatColor.AQUA);
 		commandManager.getCommandContexts().registerIssuerOnlyContext(GPlayer.class, c -> tableManager.getPlayerTable().getPlayers().get(c.getPlayer().getUniqueId()));
 
 		this.commandManager.registerCommand(new AdminCommands());
