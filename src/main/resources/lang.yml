@@ -9,7 +9,7 @@ lang:
     SUBSCRIBE: '§2Subscribed to real time carbon score alerts'
     UNSUBSCRIBE: '§cUnsubscribed from real time carbon score alerts'
     TREEREDUCE: '§2[Alert] Tree grown. §f(§ablocks: %d§f, §breduction: %d§f)'
-    TREEREDUCEBONEMEAL: '§2[Alert] Tree grown with §cbonemeal. §f(§ablocks: %d§f, §b%reduction: %d§f)'
+    TREEREDUCEBONEMEAL: '§2[Alert] Tree grown with §cbonemeal. §f(§ablocks: %d§f, §breduction: %d§f)'
     BURNCONTRIB: '§c[Alert] §O%s burned. §4(contribution: %d)'
     FARMCONTRIB: '§c[Alert] §c§OBred %s killed. §4(contribution: %d )'
   BOUNTY:
