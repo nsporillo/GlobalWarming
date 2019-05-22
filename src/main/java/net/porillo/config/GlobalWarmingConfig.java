@@ -16,6 +16,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	@Getter private int databaseInterval;
 	@Getter private int notificationInterval;
 	@Getter private int notificationDuration;
+	@Getter private boolean scoreboardEnabled;
 	@Getter private int scoreboardInterval;
 	@Getter private String temperatureFormat;
 
@@ -42,6 +43,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		this.notificationInterval = conf.getInt("notification.interval", 6000);
 		this.notificationDuration = conf.getInt("notification.duration", 300);
 
+		this.scoreboardEnabled = conf.getBoolean("scoreboard.enabled", true);
 		this.scoreboardInterval = conf.getInt("scoreboard.interval", 20);
 		this.temperatureFormat = conf.getString("temperature.format", "#.##");
 	}

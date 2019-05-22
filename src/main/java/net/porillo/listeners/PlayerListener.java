@@ -21,7 +21,7 @@ public class PlayerListener implements Listener {
 
     private GlobalWarming gw;
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         //Player lookup:
         PlayerTable table = gw.getTableManager().getPlayerTable();
@@ -43,8 +43,10 @@ public class PlayerListener implements Listener {
             //Show players their current carbon score in chat:
             GeneralCommands.showCarbonScore(gPlayer);
 
-            //Add the player to the scoreboard:
-            gw.getScoreboard().connect(gPlayer);
+            if (gw.getConf().isScoreboardEnabled()) {
+                //Add the player to the scoreboard:
+                gw.getScoreboard().connect(gPlayer);
+            }
         }
     }
 
@@ -52,11 +54,13 @@ public class PlayerListener implements Listener {
      * When players leave:
      * - Remove them from the scoreboard
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        PlayerTable playerTable = gw.getTableManager().getPlayerTable();
-        GPlayer gPlayer = playerTable.getPlayers().get(event.getPlayer().getUniqueId());
-        gw.getScoreboard().disconnect(gPlayer);
+        if (gw.getConf().isScoreboardEnabled()) {
+            PlayerTable playerTable = gw.getTableManager().getPlayerTable();
+            GPlayer gPlayer = playerTable.getPlayers().get(event.getPlayer().getUniqueId());
+            gw.getScoreboard().disconnect(gPlayer);
+        }
     }
 
     /**
@@ -64,7 +68,7 @@ public class PlayerListener implements Listener {
      * - This information is needed when players go offline, but have planted saplings,
      * left furnaces running or have active bounties
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
         //Update the player's world:
         PlayerTable playerTable = gw.getTableManager().getPlayerTable();

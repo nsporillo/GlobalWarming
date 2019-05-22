@@ -17,6 +17,7 @@ notification:
   interval: 6000
   duration: 300
 scoreboard:
+  enabled: true
   interval: 20
 temperature:
   format: '#.##'
