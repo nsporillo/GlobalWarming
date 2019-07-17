@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class TableSelectTest {
 
 	@Test
-	public void testTableSelections() throws SQLException, ClassNotFoundException {
+	public void testTableSelections() throws Exception {
 		Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 		AsyncDBQueue.getInstance().writeSelectQueue(connection);
 	}

@@ -22,7 +22,7 @@ public class TableCreationTest {
     }
 
     @Test(priority = 2)
-    public void testTableCreation() throws SQLException, ClassNotFoundException {
+    public void testTableCreation() throws Exception {
         Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
         for (Table table : TableManager.getInstance().getTables()) {
             System.out.println("Testing table create for " + table.getTableName());
@@ -44,12 +44,12 @@ public class TableCreationTest {
         try {
             Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
             connection.createStatement().executeUpdate(String.format("DROP TABLE IF EXISTS %s", table));
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void tableAssertions(String table) throws SQLException, ClassNotFoundException {
+    private void tableAssertions(String table) throws Exception {
         Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 
         // Verify the table is created, if the query fails then the table does not exist

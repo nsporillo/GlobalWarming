@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TableInsertTest {
 
     @Test
-    public void testWorldInserts() throws SQLException, ClassNotFoundException {
+    public void testWorldInserts() throws Exception {
         Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 
         for (int i = 0; i < 30; i++) {
@@ -34,7 +34,7 @@ public class TableInsertTest {
     }
 
     @Test
-    public void testPlayerInserts() throws SQLException, ClassNotFoundException {
+    public void testPlayerInserts() throws Exception {
         Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 
         for (int i = 0; i < 300; i++) {
@@ -46,7 +46,7 @@ public class TableInsertTest {
     }
 
     @Test
-    public void testContributionTable() throws SQLException, ClassNotFoundException {
+    public void testContributionTable() throws Exception {
         Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 
         Random random = TestUtility.getInstance().getRandom();

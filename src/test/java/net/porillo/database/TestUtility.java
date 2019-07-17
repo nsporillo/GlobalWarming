@@ -1,6 +1,7 @@
 package net.porillo.database;
 
 import lombok.Getter;
+import net.porillo.database.api.DbType;
 import net.porillo.objects.Furnace;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
@@ -16,7 +17,7 @@ public class TestUtility {
     @Getter private final Random random = new Random();
 
     public TestUtility() {
-        this.connectionManager = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests");
+        this.connectionManager = new ConnectionManager(DbType.MYSQL, "localhost", 3306, "GlobalWarming", "jenkins",  "test", "tests");
     }
 
     public GWorld nextRandomWorld() {

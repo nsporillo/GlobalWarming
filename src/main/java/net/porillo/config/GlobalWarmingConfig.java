@@ -2,12 +2,14 @@ package net.porillo.config;
 
 import lombok.Getter;
 import net.porillo.database.ConnectionManager;
+import net.porillo.database.api.DbType;
 
 public class GlobalWarmingConfig extends ConfigLoader {
 
+	@Getter private DbType dbType;
 	private String host;
 	private int port;
-	private String database;
+	private String database, path;
 	private String username, password;
 	@Getter private int maxBounties;
 	@Getter private int chatTableWidth;
@@ -33,6 +35,8 @@ public class GlobalWarmingConfig extends ConfigLoader {
 		this.degreesUntilChangeDetected = conf.getDouble("climate-notification.degrees-until-change-detected", 0.25);
 		this.spamInterval = conf.getInt("commands.spam-interval", 60);
 
+		this.dbType = DbType.valueOf(conf.getString("database.type", "SQLITE").toUpperCase());
+		this.path = conf.getString("database.path", "plugins/GlobalWarming/gw.db");
 		this.host = conf.getString("database.host");
 		this.port = conf.getInt("database.port");
 		this.database = conf.getString("database.name");
@@ -49,7 +53,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 	}
 
 	public ConnectionManager makeConnectionManager() {
-		return new ConnectionManager(host, port, database, username, password);
+		return new ConnectionManager(dbType, host, port, database, path, username, password);
 	}
 
 } 

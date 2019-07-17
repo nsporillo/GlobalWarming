@@ -12,6 +12,7 @@ import net.porillo.config.GlobalWarmingConfig;
 import net.porillo.config.Lang;
 import net.porillo.database.ConnectionManager;
 import net.porillo.database.TableManager;
+import net.porillo.database.api.DbType;
 import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.EffectEngine;
@@ -21,6 +22,7 @@ import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
 import net.porillo.util.CO2Notifications;
 import net.porillo.util.GScoreboard;
+import net.porillo.util.Updater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,6 +32,8 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.Random;
 
@@ -55,6 +59,25 @@ public class GlobalWarming extends JavaPlugin {
 		this.random = new Random();
 		this.gson = new GsonBuilder().setPrettyPrinting().create();
 		this.conf = new GlobalWarmingConfig();
+
+		if (this.conf.getDbType() == DbType.SQLITE && !Updater.getInstance().hasJar("sqlite.jar")) {
+			try {
+				getLogger().info("sqlite.jar not found. Downloading");
+				Updater.getInstance().download("sqlite.jar");
+				getLogger().info("Downloading native files...");
+				String nativeDir = Updater.getInstance().getNativeDirectory();
+				File file = new File(Updater.LIBDIR, nativeDir);
+				if (!file.exists()) {
+					file.mkdirs();
+				}
+				String nativePath = nativeDir + "" + Updater.getInstance().getNativeFile();
+				Updater.getInstance().download(nativePath);
+			} catch (IOException e) {
+				getLogger().severe("Could not download required files!");
+				e.printStackTrace();
+			}
+		}
+
 		this.connectionManager = conf.makeConnectionManager();
 		this.tableManager = new TableManager();
 

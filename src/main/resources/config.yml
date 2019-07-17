@@ -7,6 +7,8 @@ climate-notification:
 commands:
   spam-interval: 60
 database:
+  type: SQLITE
+  path: 'plugins/GlobalWarming/gw.db'
   host: localhost
   port: 3306
   name: GlobalWarming

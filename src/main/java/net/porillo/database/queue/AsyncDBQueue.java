@@ -60,7 +60,7 @@ public class AsyncDBQueue {
 					writeQueues();
 					GlobalWarming.getInstance().getLogger().info("Finished syncing database.");
 				}
-			} catch (SQLException | ClassNotFoundException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -100,7 +100,7 @@ public class AsyncDBQueue {
 		this.updateQueue.offer(updateQuery);
 	}
 
-	private void writeQueues() throws SQLException, ClassNotFoundException {
+	private void writeQueues() throws Exception {
 		Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
 		writeCreateTableQueue(connection);
 		writeInsertQueue(connection);

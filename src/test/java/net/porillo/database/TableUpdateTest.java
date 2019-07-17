@@ -21,7 +21,7 @@ public class TableUpdateTest {
 	private Random random = new Random();
 
 	@Test
-	public void testWorldUpdate() throws SQLException, ClassNotFoundException {
+	public void testWorldUpdate() throws Exception {
 		Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
 		AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 
