@@ -60,7 +60,7 @@
                     <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                     <relocations>
                         <relocation>
-                            <pattern>co.aikar</pattern>
+                            <pattern>co.aikar.commands</pattern>
                             <shadedPattern>net.porillo.shade.aikar</shadedPattern>
                         </relocation>
                         <relocation>
@@ -68,16 +68,12 @@
                             <shadedPattern>net.porillo.shade.bstats</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.apache</pattern>
+                            <pattern>org.apache.commons.math3.analysis</pattern>
                             <shadedPattern>net.porillo.shade.apache</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.jetbrains</pattern>
                             <shadedPattern>net.porillo.shade.jetbrains</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>net.jodah</pattern>
-                            <shadedPattern>net.porillo.shade.jodah</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -134,9 +130,8 @@
         </dependency>
         <dependency>
             <groupId>co.aikar</groupId>
-            <artifactId>acf-bukkit</artifactId>
+            <artifactId>acf-paper</artifactId>
             <version>0.5.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>

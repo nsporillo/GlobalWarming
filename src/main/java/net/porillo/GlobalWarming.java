@@ -1,7 +1,7 @@
 package net.porillo;
 
-import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.MessageType;
+import co.aikar.commands.PaperCommandManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class GlobalWarming extends JavaPlugin {
 	@Getter	private ConnectionManager connectionManager;
 	@Getter	private TableManager tableManager;
 	@Getter	private Random random;
-	private BukkitCommandManager commandManager;
+	private PaperCommandManager commandManager;
 	@Getter	private Gson gson;
 	@Getter	private GScoreboard scoreboard;
 	@Getter	private CO2Notifications notifications;
@@ -88,7 +88,7 @@ public class GlobalWarming extends JavaPlugin {
 
 		ClimateEngine.getInstance().loadWorldClimateEngines();
 		EffectEngine.getInstance();
-		this.commandManager = new BukkitCommandManager(this);
+		this.commandManager = new PaperCommandManager(this);
 		this.scoreboard = new GScoreboard();
 		this.notifications = new CO2Notifications();
 		economy = null;
