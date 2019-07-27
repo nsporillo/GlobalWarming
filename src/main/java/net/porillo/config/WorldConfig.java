@@ -12,17 +12,18 @@ import java.util.UUID;
 
 import static net.porillo.engine.models.ScoreTempModel.CarbonSensitivity;
 
+@Getter
 public class WorldConfig extends ConfigLoader {
 
-    @Getter private final UUID worldId;
-    @Getter private boolean enabled;
-    @Getter private Set<ClimateEffectType> enabledEffects;
-    @Getter private UUID associatedWorldId;
-    @Getter private CarbonSensitivity sensitivity;
-    @Getter private double blastFurnaceMultiplier;
-    @Getter private double methaneTicksLivedModifier;
-    @Getter private boolean bonemealReductionAllowed;
-    @Getter private double bonemealReductionModifier;
+    private final UUID worldId;
+    private boolean enabled;
+    private Set<ClimateEffectType> enabledEffects;
+    private UUID associatedWorldId;
+    private CarbonSensitivity sensitivity;
+    private double blastFurnaceMultiplier;
+    private double methaneTicksLivedModifier;
+    private boolean bonemealReductionAllowed;
+    private double bonemealReductionModifier;
 
     public WorldConfig(UUID worldId) {
         super(String.format("%s.yml", Bukkit.getWorld(worldId).getName()), "world.yml");
@@ -44,10 +45,10 @@ public class WorldConfig extends ConfigLoader {
                 sensitivity = CarbonSensitivity.valueOf(carbonSensitivity);
             } catch (Exception e) {
                 GlobalWarming.getInstance().getLogger().warning(
-                      String.format(
-                            "Unknown carbon sensitivity for: [%s], defaulting to [%s]",
-                            getDisplayName(worldId),
-                            sensitivity));
+                        String.format(
+                                "Unknown carbon sensitivity for: [%s], defaulting to [%s]",
+                                getDisplayName(worldId),
+                                sensitivity));
             }
         }
 
@@ -65,6 +66,9 @@ public class WorldConfig extends ConfigLoader {
                     this.associatedWorldId = worldId;
                 }
             } catch (NullPointerException ex) {
+                ex.printStackTrace();
+            }
+        }
 
         this.enabledEffects = new HashSet<>();
         this.blastFurnaceMultiplier = this.conf.getDouble("blastFurnaceMultiplier", 1.2);
@@ -77,9 +81,9 @@ public class WorldConfig extends ConfigLoader {
                 this.enabledEffects.add(ClimateEffectType.valueOf(effect));
             } catch (IllegalArgumentException ex) {
                 GlobalWarming.getInstance().getLogger().severe(String.format(
-                      "Could not load effect: [%s] for world: [%s]",
-                      effect,
-                      getDisplayName(worldId)));
+                        "Could not load effect: [%s] for world: [%s]",
+                        effect,
+                        getDisplayName(worldId)));
             }
         }
     }
