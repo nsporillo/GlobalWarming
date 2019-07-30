@@ -153,7 +153,6 @@ public class CO2Listener implements Listener {
 			return;
 		}
 
-
 		//Setup:
 		Location location = event.getLocation();
 		TreeTable treeTable = GlobalWarming.getInstance().getTableManager().getTreeTable();
@@ -182,10 +181,7 @@ public class CO2Listener implements Listener {
 			if (planter != null) {
 				affectedWorldId = planter.getWorldId();
 			}
-		}
-
-		//Unknown trees:
-		if (tree == null) {
+		} else {
 			planter = playerTable.getOrCreatePlayer(untrackedUUID);
 			affectedWorldId = eventClimateEngine.getConfig().getAssociatedWorldId();
 
@@ -213,7 +209,9 @@ public class CO2Listener implements Listener {
 		if (affectedClimateEngine != null && affectedClimateEngine.isEnabled()) {
 			//Carbon reduction record:
 			Reduction reduction = eventClimateEngine.treeGrow(tree, event.getBlocks(), event.isFromBonemeal());
-
+			if (reduction == null) {
+				return;
+			}
 			//Queue an insert into the contributions table:
 			ReductionInsertQuery insertQuery = new ReductionInsertQuery(reduction);
 			AsyncDBQueue.getInstance().queueInsertQuery(insertQuery);

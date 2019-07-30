@@ -8,12 +8,16 @@ import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.engine.models.*;
 import net.porillo.objects.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class WorldClimateEngine {
 
@@ -49,26 +53,21 @@ public class WorldClimateEngine {
 	}
 
 	public Reduction treeGrow(Tree tree, List<BlockState> blocks, boolean bonemealUsed) {
+		// Remove duplicate block states by collecting them into a hashmap with location as the key
+		Map<Location, Material> blockStateMap = blocks.stream().collect(Collectors.toMap(BlockState::getLocation, BlockState::getType, (a, b) -> b));
+
 		int reductionValue = 0;
-		int numBlocks = 0;
+		int numBlocks = blockStateMap.size();
+
+		for (Material material : blockStateMap.values()) {
+			double reduction = reductionModel.getReduction(material);
+			reductionValue += reduction;
+		}
+
 		if (bonemealUsed && !config.isBonemealReductionAllowed()) {
 			return null;
 		} else if (bonemealUsed) {
-			for (BlockState bs : blocks) {
-				double reduction = reductionModel.getReduction(bs.getType());
-				if (reduction > 0.0) {
-					reductionValue += (config.getBonemealReductionModifier() * reduction);
-					numBlocks++;
-				}
-			}
-		} else {
-			for (BlockState bs : blocks) {
-				double reduction = reductionModel.getReduction(bs.getType());
-				if (reduction > 0.0) {
-					reductionValue += reduction;
-					numBlocks++;
-				}
-			}
+			reductionValue = (int) (reductionValue * config.getBonemealReductionModifier());
 		}
 
 		Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
