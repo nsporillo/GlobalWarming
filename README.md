@@ -15,6 +15,7 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 ## Overview
 + Adds the concept of greenhouse gases (CO2) in the worlds atmosphere 
 + Furnaces emit CO2 when players smelt items
++ Farmed Animals emit CH4 when they are killed
 + Trees (instantly) absorb CO2 when they grow from a sapling
 + As CO2 levels rise, global temperature rises because of the [Greenhouse Effect](http://hyperphysics.phy-astr.gsu.edu/hbase/thermo/grnhse.html)
 
