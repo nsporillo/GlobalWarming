@@ -242,11 +242,11 @@ public class CO2Listener implements Listener {
 			// Execute real time player notification if they're subscribed with /gw score alerts
 			if (event.isFromBonemeal()) {
 				AlertManager.getInstance().alert(planter,
-						String.format(Lang.ALERT_TREEREDUCE.get(),
+						String.format(Lang.ALERT_TREEREDUCEBONEMEAL.get(),
 								reduction.getNumBlocks(), reduction.getReductionValue()));
 			} else {
 				AlertManager.getInstance().alert(planter,
-						String.format(Lang.ALERT_TREEREDUCEBONEMEAL.get(),
+						String.format(Lang.ALERT_TREEREDUCE.get(),
 								reduction.getNumBlocks(), reduction.getReductionValue()));
 			}
 
