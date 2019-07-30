@@ -67,10 +67,6 @@
                             <pattern>org.bstats</pattern>
                             <shadedPattern>net.porillo.shade.bstats</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>org.jetbrains</pattern>
-                            <shadedPattern>net.porillo.shade.jetbrains</shadedPattern>
-                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
