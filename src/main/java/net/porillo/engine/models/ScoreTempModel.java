@@ -26,7 +26,8 @@ public class ScoreTempModel extends Model {
         VERY_HIGH
     }
 
-    @Getter private Map<Integer, Double> indexMap;
+    @Getter
+    private Map<Integer, Double> indexMap;
     private CarbonSensitivity sensitivity;
     private Distribution distribution;
     Map<CarbonSensitivity, Map<Integer, Double>> temperatureMap;
@@ -50,7 +51,8 @@ public class ScoreTempModel extends Model {
         //Deserialize the model from JSON:
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.enableComplexMapKeySerialization().create();
-        Type listType = new TypeToken<Map<CarbonSensitivity, Map<Integer, Double>>>() {}.getType();
+        Type listType = new TypeToken<Map<CarbonSensitivity, Map<Integer, Double>>>() {
+        }.getType();
         temperatureMap = gson.fromJson(super.getContents(), listType);
 
         //Validate the result:
@@ -71,7 +73,7 @@ public class ScoreTempModel extends Model {
         double[] scores = new double[indexMap.size()];
         double[] temps = new double[indexMap.size()];
         for (Map.Entry<Integer, Double> entry : indexMap.entrySet()) {
-            scores[i] = (double)entry.getKey();
+            scores[i] = (double) entry.getKey();
             temps[i++] = entry.getValue();
         }
         this.distribution = new Distribution(scores, temps);

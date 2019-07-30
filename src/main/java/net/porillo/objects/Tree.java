@@ -29,9 +29,9 @@ public class Tree extends TrackedBlock {
 
     public Tree(ResultSet rs) throws SQLException {
         super(rs.getInt(1),
-              rs.getInt(2),
-              Bukkit.getWorld(UUID.fromString(rs.getString(3)))
-                    .getBlockAt(rs.getInt(4), rs.getInt(5), rs.getInt(6)).getLocation());
+                rs.getInt(2),
+                Bukkit.getWorld(UUID.fromString(rs.getString(3)))
+                        .getBlockAt(rs.getInt(4), rs.getInt(5), rs.getInt(6)).getLocation());
 
         this.isSapling = rs.getBoolean(7);
         this.size = rs.getInt(8);

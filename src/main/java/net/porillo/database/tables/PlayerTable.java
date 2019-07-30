@@ -18,8 +18,10 @@ import java.util.UUID;
 
 public class PlayerTable extends Table implements SelectCallback<GPlayer> {
 
-    @Getter private Map<UUID, GPlayer> players = new HashMap<>();
-    @Getter private Map<Integer, UUID> uuidMap = new HashMap<>();
+    @Getter
+    private Map<UUID, GPlayer> players = new HashMap<>();
+    @Getter
+    private Map<Integer, UUID> uuidMap = new HashMap<>();
 
     public PlayerTable() {
         super("players");
@@ -51,17 +53,17 @@ public class PlayerTable extends Table implements SelectCallback<GPlayer> {
 
             //GW identifier:
             Integer uniqueId =
-                  onlinePlayer == null
-                        ? 0
-                        : GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
+                    onlinePlayer == null
+                            ? 0
+                            : GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
 
             //New player:
             gPlayer = new GPlayer(
-                  uniqueId,
-                  uuid,
-                  System.currentTimeMillis(),
-                  0,
-                  worldId);
+                    uniqueId,
+                    uuid,
+                    System.currentTimeMillis(),
+                    0,
+                    worldId);
 
             //Local storage:
             players.put(uuid, gPlayer);

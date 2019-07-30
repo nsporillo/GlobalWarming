@@ -12,22 +12,28 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Maintain one scoreboard per associated-world (assuming there can be more than one)
- *  - Scoreboards show the world's temperature and a list of local players
- *  - Players request score updates when their carbon scores change
- *  - Duplicate requests are ignored (one request per player)
- *  - Scoreboard updates happen only when requests are available, clearing the queue
- *
+ * - Scoreboards show the world's temperature and a list of local players
+ * - Players request score updates when their carbon scores change
+ * - Duplicate requests are ignored (one request per player)
+ * - Scoreboard updates happen only when requests are available, clearing the queue
+ * <p>
  * Notes:
- *  - Player's scores are tied to their associated-world, not the current one
- *  - Only one objective can be displayed in a sidebar at one time
+ * - Player's scores are tied to their associated-world, not the current one
+ * - Only one objective can be displayed in a sidebar at one time
  */
 public class GScoreboard {
     @Getter
@@ -73,9 +79,9 @@ public class GScoreboard {
 
                 //Objective (scoreboard title / group):
                 Objective objective = scoreboard.registerNewObjective(
-                      GLOBAL_WARMING,
-                      "scores",
-                      "Carbon Score");
+                        GLOBAL_WARMING,
+                        "scores",
+                        "Carbon Score");
 
                 objective.setDisplaySlot(DisplaySlot.SIDEBAR);
             }
@@ -187,9 +193,9 @@ public class GScoreboard {
                     String format = GlobalWarming.getInstance().getConf().getTemperatureFormat();
                     DecimalFormat decimalFormat = new DecimalFormat(format);
                     objective.setDisplayName(String.format(
-                          Lang.SCORE_TEMPERATURE.get(),
-                          GeneralCommands.getTemperatureColor(temperature),
-                          decimalFormat.format(temperature)));
+                            Lang.SCORE_TEMPERATURE.get(),
+                            GeneralCommands.getTemperatureColor(temperature),
+                            decimalFormat.format(temperature)));
                 }
             }
         }
@@ -243,23 +249,23 @@ public class GScoreboard {
      */
     private void debounceScoreUpdates() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
-              GlobalWarming.getInstance(),
-              () -> {
-                  //Make a copy of the update and clear the old update:
-                  // - Synchronized to temporarily prevent threaded additions
-                  Queue<UUID> players = null;
-                  synchronized (this) {
-                      if (!requestQueue.isEmpty()) {
-                          players = new ConcurrentLinkedQueue<>(requestQueue);
-                          requestQueue.clear();
-                      }
-                  }
+                GlobalWarming.getInstance(),
+                () -> {
+                    //Make a copy of the update and clear the old update:
+                    // - Synchronized to temporarily prevent threaded additions
+                    Queue<UUID> players = null;
+                    synchronized (this) {
+                        if (!requestQueue.isEmpty()) {
+                            players = new ConcurrentLinkedQueue<>(requestQueue);
+                            requestQueue.clear();
+                        }
+                    }
 
-                  //Process scores for any players in the update:
-                  if (players != null && !players.isEmpty()) {
-                      updateGlobalScores();
-                      updatePlayerScores(players);
-                  }
-              }, 0L, SCOREBOARD_INTERVAL_TICKS);
+                    //Process scores for any players in the update:
+                    if (players != null && !players.isEmpty()) {
+                        updateGlobalScores();
+                        updatePlayerScores(players);
+                    }
+                }, 0L, SCOREBOARD_INTERVAL_TICKS);
     }
 }

@@ -1,117 +1,117 @@
 {
-    "display": {
-        "title": {
-            "text": "If a Tree Falls..."
-        },
-        "description": {
-            "text": "Cut down a tree.  Trivia: tropical deforestation is responsible for 3.0 billion tons of carbon dioxide a year [Harris, 2012]."
-        },
-        "icon": {
-            "item": "minecraft:birch_log"
-        },
-        "frame": "task",
-        "show_toast": true,
-        "announce_to_chat": true,
-        "hidden": false
+  "display": {
+    "title": {
+      "text": "If a Tree Falls..."
     },
-    "requirements": [
-        [
-            "tree_falls_oak",
-            "tree_falls_birch",
-            "tree_falls_spruce",
-            "tree_falls_jungle",
-            "tree_falls_acacia",
-            "tree_falls_dark_oak"
+    "description": {
+      "text": "Cut down a tree.  Trivia: tropical deforestation is responsible for 3.0 billion tons of carbon dioxide a year [Harris, 2012]."
+    },
+    "icon": {
+      "item": "minecraft:birch_log"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "requirements": [
+    [
+      "tree_falls_oak",
+      "tree_falls_birch",
+      "tree_falls_spruce",
+      "tree_falls_jungle",
+      "tree_falls_acacia",
+      "tree_falls_dark_oak"
+    ]
+  ],
+  "rewards": {
+    "experience": 2
+  },
+  "criteria": {
+    "tree_falls_oak": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:oak_log",
+            "count": {
+              "min": 1,
+              "max": 1
+            }
+          }
         ]
-    ],
-    "rewards": {
-        "experience": 2
+      }
     },
-    "criteria": {
-        "tree_falls_oak": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "minecraft:oak_log",
-                        "count": {
-                            "min": 1,
-                            "max": 1
-                        }
-                    }
-                ]
+    "tree_falls_birch": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:birch_log",
+            "count": {
+              "min": 1,
+              "max": 1
             }
-        },
-        "tree_falls_birch": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "minecraft:birch_log",
-                        "count": {
-                            "min": 1,
-                            "max": 1
-                        }
-                    }
-                ]
-            }
-        },
-        "tree_falls_spruce": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "minecraft:spruce_log",
-                        "count": {
-                            "min": 1,
-                            "max": 1
-                        }
-                    }
-                ]
-            }
-        },
-        "tree_falls_jungle": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "minecraft:jungle_log",
-                        "count": {
-                            "min": 1,
-                            "max": 1
-                        }
-                    }
-                ]
-            }
-        },
-        "tree_falls_acacia": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "minecraft:acacia_log",
-                        "count": {
-                            "min": 1,
-                            "max": 1
-                        }
-                    }
-                ]
-            }
-        },
-        "tree_falls_dark_oak": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "minecraft:dark_oak_log",
-                        "count": {
-                            "min": 1,
-                            "max": 1
-                        }
-                    }
-                ]
-            }
-        }
+          }
+        ]
+      }
     },
-    "parent": "gw:root"
+    "tree_falls_spruce": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:spruce_log",
+            "count": {
+              "min": 1,
+              "max": 1
+            }
+          }
+        ]
+      }
+    },
+    "tree_falls_jungle": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:jungle_log",
+            "count": {
+              "min": 1,
+              "max": 1
+            }
+          }
+        ]
+      }
+    },
+    "tree_falls_acacia": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:acacia_log",
+            "count": {
+              "min": 1,
+              "max": 1
+            }
+          }
+        ]
+      }
+    },
+    "tree_falls_dark_oak": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:dark_oak_log",
+            "count": {
+              "min": 1,
+              "max": 1
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parent": "gw:root"
 }

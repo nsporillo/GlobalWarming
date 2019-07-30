@@ -124,14 +124,14 @@ public class OffsetBounty {
             if (isWithdrawn) {
                 //New bounty:
                 OffsetBounty bounty = new OffsetBounty(
-                      GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE),
-                      gPlayer.getUniqueId(),
-                      null,
-                      gPlayer.getAssociatedWorldId(),
-                      treeBlocks,
-                      reward,
-                      0,
-                      0
+                        GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE),
+                        gPlayer.getUniqueId(),
+                        null,
+                        gPlayer.getAssociatedWorldId(),
+                        treeBlocks,
+                        reward,
+                        0,
+                        0
                 );
 
                 //Local records:
@@ -208,15 +208,15 @@ public class OffsetBounty {
             }
 
             String json = chatTable.toJson(
-                  gPlayer,
-                  Lang.BOUNTY_JOIN.get(),
-                  "/gw bounty join",
-                  Lang.BOUNTY_JOINTOOLTIP.get(),
-                  clickIds);
+                    gPlayer,
+                    Lang.BOUNTY_JOIN.get(),
+                    "/gw bounty join",
+                    Lang.BOUNTY_JOINTOOLTIP.get(),
+                    clickIds);
 
             Bukkit.getServer().dispatchCommand(
-                  Bukkit.getConsoleSender(),
-                  json);
+                    Bukkit.getConsoleSender(),
+                    json);
         } catch (Exception e) {
             gPlayer.sendMsg(Lang.BOUNTY_ERROR);
             e.printStackTrace();
@@ -235,10 +235,10 @@ public class OffsetBounty {
             if (economy != null) {
                 economy.depositPlayer(hunter.getOfflinePlayer(), bounty.getReward());
                 notify(
-                      bounty,
-                      hunter,
-                      String.format(Lang.BOUNTY_COMPLETEDBY.get(), hunter.getOfflinePlayer().getName()),
-                      String.format(Lang.BOUNTY_COMPLETED.get(), bounty.getReward()));
+                        bounty,
+                        hunter,
+                        String.format(Lang.BOUNTY_COMPLETEDBY.get(), hunter.getOfflinePlayer().getName()),
+                        String.format(Lang.BOUNTY_COMPLETED.get(), bounty.getReward()));
             }
         }
 
@@ -284,9 +284,9 @@ public class OffsetBounty {
         }
 
         gPlayer.sendMsg(String.format(
-              Lang.BOUNTY_CANCELLED.get(),
-              cancelledBounties.size(),
-              refund));
+                Lang.BOUNTY_CANCELLED.get(),
+                cancelledBounties.size(),
+                refund));
     }
 
     /**

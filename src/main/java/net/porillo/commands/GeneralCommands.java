@@ -79,8 +79,8 @@ public class GeneralCommands extends BaseCommand {
                     OffsetBounty.create(gPlayer, treeBlocks, reward);
                 } else {
                     gPlayer.sendMsg(String.format(
-                          Lang.GENERIC_INVALIDARGS.get(),
-                          "[tree-blocks:integer] [reward:integer]"));
+                            Lang.GENERIC_INVALIDARGS.get(),
+                            "[tree-blocks:integer] [reward:integer]"));
                 }
             }
         }
@@ -101,15 +101,15 @@ public class GeneralCommands extends BaseCommand {
                     Player onlinePlayer = gPlayer.getOnlinePlayer();
                     if (onlinePlayer != null && bounty != null) {
                         OffsetBounty.notify(
-                              bounty,
-                              String.format(Lang.BOUNTY_ACCEPTEDBY.get(), onlinePlayer.getName()),
-                              Lang.BOUNTY_ACCEPTED.get()
+                                bounty,
+                                String.format(Lang.BOUNTY_ACCEPTEDBY.get(), onlinePlayer.getName()),
+                                Lang.BOUNTY_ACCEPTED.get()
                         );
                     }
                 } else {
                     gPlayer.sendMsg(String.format(
-                          Lang.GENERIC_INVALIDARGS.get(),
-                          "[bounty_id:integer]"));
+                            Lang.GENERIC_INVALIDARGS.get(),
+                            "[bounty_id:integer]"));
                 }
             }
         }
@@ -127,10 +127,10 @@ public class GeneralCommands extends BaseCommand {
                     Player onlinePlayer = gPlayer.getOnlinePlayer();
                     if (onlinePlayer != null) {
                         OffsetBounty.notify(
-                              bounty,
-                              gPlayer,
-                              String.format(Lang.BOUNTY_ABANDONEDBY.get(), onlinePlayer.getName()),
-                              Lang.BOUNTY_ABANDONED.get()
+                                bounty,
+                                gPlayer,
+                                String.format(Lang.BOUNTY_ABANDONEDBY.get(), onlinePlayer.getName()),
+                                Lang.BOUNTY_ABANDONED.get()
                         );
                     }
                 }
@@ -269,8 +269,8 @@ public class GeneralCommands extends BaseCommand {
     private static String formatIndex(double index, int score) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         return String.format("%s%s",
-              getScoreColor(score),
-              decimalFormat.format(index));
+                getScoreColor(score),
+                decimalFormat.format(index));
     }
 
     /**
@@ -279,8 +279,8 @@ public class GeneralCommands extends BaseCommand {
      */
     private static String formatScore(int score) {
         return String.format("%s%d",
-              getScoreColor(score),
-              score);
+                getScoreColor(score),
+                score);
     }
 
     /**
@@ -366,7 +366,7 @@ public class GeneralCommands extends BaseCommand {
             //Do not show scored for worlds with disabled climate-engines:
             // - Note: temperature is based on the player's associated-world (not the current world)
             WorldClimateEngine associatedClimateEngine =
-                  ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
+                    ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
 
             if (associatedClimateEngine != null && associatedClimateEngine.isEnabled()) {
                 int score = gPlayer.getCarbonScore();
@@ -374,9 +374,9 @@ public class GeneralCommands extends BaseCommand {
                 StringBuilder welcomeMessage = new StringBuilder();
                 //Player's carbon score and the global temperature:
                 welcomeMessage.append(String.format(
-                      Lang.SCORE_CHAT.get(),
-                      formatScore(score),
-                      formatTemperature(temperature)));
+                        Lang.SCORE_CHAT.get(),
+                        formatScore(score),
+                        formatTemperature(temperature)));
 
                 //What the target is (i.e., a point of reference):
                 welcomeMessage.append("\n");
@@ -413,7 +413,7 @@ public class GeneralCommands extends BaseCommand {
     private static void showTopTen(GPlayer gPlayer, boolean isPolluterList) {
         if (ClimateEngine.getInstance().isClimateEngineEnabled(gPlayer.getAssociatedWorldId())) {
             WorldClimateEngine associatedClimateEngine =
-                  ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
+                    ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
 
             CarbonIndexModel indexModel = associatedClimateEngine.getCarbonIndexModel();
             ChatTable chatTable = new ChatTable(isPolluterList ? Lang.TOPTABLE_POLLUTERS.get() : Lang.TOPTABLE_PLANTERS.get());
@@ -469,10 +469,10 @@ public class GeneralCommands extends BaseCommand {
             // - Note that empty inventory slots will be NULL
             boolean isDuplicate = false;
             PlayerInventory inventory = onlinePlayer.getInventory();
-            for(ItemStack item : inventory.getContents()) {
+            for (ItemStack item : inventory.getContents()) {
                 if (item != null &&
-                      item.getType().equals(Material.WRITTEN_BOOK) &&
-                      item.getItemMeta().getDisplayName().equals(Lang.WIKI_NAME.get())) {
+                        item.getType().equals(Material.WRITTEN_BOOK) &&
+                        item.getItemMeta().getDisplayName().equals(Lang.WIKI_NAME.get())) {
                     gPlayer.sendMsg(Lang.WIKI_ALREADYADDED);
                     isDuplicate = true;
                     break;

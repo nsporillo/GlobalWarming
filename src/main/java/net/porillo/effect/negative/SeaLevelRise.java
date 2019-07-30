@@ -17,8 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.Collections;
 import java.util.Queue;
@@ -26,22 +26,25 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Sea-level rise
- *  - Two asynchronous, repeating tasks
- *  1) Add jobs to the stack (once the stack is empty)
- *  2) Apply any required changes
- *
- *  - Sea level will rise with the temperature
- *  - Raised blocks are tagged with meta data
- *  - When sea levels lower, the tagged blocks are reset
- *  - Will not dry out lakes, rivers, irrigation, machines, etc.
- *  - Considerations made for growing kelp, player changes, and
- *    other events: blocks that drop, etc.
+ * - Two asynchronous, repeating tasks
+ * 1) Add jobs to the stack (once the stack is empty)
+ * 2) Apply any required changes
+ * <p>
+ * - Sea level will rise with the temperature
+ * - Raised blocks are tagged with meta data
+ * - When sea levels lower, the tagged blocks are reset
+ * - Will not dry out lakes, rivers, irrigation, machines, etc.
+ * - Considerations made for growing kelp, player changes, and
+ * other events: blocks that drop, etc.
  */
 @ClimateData(type = ClimateEffectType.SEA_LEVEL_RISE)
 public class SeaLevelRise extends ListenerClimateEffect {
 
-    @Getter private Distribution seaMap;
-    @Getter @Setter private boolean isOverride;
+    @Getter
+    private Distribution seaMap;
+    @Getter
+    @Setter
+    private boolean isOverride;
     private int chunkTicks;
     private int chunksPerPeriod;
     private int queueTicks;
@@ -60,25 +63,25 @@ public class SeaLevelRise extends ListenerClimateEffect {
      */
     private void startQueueLoader() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
-              GlobalWarming.getInstance(),
-              () -> {
-                  synchronized (this) {
-                      if (requestQueue.isEmpty()) {
-                          for (World world : Bukkit.getWorlds()) {
-                              final WorldClimateEngine worldClimateEngine =
-                                    ClimateEngine.getInstance().getClimateEngine(world.getUID());
+                GlobalWarming.getInstance(),
+                () -> {
+                    synchronized (this) {
+                        if (requestQueue.isEmpty()) {
+                            for (World world : Bukkit.getWorlds()) {
+                                final WorldClimateEngine worldClimateEngine =
+                                        ClimateEngine.getInstance().getClimateEngine(world.getUID());
 
-                              if (worldClimateEngine != null &&
-                                    worldClimateEngine.isEffectEnabled(ClimateEffectType.SEA_LEVEL_RISE) &&
-                                    world.getPlayers().size() > 0) {
-                                  for (Chunk chunk : world.getLoadedChunks()) {
-                                      requestQueue.add(chunk.getChunkSnapshot());
-                                  }
-                              }
-                          }
-                      }
-                  }
-              }, 0L, queueTicks);
+                                if (worldClimateEngine != null &&
+                                        worldClimateEngine.isEffectEnabled(ClimateEffectType.SEA_LEVEL_RISE) &&
+                                        world.getPlayers().size() > 0) {
+                                    for (Chunk chunk : world.getLoadedChunks()) {
+                                        requestQueue.add(chunk.getChunkSnapshot());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }, 0L, queueTicks);
     }
 
     /**
@@ -86,27 +89,27 @@ public class SeaLevelRise extends ListenerClimateEffect {
      */
     private void debounceChunkUpdates() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
-              GlobalWarming.getInstance(),
-              () -> {
-                  //Make a copy of the items removed from the queue:
-                  // - Synchronized to temporarily prevent threaded additions
-                  Queue<ChunkSnapshot> chunkSnapshots = null;
-                  synchronized (this) {
-                      if (!requestQueue.isEmpty()) {
-                          chunkSnapshots = new ConcurrentLinkedQueue<>();
-                          while (chunkSnapshots.size() < chunksPerPeriod && !requestQueue.isEmpty()) {
-                              chunkSnapshots.add(requestQueue.poll());
-                          }
-                      }
-                  }
+                GlobalWarming.getInstance(),
+                () -> {
+                    //Make a copy of the items removed from the queue:
+                    // - Synchronized to temporarily prevent threaded additions
+                    Queue<ChunkSnapshot> chunkSnapshots = null;
+                    synchronized (this) {
+                        if (!requestQueue.isEmpty()) {
+                            chunkSnapshots = new ConcurrentLinkedQueue<>();
+                            while (chunkSnapshots.size() < chunksPerPeriod && !requestQueue.isEmpty()) {
+                                chunkSnapshots.add(requestQueue.poll());
+                            }
+                        }
+                    }
 
-                  //Process blocks in each chunk:
-                  if (chunkSnapshots != null) {
-                      for (ChunkSnapshot chunkSnapshot : chunkSnapshots) {
-                          updateChunk(chunkSnapshot);
-                      }
-                  }
-              }, 0L, chunkTicks);
+                    //Process blocks in each chunk:
+                    if (chunkSnapshots != null) {
+                        for (ChunkSnapshot chunkSnapshot : chunkSnapshots) {
+                            updateChunk(chunkSnapshot);
+                        }
+                    }
+                }, 0L, chunkTicks);
     }
 
     /**
@@ -149,12 +152,12 @@ public class SeaLevelRise extends ListenerClimateEffect {
                             block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
                         }
                     } else if (block.getType() == Material.WATER ||
-                          block.getType() == Material.ICE ||
-                          block.getType() == Material.PACKED_ICE ||
-                          block.getType() == Material.TALL_SEAGRASS ||
-                          block.getType() == Material.KELP_PLANT) {
+                            block.getType() == Material.ICE ||
+                            block.getType() == Material.PACKED_ICE ||
+                            block.getType() == Material.TALL_SEAGRASS ||
+                            block.getType() == Material.KELP_PLANT) {
                         if ((isOverride && y != baseSeaLevel) ||
-                              (block.hasMetadata(SEALEVEL_BLOCK) && (y > customSeaLevel || deltaSeaLevel == 0))) {
+                                (block.hasMetadata(SEALEVEL_BLOCK) && (y > customSeaLevel || deltaSeaLevel == 0))) {
                             //Set water-to-air when:
                             // - Repairing, except the base-sea-level [1, 3]
                             // - Owner of block above sea-level [2]
@@ -221,9 +224,9 @@ public class SeaLevelRise extends ListenerClimateEffect {
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
         seaMap = GlobalWarming.getInstance().getGson().fromJson(
-              jsonModel.get("distribution"),
-              new TypeToken<Distribution>() {
-              }.getType());
+                jsonModel.get("distribution"),
+                new TypeToken<Distribution>() {
+                }.getType());
         // Compatibility
         try {
             seaMap = new Distribution(seaMap.temp, seaMap.fitness);

@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 public @interface ClimateData {
 
     ClimateEffectType type();
+
     boolean provideModel() default true;
 
 }

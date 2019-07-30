@@ -11,7 +11,8 @@ import java.util.Map;
 
 public class ReductionModel extends Model {
 
-    @Getter private Map<Material, Double> reductionMap;
+    @Getter
+    private Map<Material, Double> reductionMap;
 
     public ReductionModel(String worldName) {
         super(worldName, "reductionModel.json");
@@ -21,9 +22,9 @@ public class ReductionModel extends Model {
     @Override
     public void loadModel() {
         this.reductionMap = ClimateEngine.getInstance().getGson().fromJson(
-              super.getContents(),
-              new TypeToken<Map<Material, Double>>() {
-              }.getType());
+                super.getContents(),
+                new TypeToken<Map<Material, Double>>() {
+                }.getType());
 
         if (this.reductionMap == null) {
             throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));

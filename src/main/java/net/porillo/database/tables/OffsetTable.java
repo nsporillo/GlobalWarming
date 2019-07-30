@@ -21,7 +21,8 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
      * TODO: When an offset bounty is complete, delete from this list
      * TODO: "synchronize" will be required to protect critical
      */
-    @Getter private List<OffsetBounty> offsetList = new ArrayList<>();
+    @Getter
+    private List<OffsetBounty> offsetList = new ArrayList<>();
 
     public OffsetTable() {
         super("offsets");
@@ -43,9 +44,9 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
         boolean isPlayerHunting = false;
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
-                  bounty.getHunterId() != null &&
-                  bounty.getHunterId().equals(gPlayer.getUniqueId())) {
+                    bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
+                    bounty.getHunterId() != null &&
+                    bounty.getHunterId().equals(gPlayer.getUniqueId())) {
                 isPlayerHunting = true;
                 break;
             }
@@ -68,10 +69,10 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
         OffsetBounty joinedBounty = null;
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
-                  bounty.getUniqueId() == bountyId) {
+                    bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
+                    bounty.getUniqueId() == bountyId) {
                 if (bounty.getCreatorId() != null &&
-                      bounty.getCreatorId().equals(gPlayer.getUniqueId())) {
+                        bounty.getCreatorId().equals(gPlayer.getUniqueId())) {
                     throw new Exception(Lang.BOUNTY_BOUNTYOWNER.get());
                 }
 
@@ -105,9 +106,9 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
         OffsetBounty abandonedBounty = null;
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
-                  bounty.getHunterId() != null &&
-                  bounty.getHunterId().equals(gPlayer.getUniqueId())) {
+                    bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
+                    bounty.getHunterId() != null &&
+                    bounty.getHunterId().equals(gPlayer.getUniqueId())) {
                 //Bounty abandoned:
                 bounty.setTimeStarted(0);
                 bounty.setHunterId(null);
@@ -130,11 +131,11 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
         List<OffsetBounty> cancelledBounties = new ArrayList<>();
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
-                  bounty.getCreatorId() != null &&
-                  bounty.getCreatorId().equals(gPlayer.getUniqueId()) &&
-                  (bounty.getHunterId() == null ||
-                        bounty.getHunterId() == 0)) {
+                    bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
+                    bounty.getCreatorId() != null &&
+                    bounty.getCreatorId().equals(gPlayer.getUniqueId()) &&
+                    (bounty.getHunterId() == null ||
+                            bounty.getHunterId() == 0)) {
                 //Bounty cancelled:
                 bounty.setTimeCompleted(System.currentTimeMillis());
 
@@ -156,9 +157,9 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
         OffsetBounty updatedBounty = null;
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
-                  bounty.getHunterId() != null &&
-                  bounty.getHunterId().equals(gPlayer.getUniqueId())) {
+                    bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
+                    bounty.getHunterId() != null &&
+                    bounty.getHunterId().equals(gPlayer.getUniqueId())) {
                 //Update the blocks remaining:
                 int blocksRemaining = Math.max(bounty.getLogBlocksTarget() - blocksCompleted, 0);
                 bounty.setLogBlocksTarget(blocksRemaining);
@@ -199,9 +200,9 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
         int bountyCount = 0;
         for (OffsetBounty bounty : offsetList) {
             if (bounty.getTimeCompleted() == 0 &&
-                  bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
-                  bounty.getCreatorId() != null &&
-                  bounty.getCreatorId().equals(gPlayer.getUniqueId())) {
+                    bounty.getWorldId().equals(gPlayer.getAssociatedWorldId()) &&
+                    bounty.getCreatorId() != null &&
+                    bounty.getCreatorId().equals(gPlayer.getUniqueId())) {
                 bountyCount++;
             }
         }

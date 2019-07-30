@@ -54,7 +54,7 @@ public class TableInsertTest {
         final Integer uniqueId = random.nextInt(Integer.MAX_VALUE);
         UUID worldId = UUID.randomUUID();
         Contribution contribution =
-              new Contribution(uniqueId, random.nextInt(Integer.MAX_VALUE), random.nextInt(Integer.MAX_VALUE), worldId, 15);
+                new Contribution(uniqueId, random.nextInt(Integer.MAX_VALUE), random.nextInt(Integer.MAX_VALUE), worldId, 15);
         AsyncDBQueue.getInstance().queueInsertQuery(new ContributionInsertQuery(contribution));
         AsyncDBQueue.getInstance().writeInsertQueue(connection);
 
@@ -67,15 +67,15 @@ public class TableInsertTest {
         // Validate the object is correct
         while (resultSet.next()) {
             assertThat("pk mismatch",
-                  uniqueId.equals(resultSet.getInt(1)));
+                    uniqueId.equals(resultSet.getInt(1)));
             assertThat("contributor mismatch",
-                  contribution.getContributer().equals(resultSet.getInt(2)));
+                    contribution.getContributer().equals(resultSet.getInt(2)));
             assertThat("contribKey mismatch",
-                  contribution.getContributionKey().equals(resultSet.getInt(3)));
+                    contribution.getContributionKey().equals(resultSet.getInt(3)));
             assertThat("worldId mismatch",
-                  contribution.getWorldId().equals(UUID.fromString(resultSet.getString(4))));
+                    contribution.getWorldId().equals(UUID.fromString(resultSet.getString(4))));
             assertThat("value mismatch",
-                  contribution.getContributionValue() == resultSet.getInt(5));
+                    contribution.getContributionValue() == resultSet.getInt(5));
         }
     }
 

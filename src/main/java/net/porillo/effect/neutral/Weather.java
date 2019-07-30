@@ -15,7 +15,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @ClimateData(type = ClimateEffectType.WEATHER)
@@ -23,7 +25,8 @@ public class Weather extends ScheduleClimateEffect {
 
     public enum WeatherData {STORM, THUNDER, STRIKE_PLAYER, DURATION}
 
-    @Getter public HashMap<WeatherData, Distribution> weatherDistribution;
+    @Getter
+    public HashMap<WeatherData, Distribution> weatherDistribution;
 
     /**
      * Determine if a weather effect is allowed
@@ -95,10 +98,10 @@ public class Weather extends ScheduleClimateEffect {
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
         this.weatherDistribution =
-              GlobalWarming.getInstance().getGson().fromJson(
-                    jsonModel.get("distribution"),
-                    new TypeToken<Map<WeatherData, Distribution>>() {
-                    }.getType());
+                GlobalWarming.getInstance().getGson().fromJson(
+                        jsonModel.get("distribution"),
+                        new TypeToken<Map<WeatherData, Distribution>>() {
+                        }.getType());
 
         if (this.weatherDistribution == null) {
             unregister();

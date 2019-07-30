@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public abstract class DeleteQuery implements Query {
 
-	@Getter private String table;
+    @Getter
+    private String table;
 
 }

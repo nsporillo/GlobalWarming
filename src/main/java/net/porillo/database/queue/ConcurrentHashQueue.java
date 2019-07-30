@@ -8,45 +8,45 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConcurrentHashQueue<T> implements Iterable<T> {
 
-	private Map<Integer, T> hashcodeMap;
-	private Queue<Integer> hashcodeQueue;
+    private Map<Integer, T> hashcodeMap;
+    private Queue<Integer> hashcodeQueue;
 
-	public ConcurrentHashQueue() {
-		this.hashcodeMap = new ConcurrentHashMap<>();
-		this.hashcodeQueue = new ConcurrentLinkedQueue<>();
-	}
+    public ConcurrentHashQueue() {
+        this.hashcodeMap = new ConcurrentHashMap<>();
+        this.hashcodeQueue = new ConcurrentLinkedQueue<>();
+    }
 
-	public void offer(T element) {
-		if (!hashcodeMap.containsKey(element.hashCode())) {
-			hashcodeQueue.offer(element.hashCode());
-			hashcodeMap.put(element.hashCode(), element);
-		}
-	}
+    public void offer(T element) {
+        if (!hashcodeMap.containsKey(element.hashCode())) {
+            hashcodeQueue.offer(element.hashCode());
+            hashcodeMap.put(element.hashCode(), element);
+        }
+    }
 
-	public T poll() {
-		if (isEmpty()) return null;
+    public T poll() {
+        if (isEmpty()) return null;
 
-		Integer hashcode = hashcodeQueue.poll();
-		return hashcodeMap.remove(hashcode);
-	}
+        Integer hashcode = hashcodeQueue.poll();
+        return hashcodeMap.remove(hashcode);
+    }
 
-	public T peek() {
-		if (isEmpty()) return null;
+    public T peek() {
+        if (isEmpty()) return null;
 
-		Integer hashcode = hashcodeQueue.peek();
-		return hashcodeMap.get(hashcode);
-	}
+        Integer hashcode = hashcodeQueue.peek();
+        return hashcodeMap.get(hashcode);
+    }
 
-	public boolean isEmpty() {
-		return hashcodeQueue.isEmpty();
-	}
+    public boolean isEmpty() {
+        return hashcodeQueue.isEmpty();
+    }
 
-	public int size() {
-		return hashcodeQueue.size();
-	}
+    public int size() {
+        return hashcodeQueue.size();
+    }
 
-	@Override
-	public Iterator<T> iterator() {
-		return hashcodeMap.values().iterator();
-	}
+    @Override
+    public Iterator<T> iterator() {
+        return hashcodeMap.values().iterator();
+    }
 }

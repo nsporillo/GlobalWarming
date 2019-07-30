@@ -12,24 +12,24 @@ import java.util.List;
 
 public class OffsetSelectQuery extends SelectQuery<OffsetBounty, OffsetTable> {
 
-	public OffsetSelectQuery(OffsetTable callback) {
-		super("offsets", callback);
-	}
+    public OffsetSelectQuery(OffsetTable callback) {
+        super("offsets", callback);
+    }
 
-	@Override
-	public String getSQL() {
-		return "SELECT * FROM offsets WHERE timeCompleted = 0";
-	}
+    @Override
+    public String getSQL() {
+        return "SELECT * FROM offsets WHERE timeCompleted = 0";
+    }
 
-	@Override
-	public List<OffsetBounty> queryDatabase(Connection connection) throws SQLException {
-		List<OffsetBounty> bounties = new ArrayList<>();
-		ResultSet rs = prepareStatement(connection).executeQuery(getSQL());
+    @Override
+    public List<OffsetBounty> queryDatabase(Connection connection) throws SQLException {
+        List<OffsetBounty> bounties = new ArrayList<>();
+        ResultSet rs = prepareStatement(connection).executeQuery(getSQL());
 
-		while (rs.next()) {
-			bounties.add(new OffsetBounty(rs));
-		}
+        while (rs.next()) {
+            bounties.add(new OffsetBounty(rs));
+        }
 
-		return bounties;
-	}
+        return bounties;
+    }
 }

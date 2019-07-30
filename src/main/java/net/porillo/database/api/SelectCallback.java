@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface SelectCallback<Type> {
 
-	void onSelectionCompletion(List<Type> returnList);
+    void onSelectionCompletion(List<Type> returnList);
 }

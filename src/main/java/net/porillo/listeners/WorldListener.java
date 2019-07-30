@@ -5,11 +5,11 @@ import org.bukkit.event.Listener;
 
 public class WorldListener implements Listener {
 
-	private GlobalWarming gw;
+    private GlobalWarming gw;
 
-	public WorldListener(GlobalWarming main) {
-		this.gw = main;
-	}
+    public WorldListener(GlobalWarming main) {
+        this.gw = main;
+    }
 
-	//Unused currently
+    //Unused currently
 }

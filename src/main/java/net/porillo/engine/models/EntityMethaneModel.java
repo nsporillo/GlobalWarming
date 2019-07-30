@@ -12,7 +12,8 @@ import java.util.Map;
 
 public class EntityMethaneModel extends Model {
 
-    @Getter private Map<EntityType, Double> entityMethaneMap;
+    @Getter
+    private Map<EntityType, Double> entityMethaneMap;
 
     public EntityMethaneModel(String worldName) {
         super(worldName, "entityMethaneModel.json");

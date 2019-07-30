@@ -12,7 +12,8 @@ import java.util.Map;
 
 public class FuelModel extends Model {
 
-    @Getter private Map<Material, Double> fuelMap;
+    @Getter
+    private Map<Material, Double> fuelMap;
 
     public FuelModel(String worldName) {
         super(worldName, "fuelModel.json");

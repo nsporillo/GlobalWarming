@@ -10,30 +10,31 @@ import net.porillo.effect.EffectEngine;
 @AllArgsConstructor
 public abstract class ClimateEffect {
 
-	@Getter
-	@Setter private JsonObject jsonModel;
-	private ClimateData climateData;
+    @Getter
+    @Setter
+    private JsonObject jsonModel;
+    private ClimateData climateData;
 
-	public ClimateEffect() {
-		this.climateData = getClass().getAnnotation(ClimateData.class);
-	}
+    public ClimateEffect() {
+        this.climateData = getClass().getAnnotation(ClimateData.class);
+    }
 
-	public String getName() {
-		if (climateData != null) {
-			return climateData.type().name();
-		}
-		return "";
-	}
+    public String getName() {
+        if (climateData != null) {
+            return climateData.type().name();
+        }
+        return "";
+    }
 
-	public ClimateEffectType getType() {
-		if (climateData != null) {
-			return climateData.type();
-		}
-		return ClimateEffectType.NONE;
-	}
+    public ClimateEffectType getType() {
+        if (climateData != null) {
+            return climateData.type();
+        }
+        return ClimateEffectType.NONE;
+    }
 
-	public void unregister() {
-		EffectEngine.getInstance().unregisterEffect(getType());
-	}
+    public void unregister() {
+        EffectEngine.getInstance().unregisterEffect(getType());
+    }
 
 }

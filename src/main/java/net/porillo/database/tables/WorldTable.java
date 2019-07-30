@@ -53,8 +53,8 @@ public class WorldTable extends Table implements SelectCallback<GWorld> {
         WorldInsertQuery worldInsertQuery = new WorldInsertQuery(gWorld);
         AsyncDBQueue.getInstance().queueInsertQuery(worldInsertQuery);
         GlobalWarming.getInstance().getLogger().info(String.format(
-              "Record created for world: [%s]",
-              WorldConfig.getDisplayName(worldId)));
+                "Record created for world: [%s]",
+                WorldConfig.getDisplayName(worldId)));
         return gWorld;
     }
 

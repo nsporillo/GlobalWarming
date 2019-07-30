@@ -1,37 +1,37 @@
 {
-    "display": {
-        "title": {
-            "text": "Smoke 'Em if You Got 'Em"
-        },
-        "description": {
-            "text": "Smelt 64 iron ingots.  Trivia: emissions from industry are primarily from burning fossil fuels and in chemical reactions for producing goods [EPA, 2016]."
-        },
-        "icon": {
-            "item": "minecraft:iron_ingot"
-        },
-        "frame": "challenge",
-        "show_toast": true,
-        "announce_to_chat": true,
-        "hidden": false
+  "display": {
+    "title": {
+      "text": "Smoke 'Em if You Got 'Em"
     },
-    "rewards": {
-        "experience": 10
+    "description": {
+      "text": "Smelt 64 iron ingots.  Trivia: emissions from industry are primarily from burning fossil fuels and in chemical reactions for producing goods [EPA, 2016]."
     },
-    "criteria": {
-        "smoke_em_iron": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "minecraft:iron_ingot",
-                        "count": {
-                            "min": 64,
-                            "max": 64
-                        }
-                    }
-                ]
+    "icon": {
+      "item": "minecraft:iron_ingot"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 10
+  },
+  "criteria": {
+    "smoke_em_iron": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:iron_ingot",
+            "count": {
+              "min": 64,
+              "max": 64
             }
-        }
-    },
-    "parent": "gw:co2_can_play_at_that_game"
+          }
+        ]
+      }
+    }
+  },
+  "parent": "gw:co2_can_play_at_that_game"
 }

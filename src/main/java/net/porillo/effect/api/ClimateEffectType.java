@@ -2,25 +2,25 @@ package net.porillo.effect.api;
 
 public enum ClimateEffectType {
 
-	// Returned by ClimateEffect in case @ClimateData is nonexistent
-	NONE,
+    // Returned by ClimateEffect in case @ClimateData is nonexistent
+    NONE,
 
-	// Climate Damages
-	SEA_LEVEL_RISE,
+    // Climate Damages
+    SEA_LEVEL_RISE,
 
-	ICE_MELT,
-	SNOW_MELT,
-	ICE_FORMATION,
-	SNOW_FORMATION,
+    ICE_MELT,
+    SNOW_MELT,
+    ICE_FORMATION,
+    SNOW_FORMATION,
 
-	AREA_POTION_CLOUD,
+    AREA_POTION_CLOUD,
 
-	FARM_YIELD,
-	MOB_SPAWN_RATE,
-	WEATHER,
+    FARM_YIELD,
+    MOB_SPAWN_RATE,
+    WEATHER,
 
-	PERMANENT_SLOWNESS,
-	FIRE
+    PERMANENT_SLOWNESS,
+    FIRE
 
-	// TODO: Add more
+    // TODO: Add more
 }

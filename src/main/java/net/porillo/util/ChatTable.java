@@ -13,12 +13,12 @@ import java.util.Map;
 
 /**
  * Create a table where the columns align correctly
- *  - Assumes the default Minecraft font which is not monospaced
- *  - Customizable options:
- *   - Title
- *   - Headers: color and width in pixels
- *   - Default text colors
- *   - Row and column styles
+ * - Assumes the default Minecraft font which is not monospaced
+ * - Customizable options:
+ * - Title
+ * - Headers: color and width in pixels
+ * - Default text colors
+ * - Row and column styles
  */
 public class ChatTable {
     public enum Section {
@@ -40,11 +40,13 @@ public class ChatTable {
 
     public static final int CHAT_WIDTH = GlobalWarming.getInstance().getConf().getChatTableWidth();
     private final Map<Character, Integer> CHAR_WIDTH;
-    @Setter private String title;
+    @Setter
+    private String title;
     private List<String> headers;
     private List<Integer> headerWidth;
     private List<List<String>> body;
-    @Setter private ChatColor gridColor;
+    @Setter
+    private ChatColor gridColor;
     private ChatColor textColor[];
     private Character decoration[];
     private Character delimiter[];
@@ -288,15 +290,15 @@ public class ChatTable {
         String formattedValue = value;
         while (formattedValue.length() > 3 && getPixelWidth(formattedValue) >= columnPixels) {
             formattedValue = String.format(
-                  "%s...",
-                  formattedValue.substring(0, formattedValue.length() - 4));
+                    "%s...",
+                    formattedValue.substring(0, formattedValue.length() - 4));
         }
 
         formattedValue = String.format(
-              "%s%s%s",
-              textColor[section.get()],
-              formattedValue,
-              gridColor);
+                "%s%s%s",
+                textColor[section.get()],
+                formattedValue,
+                gridColor);
 
         return pad(formattedValue, columnPixels, section, align);
     }
@@ -312,17 +314,17 @@ public class ChatTable {
             delimiterWidth = headerDelimiterWidth;
             delimiters[Section.HEADER.get()] = delimiter[Section.HEADER.get()].toString();
             delimiters[Section.BODY.get()] = pad(
-                  delimiter[Section.BODY.get()].toString(),
-                  headerDelimiterWidth,
-                  Section.BODY,
-                  Alignment.CENTER);
+                    delimiter[Section.BODY.get()].toString(),
+                    headerDelimiterWidth,
+                    Section.BODY,
+                    Alignment.CENTER);
         } else {
             delimiterWidth = bodyDelimiterWidth;
             delimiters[Section.HEADER.get()] = pad(
-                  delimiter[Section.HEADER.get()].toString(),
-                  bodyDelimiterWidth,
-                  Section.HEADER,
-                  Alignment.CENTER);
+                    delimiter[Section.HEADER.get()].toString(),
+                    bodyDelimiterWidth,
+                    Section.HEADER,
+                    Alignment.CENTER);
 
             delimiters[Section.BODY.get()] = delimiter[Section.BODY.get()].toString();
         }
@@ -338,34 +340,34 @@ public class ChatTable {
         int tableWidth = getPixelWidth(tableBuilder.toString());
         if (title.length() > 0) {
             String formattedValue = String.format(
-                  "%s%s%s",
-                  textColor[Section.HEADER.get()],
-                  title,
-                  gridColor);
+                    "%s%s%s",
+                    textColor[Section.HEADER.get()],
+                    title,
+                    gridColor);
 
             tableBuilder.insert(0, String.format(
-                  "\n%s%s\n",
-                  gridColor,
-                  pad(formattedValue, tableWidth, Section.HEADER, Alignment.CENTER)));
+                    "\n%s%s\n",
+                    gridColor,
+                    pad(formattedValue, tableWidth, Section.HEADER, Alignment.CENTER)));
         }
 
         //Body:
         if (body.size() == 0) {
             //No data:
             String formattedValue = String.format(
-                  "%s%s%s",
-                  textColor[Section.BODY.get()],
-                  Lang.TABLE_EMPTY.get(),
-                  gridColor);
+                    "%s%s%s",
+                    textColor[Section.BODY.get()],
+                    Lang.TABLE_EMPTY.get(),
+                    gridColor);
 
             tableBuilder.append("\n");
             tableBuilder.append(gridColor);
             tableBuilder.append(delimiters[Section.BODY.get()]);
             tableBuilder.append(pad(
-                  formattedValue,
-                  tableWidth - delimiterWidth * 2,
-                  Section.BODY,
-                  Alignment.CENTER));
+                    formattedValue,
+                    tableWidth - delimiterWidth * 2,
+                    Section.BODY,
+                    Alignment.CENTER));
 
             tableBuilder.append(delimiters[Section.BODY.get()]);
         } else {
@@ -428,26 +430,26 @@ public class ChatTable {
 
             //Text block:
             jsonBuilder.append(String.format(
-                  "{\"text\":\"%s\"}",
-                  textBlock));
+                    "{\"text\":\"%s\"}",
+                    textBlock));
 
             //Click block:
             if (uniqueIds.size() > 0) {
                 int id = uniqueIds.remove(0);
                 jsonBuilder.append(String.format(
-                      ", {\"text\":\"%s\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"%s %d\"}%s}",
-                      clickToken,
-                      command,
-                      id,
-                      hoverEvent));
+                        ", {\"text\":\"%s\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"%s %d\"}%s}",
+                        clickToken,
+                        command,
+                        id,
+                        hoverEvent));
             }
         }
 
         //Tellraw command:
         // - Note: escaping newlines prior to execution
         return String.format(
-              "tellraw %s [%s]",
-              gPlayer.getOfflinePlayer().getName(),
-              jsonBuilder.toString().replace("\n", "\\n"));
+                "tellraw %s [%s]",
+                gPlayer.getOfflinePlayer().getName(),
+                jsonBuilder.toString().replace("\n", "\\n"));
     }
 }

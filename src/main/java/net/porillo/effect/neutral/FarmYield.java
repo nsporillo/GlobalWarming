@@ -42,9 +42,9 @@ public class FarmYield extends ListenerClimateEffect {
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
         this.cropDistribution = GlobalWarming.getInstance().getGson().fromJson(
-              jsonModel,
-              new TypeToken<Map<Material, Distribution>>() {
-              }.getType());
+                jsonModel,
+                new TypeToken<Map<Material, Distribution>>() {
+                }.getType());
 
         if (cropDistribution == null) {
             unregister();

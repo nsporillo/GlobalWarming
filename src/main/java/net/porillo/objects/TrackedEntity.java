@@ -14,12 +14,24 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TrackedEntity {
 
-    @Getter @Setter private Integer uniqueId;
-    @Getter @Setter private UUID uuid;
-    @Getter @Setter private Integer breederId;
-    @Getter @Setter private EntityType entityType;
-    @Getter @Setter private long ticksLived;
-    @Getter @Setter private boolean alive;
+    @Getter
+    @Setter
+    private Integer uniqueId;
+    @Getter
+    @Setter
+    private UUID uuid;
+    @Getter
+    @Setter
+    private Integer breederId;
+    @Getter
+    @Setter
+    private EntityType entityType;
+    @Getter
+    @Setter
+    private long ticksLived;
+    @Getter
+    @Setter
+    private boolean alive;
 
     public TrackedEntity(ResultSet rs) throws SQLException {
         super();

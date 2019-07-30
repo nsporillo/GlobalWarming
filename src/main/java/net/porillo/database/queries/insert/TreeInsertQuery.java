@@ -19,7 +19,7 @@ public class TreeInsertQuery extends InsertQuery {
     @Override
     public String getSQL() {
         return "INSERT INTO trees (uniqueId, ownerId, worldId, blockX, blockY, blockZ, sapling, size)" +
-              " VALUES (?,?,?,?,?,?,?,?)";
+                " VALUES (?,?,?,?,?,?,?,?)";
     }
 
     @Override

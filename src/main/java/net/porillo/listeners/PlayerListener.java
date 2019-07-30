@@ -37,7 +37,7 @@ public class PlayerListener implements Listener {
         //Add the scoreboard if the climate engine for the player's associated-world is enabled
         // - Note: scores are not tied to the player's current-world
         WorldClimateEngine engine =
-              ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
+                ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
 
         if (engine != null && engine.isEnabled()) {
             //Show players their current carbon score in chat:

@@ -11,12 +11,14 @@ import java.sql.SQLException;
 @AllArgsConstructor
 public class CreateTableQuery implements Query {
 
-	@Getter private String table;
-	@Getter private String SQL;
+    @Getter
+    private String table;
+    @Getter
+    private String SQL;
 
-	@Override
-	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
-		return connection.prepareStatement(this.SQL);
-	}
+    @Override
+    public PreparedStatement prepareStatement(Connection connection) throws SQLException {
+        return connection.prepareStatement(this.SQL);
+    }
 
 }

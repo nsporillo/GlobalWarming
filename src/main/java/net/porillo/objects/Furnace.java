@@ -15,45 +15,45 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Furnace extends TrackedBlock {
 
-	/**
-	 * If this furnace currently exists in the world
-	 */
-	private boolean active;
+    /**
+     * If this furnace currently exists in the world
+     */
+    private boolean active;
 
-	public Furnace(Integer uniqueId, Integer ownerId, Location location, boolean active) {
-		super(uniqueId, ownerId, location);
-		this.active = active;
-	}
+    public Furnace(Integer uniqueId, Integer ownerId, Location location, boolean active) {
+        super(uniqueId, ownerId, location);
+        this.active = active;
+    }
 
-	public Furnace(ResultSet rs) throws SQLException {
-		super(rs.getInt(1),
-			rs.getInt(2),
-			Bukkit.getWorld(UUID.fromString(rs.getString(3)))
-				.getBlockAt(rs.getInt(4), rs.getInt(5), rs.getInt(6)).getLocation());
+    public Furnace(ResultSet rs) throws SQLException {
+        super(rs.getInt(1),
+                rs.getInt(2),
+                Bukkit.getWorld(UUID.fromString(rs.getString(3)))
+                        .getBlockAt(rs.getInt(4), rs.getInt(5), rs.getInt(6)).getLocation());
 
-		this.active = rs.getBoolean(7);
-	}
+        this.active = rs.getBoolean(7);
+    }
 
-	public GPlayer getOwner() {
-		PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
-		UUID ownerUUID = playerTable.getUuidMap().get(getOwnerId());
-		return playerTable.getPlayers().get(ownerUUID);
-	}
+    public GPlayer getOwner() {
+        PlayerTable playerTable = GlobalWarming.getInstance().getTableManager().getPlayerTable();
+        UUID ownerUUID = playerTable.getUuidMap().get(getOwnerId());
+        return playerTable.getPlayers().get(ownerUUID);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
-		Furnace furnace = (Furnace) o;
-		return getUniqueId().equals(furnace.getUniqueId());
-	}
+        Furnace furnace = (Furnace) o;
+        return getUniqueId().equals(furnace.getUniqueId());
+    }
 
-	@Override
-	public int hashCode() {
-		int result = super.hashCode();
-		result = 31 * result + getUniqueId().hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + getUniqueId().hashCode();
+        return result;
+    }
 }

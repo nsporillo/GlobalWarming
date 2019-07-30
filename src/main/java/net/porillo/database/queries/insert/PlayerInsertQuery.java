@@ -10,7 +10,8 @@ import java.sql.SQLException;
 
 public class PlayerInsertQuery extends InsertQuery {
 
-    @Getter private GPlayer player;
+    @Getter
+    private GPlayer player;
 
     public PlayerInsertQuery(GPlayer player) {
         super("players");

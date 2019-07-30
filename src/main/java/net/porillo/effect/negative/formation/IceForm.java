@@ -17,7 +17,8 @@ import org.bukkit.event.block.BlockFormEvent;
 @ClimateData(type = ClimateEffectType.ICE_FORMATION)
 public class IceForm extends ListenerClimateEffect {
 
-    @Getter private Distribution heightMap;
+    @Getter
+    private Distribution heightMap;
 
     @EventHandler
     public void blockFormEvent(BlockFormEvent event) {
@@ -35,9 +36,9 @@ public class IceForm extends ListenerClimateEffect {
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
         this.heightMap = GlobalWarming.getInstance().getGson().fromJson(
-              jsonModel,
-              new TypeToken<Distribution>() {
-              }.getType());
+                jsonModel,
+                new TypeToken<Distribution>() {
+                }.getType());
 
         if (this.heightMap == null) {
             unregister();

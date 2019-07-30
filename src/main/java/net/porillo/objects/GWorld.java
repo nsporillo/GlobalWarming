@@ -27,7 +27,7 @@ public class GWorld {
      * When we loaded this world into GlobalWarming.
      * This might be useful one day to normalize the rate of temperature
      * change so that worlds don't implode if a lot of CO2 is emitted.
-     *
+     * <p>
      * In reality, changes take some time to be realized in the world.
      */
     private long firstSeen;
@@ -36,7 +36,7 @@ public class GWorld {
      * Number of chunks that have ever been loaded in this world
      * We increment on ChunkPopulateEvent, which only happens once
      * for every chunk.
-     *
+     * <p>
      * We want to incorporate size into the equation somehow, since
      * a tiny world with lots of furnaces and no trees should feel
      * the impact.

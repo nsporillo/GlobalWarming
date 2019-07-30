@@ -14,7 +14,8 @@ import java.util.Map;
 
 public class EffectModel extends Model {
 
-    @Getter private Map<ClimateEffectType, JsonObject> effectMap;
+    @Getter
+    private Map<ClimateEffectType, JsonObject> effectMap;
 
     public EffectModel() {
         super(Bukkit.getWorlds().get(0).getName(), "effectModel.json");
@@ -24,8 +25,8 @@ public class EffectModel extends Model {
     @Override
     public void loadModel() {
         this.effectMap = GlobalWarming.getInstance().getGson()
-              .fromJson(super.getContents(), new TypeToken<Map<ClimateEffectType, JsonObject>>() {
-              }.getType());
+                .fromJson(super.getContents(), new TypeToken<Map<ClimateEffectType, JsonObject>>() {
+                }.getType());
 
         if (this.effectMap == null) {
             throw new RuntimeException(String.format("No values found in: [%s]", super.getPath()));

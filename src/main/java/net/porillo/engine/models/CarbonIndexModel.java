@@ -12,7 +12,8 @@ import java.util.TreeMap;
 
 public class CarbonIndexModel extends Model {
 
-    @Getter private Map<Integer, Double> indexMap;
+    @Getter
+    private Map<Integer, Double> indexMap;
     private Distribution distribution;
 
     public CarbonIndexModel(String worldName) {

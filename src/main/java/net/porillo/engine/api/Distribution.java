@@ -10,7 +10,8 @@ public class Distribution {
 
     public double[] temp;
     public double[] fitness;
-    @Getter private transient List<Double> x, y;
+    @Getter
+    private transient List<Double> x, y;
 
     public Distribution(List<Double> x, List<Double> y) {
         this.x = x;

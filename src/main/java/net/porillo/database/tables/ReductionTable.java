@@ -8,10 +8,11 @@ import java.util.List;
 
 public class ReductionTable extends Table {
 
-	@Getter private List<Reduction> reductions = new ArrayList<>();
+    @Getter
+    private List<Reduction> reductions = new ArrayList<>();
 
-	public ReductionTable() {
-		super("reductions");
-		createIfNotExists();
-	}
+    public ReductionTable() {
+        super("reductions");
+        createIfNotExists();
+    }
 }

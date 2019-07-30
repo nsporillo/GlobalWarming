@@ -6,6 +6,6 @@ import java.util.List;
 
 public class EntityPotionChange extends EntityChange {
 
-	private List<PotionEffect> potionEffects;
+    private List<PotionEffect> potionEffects;
 
 }

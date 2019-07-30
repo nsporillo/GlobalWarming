@@ -12,8 +12,10 @@ public class TestUtility {
 
     private static TestUtility instance;
 
-    @Getter private final ConnectionManager connectionManager;
-    @Getter private final Random random = new Random();
+    @Getter
+    private final ConnectionManager connectionManager;
+    @Getter
+    private final Random random = new Random();
 
     public TestUtility() {
         this.connectionManager = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests");

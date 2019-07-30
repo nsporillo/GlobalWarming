@@ -11,8 +11,10 @@ import java.nio.file.Paths;
 
 public abstract class Model {
 
-    @Getter private final String worldName;
-    @Getter private final String modelName;
+    @Getter
+    private final String worldName;
+    @Getter
+    private final String modelName;
     private Path modelsPath;
 
     public Model(String worldName, String modelName) {
@@ -60,9 +62,9 @@ public abstract class Model {
         Path path = getPath();
         if (!Files.exists(path)) {
             GlobalWarming.getInstance().getLogger().info(String.format(
-                  "Model: [%s] does not exist at: [%s], creating.",
-                  modelName,
-                  path));
+                    "Model: [%s] does not exist at: [%s], creating.",
+                    modelName,
+                    path));
 
             try {
                 // Copy resource from JAR to the correct path

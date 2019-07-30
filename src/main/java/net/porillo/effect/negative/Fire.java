@@ -22,7 +22,8 @@ import org.bukkit.event.Listener;
 public class Fire extends ScheduleClimateEffect implements Listener {
 
     private static final int BLOCKS_PER_CHUNK = 16;
-    @Getter private FireDistribution fireMap;
+    @Getter
+    private FireDistribution fireMap;
 
     /**
      * Set a random set of loaded blocks on fire
@@ -49,7 +50,7 @@ public class Fire extends ScheduleClimateEffect implements Listener {
         for (World world : Bukkit.getWorlds()) {
             WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
             if (climateEngine != null &&
-                  climateEngine.isEffectEnabled(ClimateEffectType.FIRE)) {
+                    climateEngine.isEffectEnabled(ClimateEffectType.FIRE)) {
                 double random = GlobalWarming.getInstance().getRandom().nextDouble();
                 double chance = fireMap.getValue(climateEngine.getTemperature());
                 if (random <= chance / 100.f) {
@@ -67,9 +68,9 @@ public class Fire extends ScheduleClimateEffect implements Listener {
     public void setJsonModel(JsonObject jsonModel) {
         super.setJsonModel(jsonModel);
         fireMap = GlobalWarming.getInstance().getGson().fromJson(
-              jsonModel.get("distribution"),
-              new TypeToken<FireDistribution>() {
-              }.getType());
+                jsonModel.get("distribution"),
+                new TypeToken<FireDistribution>() {
+                }.getType());
 
         if (fireMap == null) {
             unregister();

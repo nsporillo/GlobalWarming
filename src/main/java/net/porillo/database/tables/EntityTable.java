@@ -17,12 +17,14 @@ public class EntityTable extends Table implements SelectCallback<TrackedEntity> 
     /**
      * [ENTITY_ID] -> [ENTITY]
      */
-    @Getter private Map<UUID, TrackedEntity> entityMap = new HashMap<>();
+    @Getter
+    private Map<UUID, TrackedEntity> entityMap = new HashMap<>();
 
     /**
      * PLAYER_ID -> SET(ENTITY_ID)
      */
-    @Getter private Map<Integer, HashSet<UUID>> playerMap = new HashMap<>();
+    @Getter
+    private Map<Integer, HashSet<UUID>> playerMap = new HashMap<>();
 
     public EntityTable() {
         super("entities");
@@ -32,6 +34,7 @@ public class EntityTable extends Table implements SelectCallback<TrackedEntity> 
         AsyncDBQueue.getInstance().queueSelectQuery(selectQuery);
 
     }
+
     @Override
     public void onSelectionCompletion(List<TrackedEntity> returnList) {
         if (GlobalWarming.getInstance() != null) {

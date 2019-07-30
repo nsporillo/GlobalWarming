@@ -29,14 +29,15 @@ import java.util.*;
 
 /**
  * Maintain one periodic notification-message per world (uses the scoreboard's worlds)
- *  - One message per player
- *  - Messages are based on each world's temperature
- *  - Supports effect-model modifications
+ * - One message per player
+ * - Messages are based on each world's temperature
+ * - Supports effect-model modifications
  */
 public class CO2Notifications {
     private enum TemperatureRange {LOW, AVERAGE, HIGH}
 
-    @Getter private Map<UUID, BossBar> bossBars;
+    @Getter
+    private Map<UUID, BossBar> bossBars;
     private static final long NOTIFICATION_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getNotificationInterval();
     private static final long NOTIFICATION_DURATION_TICKS = GlobalWarming.getInstance().getConf().getNotificationDuration();
 
@@ -47,40 +48,40 @@ public class CO2Notifications {
 
     private void showPlayerNotifications() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
-              GlobalWarming.getInstance(),
-              () -> {
-                  //Create notification for all players, grouped by associated-world
-                  synchronized (this) {
-                      bossBars.clear();
-                      GScoreboard scoreboard = GlobalWarming.getInstance().getScoreboard();
-                      for (UUID worldId : scoreboard.getScoreboards().keySet()) {
-                          World world = Bukkit.getWorld(worldId);
-                          if (world != null) {
-                              BossBar bossBar = Bukkit.createBossBar(
-                                    getNotificationMessage(worldId),
-                                    BarColor.WHITE,
-                                    BarStyle.SOLID);
+                GlobalWarming.getInstance(),
+                () -> {
+                    //Create notification for all players, grouped by associated-world
+                    synchronized (this) {
+                        bossBars.clear();
+                        GScoreboard scoreboard = GlobalWarming.getInstance().getScoreboard();
+                        for (UUID worldId : scoreboard.getScoreboards().keySet()) {
+                            World world = Bukkit.getWorld(worldId);
+                            if (world != null) {
+                                BossBar bossBar = Bukkit.createBossBar(
+                                        getNotificationMessage(worldId),
+                                        BarColor.WHITE,
+                                        BarStyle.SOLID);
 
-                              bossBars.put(worldId, bossBar);
-                              for (Player player : world.getPlayers()) {
-                                  bossBar.addPlayer(player);
-                              }
-                          }
-                      }
-                  }
-
-                  //Hide the notification after some time:
-                  Bukkit.getScheduler().scheduleAsyncDelayedTask(
-                        GlobalWarming.getInstance(),
-                        () -> {
-                            synchronized (this) {
-                                for (BossBar bossBar : bossBars.values()) {
-                                    bossBar.removeAll();
+                                bossBars.put(worldId, bossBar);
+                                for (Player player : world.getPlayers()) {
+                                    bossBar.addPlayer(player);
                                 }
                             }
-                        },
-                        NOTIFICATION_DURATION_TICKS);
-              }, 0L, NOTIFICATION_INTERVAL_TICKS);
+                        }
+                    }
+
+                    //Hide the notification after some time:
+                    Bukkit.getScheduler().scheduleAsyncDelayedTask(
+                            GlobalWarming.getInstance(),
+                            () -> {
+                                synchronized (this) {
+                                    for (BossBar bossBar : bossBars.values()) {
+                                        bossBar.removeAll();
+                                    }
+                                }
+                            },
+                            NOTIFICATION_DURATION_TICKS);
+                }, 0L, NOTIFICATION_INTERVAL_TICKS);
     }
 
     private String getNotificationMessage(UUID worldId) {
@@ -121,33 +122,33 @@ public class CO2Notifications {
                     final double normalFarmYieldFitness = distribution.getValue(14.0);
                     optional = randomMaterial.toString().toLowerCase().replace("_", "");
                     message = getMessage(
-                          farmYieldFitness < normalFarmYieldFitness,
-                          range,
-                          Lang.NOTIFICATION_FARM_LOW,
-                          Lang.NOTIFICATION_FARM_OK,
-                          Lang.NOTIFICATION_FARM_HIGH);
+                            farmYieldFitness < normalFarmYieldFitness,
+                            range,
+                            Lang.NOTIFICATION_FARM_LOW,
+                            Lang.NOTIFICATION_FARM_OK,
+                            Lang.NOTIFICATION_FARM_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.FIRE) && random < 0.2) {
                     //Fire:
                     final Distribution distribution = EffectEngine.getInstance().getEffect(Fire.class, ClimateEffectType.FIRE).getFireMap();
                     final double fireFitness = distribution.getValue(temperature);
                     final double normalFireFitness = distribution.getValue(14.0);
                     message = getMessage(
-                          fireFitness != normalFireFitness,
-                          range,
-                          Lang.NOTIFICATION_FIRE_LOW,
-                          Lang.NOTIFICATION_FIRE_OK,
-                          Lang.NOTIFICATION_FIRE_HIGH);
+                            fireFitness != normalFireFitness,
+                            range,
+                            Lang.NOTIFICATION_FIRE_LOW,
+                            Lang.NOTIFICATION_FIRE_OK,
+                            Lang.NOTIFICATION_FIRE_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.ICE_FORMATION) && random < 0.3) {
                     //Ice:
                     final Distribution distribution = EffectEngine.getInstance().getEffect(IceForm.class, ClimateEffectType.ICE_FORMATION).getHeightMap();
                     final double iceFitness = distribution.getValue(temperature);
                     final double normalIceFitness = distribution.getValue(14.0);
                     message = getMessage(
-                          iceFitness != normalIceFitness,
-                          range,
-                          Lang.NOTIFICATION_ICE_LOW,
-                          Lang.NOTIFICATION_ICE_OK,
-                          Lang.NOTIFICATION_ICE_HIGH);
+                            iceFitness != normalIceFitness,
+                            range,
+                            Lang.NOTIFICATION_ICE_LOW,
+                            Lang.NOTIFICATION_ICE_OK,
+                            Lang.NOTIFICATION_ICE_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.MOB_SPAWN_RATE) && random < 0.4) {
                     //Mob (with random entities):
                     final List<EntityType> keys = new ArrayList<>(worldClimateEngine.getEntityFitnessModel().getEntityFitnessMap().keySet());
@@ -157,11 +158,11 @@ public class CO2Notifications {
                     final double normalMobFitness = distribution.getValue(14.0);
                     optional = randomEntity.toString().toLowerCase().replace("_", "");
                     message = getMessage(
-                          mobFitness < normalMobFitness,
-                          range,
-                          Lang.NOTIFICATION_MOB_LOW,
-                          Lang.NOTIFICATION_MOB_OK,
-                          Lang.NOTIFICATION_MOB_HIGH);
+                            mobFitness < normalMobFitness,
+                            range,
+                            Lang.NOTIFICATION_MOB_LOW,
+                            Lang.NOTIFICATION_MOB_OK,
+                            Lang.NOTIFICATION_MOB_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.SEA_LEVEL_RISE) && random < 0.5) {
                     //Sea-level messages:
                     // Note: sea-level deltas are 0+ (can only rise)
@@ -170,31 +171,31 @@ public class CO2Notifications {
                     final int seaLevelDelta = (int) distribution.getValue(temperature);
                     final int normalSeaLevelDelta = (int) distribution.getValue(14.0);
                     message = getMessage(
-                          seaLevelDelta > normalSeaLevelDelta,
-                          range,
-                          Lang.NOTIFICATION_SEALEVEL_LOW,
-                          Lang.NOTIFICATION_SEALEVEL_OK,
-                          Lang.NOTIFICATION_SEALEVEL_HIGH);
+                            seaLevelDelta > normalSeaLevelDelta,
+                            range,
+                            Lang.NOTIFICATION_SEALEVEL_LOW,
+                            Lang.NOTIFICATION_SEALEVEL_OK,
+                            Lang.NOTIFICATION_SEALEVEL_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.PERMANENT_SLOWNESS) && random < 0.6) {
                     //Slowness messages:
                     boolean isEffectActive = (temperature >= EffectEngine.getInstance().getEffect(PermanentSlowness.class, ClimateEffectType.PERMANENT_SLOWNESS).getTemperatureThreshold());
                     message = getMessage(
-                          isEffectActive,
-                          range,
-                          Lang.NOTIFICATION_SLOWNESS_LOW,
-                          Lang.NOTIFICATION_SLOWNESS_OK,
-                          Lang.NOTIFICATION_SLOWNESS_HIGH);
+                            isEffectActive,
+                            range,
+                            Lang.NOTIFICATION_SLOWNESS_LOW,
+                            Lang.NOTIFICATION_SLOWNESS_OK,
+                            Lang.NOTIFICATION_SLOWNESS_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.SNOW_FORMATION) && random < 0.7) {
                     //Snow messages:
                     final Distribution distribution = EffectEngine.getInstance().getEffect(SnowForm.class, ClimateEffectType.SNOW_FORMATION).getHeightMap();
                     final double snowFitness = distribution.getValue(temperature);
                     final double normalSnowFitness = distribution.getValue(14.0);
                     message = getMessage(
-                          snowFitness != normalSnowFitness,
-                          range,
-                          Lang.NOTIFICATION_SNOW_LOW,
-                          Lang.NOTIFICATION_SNOW_OK,
-                          Lang.NOTIFICATION_SNOW_HIGH);
+                            snowFitness != normalSnowFitness,
+                            range,
+                            Lang.NOTIFICATION_SNOW_LOW,
+                            Lang.NOTIFICATION_SNOW_OK,
+                            Lang.NOTIFICATION_SNOW_HIGH);
                 } else if (worldClimateEngine.isEffectEnabled(ClimateEffectType.WEATHER) && random < 0.8) {
                     //Weather (storms):
                     final Weather weather = EffectEngine.getInstance().getEffect(Weather.class, ClimateEffectType.WEATHER);
@@ -202,29 +203,29 @@ public class CO2Notifications {
                     final double weatherFitness = distribution.getValue(temperature);
                     final double normalWeatherFitness = distribution.getValue(14.0);
                     message = getMessage(
-                          weatherFitness > normalWeatherFitness,
-                          range,
-                          Lang.NOTIFICATION_WEATHER_LOW,
-                          Lang.NOTIFICATION_WEATHER_OK,
-                          Lang.NOTIFICATION_WEATHER_HIGH);
+                            weatherFitness > normalWeatherFitness,
+                            range,
+                            Lang.NOTIFICATION_WEATHER_LOW,
+                            Lang.NOTIFICATION_WEATHER_OK,
+                            Lang.NOTIFICATION_WEATHER_HIGH);
                 }
             }
         } finally {
             //Default messages:
             if (message.isEmpty()) {
                 message = getMessage(
-                      range != TemperatureRange.AVERAGE,
-                      range,
-                      Lang.NOTIFICATION_DEFAULT_LOW,
-                      Lang.NOTIFICATION_DEFAULT_OK,
-                      Lang.NOTIFICATION_DEFAULT_HIGH);
+                        range != TemperatureRange.AVERAGE,
+                        range,
+                        Lang.NOTIFICATION_DEFAULT_LOW,
+                        Lang.NOTIFICATION_DEFAULT_OK,
+                        Lang.NOTIFICATION_DEFAULT_HIGH);
             }
         }
 
         return String.format(
-              message,
-              GeneralCommands.getTemperatureColor(temperature),
-              optional);
+                message,
+                GeneralCommands.getTemperatureColor(temperature),
+                optional);
     }
 
     private static String getMessage(boolean isEffectActive, TemperatureRange range, Lang tooLow, Lang ok, Lang tooHigh) {

@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public interface Query {
 
-	String getTable();
+    String getTable();
 
-	String getSQL();
+    String getSQL();
 
-	PreparedStatement prepareStatement(Connection connection) throws SQLException;
+    PreparedStatement prepareStatement(Connection connection) throws SQLException;
 }

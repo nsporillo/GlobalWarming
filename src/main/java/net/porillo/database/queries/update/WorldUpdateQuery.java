@@ -11,22 +11,22 @@ import java.sql.SQLException;
 @ToString
 public class WorldUpdateQuery extends UpdateQuery<GWorld> {
 
-	public WorldUpdateQuery(GWorld world) {
-		super("worlds", world);
-	}
+    public WorldUpdateQuery(GWorld world) {
+        super("worlds", world);
+    }
 
-	@Override
-	public String getSQL() {
-		return "UPDATE worlds SET carbonValue = ?, seaLevel = ?, size = ? WHERE uniqueId = ?";
-	}
+    @Override
+    public String getSQL() {
+        return "UPDATE worlds SET carbonValue = ?, seaLevel = ?, size = ? WHERE uniqueId = ?";
+    }
 
-	@Override
-	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
-		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		preparedStatement.setInt(1, getObject().getCarbonValue());
-		preparedStatement.setInt(2, getObject().getSeaLevel());
-		preparedStatement.setInt(3, getObject().getSize());
-		preparedStatement.setInt(4, getObject().getUniqueID());
-		return preparedStatement;
-	}
+    @Override
+    public PreparedStatement prepareStatement(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
+        preparedStatement.setInt(1, getObject().getCarbonValue());
+        preparedStatement.setInt(2, getObject().getSeaLevel());
+        preparedStatement.setInt(3, getObject().getSize());
+        preparedStatement.setInt(4, getObject().getUniqueID());
+        return preparedStatement;
+    }
 }

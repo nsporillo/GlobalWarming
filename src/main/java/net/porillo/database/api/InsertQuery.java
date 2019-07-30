@@ -6,5 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public abstract class InsertQuery implements Query {
 
-	@Getter private String table;
+    @Getter
+    private String table;
 }

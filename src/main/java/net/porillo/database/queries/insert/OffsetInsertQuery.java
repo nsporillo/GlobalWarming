@@ -19,7 +19,7 @@ public class OffsetInsertQuery extends InsertQuery {
     @Override
     public String getSQL() {
         return "INSERT INTO offsets (uniqueId, creatorId, hunterId, worldId, logBlocksTarget, reward, timeStarted, timeCompleted)" +
-              " VALUES (?,?,?,?,?,?,?,?)";
+                " VALUES (?,?,?,?,?,?,?,?)";
     }
 
     @Override

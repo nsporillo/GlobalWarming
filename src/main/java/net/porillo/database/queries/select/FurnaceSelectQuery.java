@@ -12,24 +12,24 @@ import java.util.List;
 
 public class FurnaceSelectQuery extends SelectQuery<Furnace, FurnaceTable> {
 
-	public FurnaceSelectQuery( FurnaceTable callback) {
-		super("furnaces", callback);
-	}
+    public FurnaceSelectQuery(FurnaceTable callback) {
+        super("furnaces", callback);
+    }
 
-	@Override
-	public List<Furnace> queryDatabase(Connection connection) throws SQLException {
-		List<Furnace> furnaces = new ArrayList<>();
-		ResultSet rs = prepareStatement(connection).executeQuery(getSQL());
+    @Override
+    public List<Furnace> queryDatabase(Connection connection) throws SQLException {
+        List<Furnace> furnaces = new ArrayList<>();
+        ResultSet rs = prepareStatement(connection).executeQuery(getSQL());
 
-		while (rs.next()) {
-			furnaces.add(new Furnace(rs));
-		}
+        while (rs.next()) {
+            furnaces.add(new Furnace(rs));
+        }
 
-		return furnaces;
-	}
+        return furnaces;
+    }
 
-	@Override
-	public String getSQL() {
-		return "SELECT * FROM furnaces WHERE active = true";
-	}
+    @Override
+    public String getSQL() {
+        return "SELECT * FROM furnaces WHERE active = true";
+    }
 }

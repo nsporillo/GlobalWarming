@@ -133,7 +133,8 @@ public enum Lang {
 
     private static class LangConfig extends ConfigLoader {
 
-        @Getter private String locale;
+        @Getter
+        private String locale;
 
         private LangConfig() {
             super("lang.yml");

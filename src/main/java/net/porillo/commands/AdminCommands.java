@@ -31,14 +31,14 @@ public class AdminCommands extends BaseCommand {
             AsyncDBQueue.getInstance().setDebug(!value);
             if (!value) {
                 gPlayer.sendMsg(String.format(
-                      "%sDatabase console logging = %strue.",
-                      ChatColor.GREEN,
-                      ChatColor.YELLOW));
+                        "%sDatabase console logging = %strue.",
+                        ChatColor.GREEN,
+                        ChatColor.YELLOW));
             } else {
                 gPlayer.sendMsg(String.format(
-                      "%sDatabase console logging = %sfalse.",
-                      ChatColor.GREEN,
-                      ChatColor.GRAY));
+                        "%sDatabase console logging = %sfalse.",
+                        ChatColor.GREEN,
+                        ChatColor.GRAY));
             }
         }
 
@@ -76,8 +76,8 @@ public class AdminCommands extends BaseCommand {
             if (args.length == 1) {
                 if (!args[0].equalsIgnoreCase("repair") && !args[0].equalsIgnoreCase("resume")) {
                     gPlayer.sendMsg(String.format(
-                          Lang.GENERIC_INVALIDARGS.get(),
-                          "[repair|resume]"));
+                            Lang.GENERIC_INVALIDARGS.get(),
+                            "[repair|resume]"));
                 } else {
                     boolean isOverride = args[0].equalsIgnoreCase("repair");
                     WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(gPlayer.getWorldId());
@@ -118,9 +118,9 @@ public class AdminCommands extends BaseCommand {
                 //Notify:
                 GlobalWarming.getInstance().getScoreboard().update(gPlayer);
                 gPlayer.sendMsg(
-                      String.format("World carbon score: [%s], temperature: [%s]",
-                            gWorld.getCarbonValue(),
-                            climateEngine.getTemperature()));
+                        String.format("World carbon score: [%s], temperature: [%s]",
+                                gWorld.getCarbonValue(),
+                                climateEngine.getTemperature()));
             } else {
                 gPlayer.sendMsg("Temperature was not updated");
             }

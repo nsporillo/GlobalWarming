@@ -32,29 +32,29 @@ public class MobSpawningRate extends ListenerClimateEffect {
                         try {
                             //Spawn:
                             Entity entity = event.getLocation().getWorld().spawn(
-                                  event.getLocation(),
-                                  EntityType.fromName(alternative).getEntityClass());
+                                    event.getLocation(),
+                                    EntityType.fromName(alternative).getEntityClass());
 
                             //Make it a baby, if possible (for fun):
                             if (entity instanceof Ageable) {
-                                ((Ageable)entity).setBaby();
+                                ((Ageable) entity).setBaby();
                             } else switch (entity.getType()) {
                                 case PHANTOM:
-                                    ((Phantom)entity).setSize(1);
+                                    ((Phantom) entity).setSize(1);
                                     break;
                                 case ZOMBIE:
                                 case DROWNED:
                                 case HUSK:
                                 case PIG_ZOMBIE:
                                 case ZOMBIE_VILLAGER:
-                                    ((Zombie)entity).setBaby(true);
-                                break;
+                                    ((Zombie) entity).setBaby(true);
+                                    break;
                             }
 
                         } catch (Exception e) {
                             GlobalWarming.getInstance().getLogger().warning(String.format(
-                                  "Error spawning alternate mob: [%s]",
-                                  distribution.getAlternate()));
+                                    "Error spawning alternate mob: [%s]",
+                                    distribution.getAlternate()));
                         }
                     }
                 }

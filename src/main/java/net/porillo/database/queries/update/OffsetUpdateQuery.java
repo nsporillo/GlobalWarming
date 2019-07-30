@@ -9,29 +9,29 @@ import java.sql.SQLException;
 
 public class OffsetUpdateQuery extends UpdateQuery<OffsetBounty> {
 
-	public OffsetUpdateQuery(OffsetBounty offsetBounty) {
-		super("offsets", offsetBounty);
-	}
+    public OffsetUpdateQuery(OffsetBounty offsetBounty) {
+        super("offsets", offsetBounty);
+    }
 
-	@Override
-	public String getSQL() {
-		return "UPDATE offsets SET hunterId = ?, timeStarted = ?, logBlocksTarget = ?, timeCompleted = ? WHERE uniqueId = ?";
-	}
+    @Override
+    public String getSQL() {
+        return "UPDATE offsets SET hunterId = ?, timeStarted = ?, logBlocksTarget = ?, timeCompleted = ? WHERE uniqueId = ?";
+    }
 
-	@Override
-	public PreparedStatement prepareStatement(Connection connection) throws SQLException {
-		PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
-		if (getObject().getHunterId() == null) {
-			preparedStatement.setObject(1, null);
-		} else {
-			preparedStatement.setInt(1, getObject().getHunterId());
-		}
+    @Override
+    public PreparedStatement prepareStatement(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(getSQL());
+        if (getObject().getHunterId() == null) {
+            preparedStatement.setObject(1, null);
+        } else {
+            preparedStatement.setInt(1, getObject().getHunterId());
+        }
 
-		preparedStatement.setLong(2, getObject().getTimeStarted());
-		preparedStatement.setLong(3, getObject().getLogBlocksTarget());
-		preparedStatement.setLong(4, getObject().getTimeCompleted());
-		preparedStatement.setInt(5, getObject().getUniqueId());
+        preparedStatement.setLong(2, getObject().getTimeStarted());
+        preparedStatement.setLong(3, getObject().getLogBlocksTarget());
+        preparedStatement.setLong(4, getObject().getTimeCompleted());
+        preparedStatement.setInt(5, getObject().getUniqueId());
 
-		return preparedStatement;
-	}
+        return preparedStatement;
+    }
 }

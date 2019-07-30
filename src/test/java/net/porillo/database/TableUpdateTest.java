@@ -18,50 +18,50 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Test
 public class TableUpdateTest {
 
-	private Random random = new Random();
+    private Random random = new Random();
 
-	@Test
-	public void testWorldUpdate() throws SQLException, ClassNotFoundException {
-		Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
-		AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
+    @Test
+    public void testWorldUpdate() throws SQLException, ClassNotFoundException {
+        Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
+        AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 
-		// Create a world and insert it into the DB
-		final int uniqueId = random.nextInt();
-		UUID worldId = UUID.randomUUID();
-		GWorld gWorld = new GWorld(uniqueId, worldId, 0L, 0, 0, 0);
-		AsyncDBQueue.getInstance().queueInsertQuery(new WorldInsertQuery(gWorld));
-		AsyncDBQueue.getInstance().writeInsertQueue(connection);
+        // Create a world and insert it into the DB
+        final int uniqueId = random.nextInt();
+        UUID worldId = UUID.randomUUID();
+        GWorld gWorld = new GWorld(uniqueId, worldId, 0L, 0, 0, 0);
+        AsyncDBQueue.getInstance().queueInsertQuery(new WorldInsertQuery(gWorld));
+        AsyncDBQueue.getInstance().writeInsertQueue(connection);
 
-		// Verify the object exists in the DB
-		String select = "SELECT * FROM worlds WHERE uniqueId = ?";
-		PreparedStatement insertStatement = connection.prepareStatement(select);
-		insertStatement.setLong(1, uniqueId);
-		ResultSet resultSet = insertStatement.executeQuery();
+        // Verify the object exists in the DB
+        String select = "SELECT * FROM worlds WHERE uniqueId = ?";
+        PreparedStatement insertStatement = connection.prepareStatement(select);
+        insertStatement.setLong(1, uniqueId);
+        ResultSet resultSet = insertStatement.executeQuery();
 
-		if (resultSet.last()) {
-			assertThat("too many worlds", resultSet.getRow() == 1);
-		}
+        if (resultSet.last()) {
+            assertThat("too many worlds", resultSet.getRow() == 1);
+        }
 
-		/*
-		 * GlobalWarming listeners will update the object in memory and
-		 * create a new update query object. Many updates to the same world or player
-		 * can occur nearly simultaneously. We want to test that only 1 update query
-		 * is actually executed against the Database.
-		 */
-		for (int i = 1; i <= 10; i++) {
-			gWorld.setCarbonValue(i * 1000);
-			AsyncDBQueue.getInstance().queueUpdateQuery(new WorldUpdateQuery(gWorld));
-		}
+        /*
+         * GlobalWarming listeners will update the object in memory and
+         * create a new update query object. Many updates to the same world or player
+         * can occur nearly simultaneously. We want to test that only 1 update query
+         * is actually executed against the Database.
+         */
+        for (int i = 1; i <= 10; i++) {
+            gWorld.setCarbonValue(i * 1000);
+            AsyncDBQueue.getInstance().queueUpdateQuery(new WorldUpdateQuery(gWorld));
+        }
 
-		GWorld updateQueryWorld = (GWorld) AsyncDBQueue.getInstance().getUpdateQueue().peek().getObject();
-		assertThat("world carbon score incorrect", updateQueryWorld.getCarbonValue().equals(10000));
-		assertThat("queue has duplicates", AsyncDBQueue.getInstance().getUpdateQueue().size() == 1);
-		AsyncDBQueue.getInstance().writeUpdateQueue(connection);
+        GWorld updateQueryWorld = (GWorld) AsyncDBQueue.getInstance().getUpdateQueue().peek().getObject();
+        assertThat("world carbon score incorrect", updateQueryWorld.getCarbonValue().equals(10000));
+        assertThat("queue has duplicates", AsyncDBQueue.getInstance().getUpdateQueue().size() == 1);
+        AsyncDBQueue.getInstance().writeUpdateQueue(connection);
 
-		// Delete the test object from the database
-		String delete = "DELETE FROM worlds WHERE uniqueId = ?";
-		PreparedStatement deleteStatement = connection.prepareStatement(delete);
-		deleteStatement.setLong(1, uniqueId);
-		deleteStatement.execute();
-	}
+        // Delete the test object from the database
+        String delete = "DELETE FROM worlds WHERE uniqueId = ?";
+        PreparedStatement deleteStatement = connection.prepareStatement(delete);
+        deleteStatement.setLong(1, uniqueId);
+        deleteStatement.execute();
+    }
 }

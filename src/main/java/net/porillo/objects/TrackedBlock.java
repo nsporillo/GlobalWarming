@@ -9,7 +9,13 @@ import org.bukkit.Location;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrackedBlock {
-    @Getter @Setter private Integer uniqueId;
-    @Getter @Setter private Integer ownerId;
-    @Getter @Setter private Location location;
+    @Getter
+    @Setter
+    private Integer uniqueId;
+    @Getter
+    @Setter
+    private Integer ownerId;
+    @Getter
+    @Setter
+    private Location location;
 }
