@@ -139,9 +139,6 @@ public class CO2Listener implements Listener {
 
     /**
      * Detect when CO2 is absorbed via new tree
-     * - TODO: Add TreeType species to reduction model
-     * - TODO: Only consider core species blocks as tree size (see: setSize x2)
-     *
      * @param event structure grow event (tree grow)
      */
     @EventHandler(ignoreCancelled = true)

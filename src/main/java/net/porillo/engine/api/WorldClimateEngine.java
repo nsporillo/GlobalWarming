@@ -20,19 +20,15 @@ import java.util.stream.Collectors;
 
 public class WorldClimateEngine {
 
-    @Getter
-    private WorldConfig config;
+    @Getter private WorldConfig config;
 
     // Models
-    @Getter
-    private ScoreTempModel scoreTempModel;
+    @Getter private ScoreTempModel scoreTempModel;
     private FuelModel fuelModel;
     private EntityMethaneModel methaneModel;
     private ReductionModel reductionModel;
-    @Getter
-    private EntityFitnessModel entityFitnessModel;
-    @Getter
-    private CarbonIndexModel carbonIndexModel;
+    @Getter private EntityFitnessModel entityFitnessModel;
+    @Getter private CarbonIndexModel carbonIndexModel;
 
     public WorldClimateEngine(WorldConfig config) {
         this.config = config;

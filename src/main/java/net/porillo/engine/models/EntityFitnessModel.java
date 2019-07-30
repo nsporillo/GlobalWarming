@@ -13,8 +13,7 @@ import java.util.Map;
 
 public class EntityFitnessModel extends Model {
 
-    @Getter
-    private Map<EntityType, MobDistribution> entityFitnessMap;
+    @Getter private Map<EntityType, MobDistribution> entityFitnessMap;
 
     public EntityFitnessModel(String worldName) {
         super(worldName, "entityFitnessModel.json");

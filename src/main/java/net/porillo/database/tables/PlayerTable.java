@@ -16,11 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Getter
 public class PlayerTable extends Table implements SelectCallback<GPlayer> {
 
-    @Getter
     private Map<UUID, GPlayer> players = new HashMap<>();
-    @Getter
     private Map<Integer, UUID> uuidMap = new HashMap<>();
 
     public PlayerTable() {

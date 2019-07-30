@@ -3,31 +3,22 @@ package net.porillo.config;
 import lombok.Getter;
 import net.porillo.database.ConnectionManager;
 
+@Getter
 public class GlobalWarmingConfig extends ConfigLoader {
 
     private String host;
     private int port;
     private String database;
     private String username, password;
-    @Getter
     private int maxBounties;
-    @Getter
     private int chatTableWidth;
-    @Getter
     private double degreesUntilChangeDetected;
-    @Getter
     private int spamInterval;
-    @Getter
     private int databaseInterval;
-    @Getter
     private int notificationInterval;
-    @Getter
     private int notificationDuration;
-    @Getter
     private boolean scoreboardEnabled;
-    @Getter
     private int scoreboardInterval;
-    @Getter
     private String temperatureFormat;
 
     public GlobalWarmingConfig() {

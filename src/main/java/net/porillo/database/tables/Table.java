@@ -17,8 +17,7 @@ import java.nio.file.Paths;
 @AllArgsConstructor
 public abstract class Table {
 
-    @Getter
-    private String tableName;
+    @Getter private String tableName;
 
     public void createIfNotExists() {
         CreateTableQuery createTableQuery = new CreateTableQuery(getTableName(), loadSQLFromFile());

@@ -17,8 +17,7 @@ import org.bukkit.event.block.BlockFormEvent;
 @ClimateData(type = ClimateEffectType.SNOW_FORMATION)
 public class SnowForm extends ListenerClimateEffect {
 
-    @Getter
-    private Distribution heightMap;
+    @Getter private Distribution heightMap;
 
     @EventHandler
     public void blockFormEvent(BlockFormEvent event) {

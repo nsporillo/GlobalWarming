@@ -10,8 +10,7 @@ import java.io.*;
 public abstract class ConfigLoader {
 
     FileConfiguration conf;
-    @Getter
-    private String fileName;
+    @Getter private String fileName;
     private File configFile;
 
     ConfigLoader(String fileName, String resource) {

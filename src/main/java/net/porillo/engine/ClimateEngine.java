@@ -19,8 +19,7 @@ public class ClimateEngine {
 
     private static ClimateEngine climateEngine;
     private Map<UUID, WorldClimateEngine> worldClimateEngines;
-    @Getter
-    private Gson gson;
+    @Getter private Gson gson;
 
     public ClimateEngine() {
         this.worldClimateEngines = new HashMap<>();

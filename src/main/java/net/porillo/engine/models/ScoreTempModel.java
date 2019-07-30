@@ -26,8 +26,7 @@ public class ScoreTempModel extends Model {
         VERY_HIGH
     }
 
-    @Getter
-    private Map<Integer, Double> indexMap;
+    @Getter private Map<Integer, Double> indexMap;
     private CarbonSensitivity sensitivity;
     private Distribution distribution;
     Map<CarbonSensitivity, Map<Integer, Double>> temperatureMap;

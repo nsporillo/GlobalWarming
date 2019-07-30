@@ -8,23 +8,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+@Getter
 public class TrackedBlockTable extends Table {
     /**
      * [TREE_ID | FURNACE_ID] -> [TREE | FURNACE]
      */
-    @Getter
     private Map<Integer, TrackedBlock> blockMap = new HashMap<>();
 
     /**
      * LOCATION -> [TREE_ID | FURNACE_ID]
      */
-    @Getter
     private Map<Location, Integer> locationMap = new HashMap<>();
 
     /**
      * PLAYER_ID -> SET(TREE_ID | FURNACE_ID)
      */
-    @Getter
     private Map<Integer, HashSet<Integer>> playerMap = new HashMap<>();
 
     TrackedBlockTable(String tableName) {

@@ -6,28 +6,21 @@ import net.porillo.database.tables.*;
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
 public class TableManager {
 
     private static TableManager instance;
 
     // Tables which load data from DB into memory
-    @Getter
     private WorldTable worldTable;
-    @Getter
     private PlayerTable playerTable;
-    @Getter
     private FurnaceTable furnaceTable;
-    @Getter
     private TreeTable treeTable;
-    @Getter
     private OffsetTable offsetTable;
-    @Getter
     private EntityTable entityTable;
 
     // Tables that currently don't load any data from the DB
-    @Getter
     private ReductionTable reductionTable;
-    @Getter
     private ContributionTable contributionTable;
 
     public TableManager() {

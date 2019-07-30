@@ -40,11 +40,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @ClimateData(type = ClimateEffectType.SEA_LEVEL_RISE)
 public class SeaLevelRise extends ListenerClimateEffect {
 
-    @Getter
-    private Distribution seaMap;
-    @Getter
-    @Setter
-    private boolean isOverride;
+    @Getter private Distribution seaMap;
+    @Getter @Setter private boolean isOverride;
     private int chunkTicks;
     private int chunksPerPeriod;
     private int queueTicks;

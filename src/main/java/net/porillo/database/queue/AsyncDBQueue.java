@@ -36,27 +36,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * into memory on plugin startup. However, it will not be done
  * using this Queue since we want to do that immediately.
  */
+@Getter
+@Setter
 public class AsyncDBQueue {
 
     private static AsyncDBQueue instance;
 
-    @Getter
-    @Setter
     private boolean isDemo = false; // if no MySQL, just complain and skip storing anything.
 
-    @Getter
     private Queue<CreateTableQuery> createQueue = new ConcurrentLinkedQueue<>();
-    @Getter
     private Queue<InsertQuery> insertQueue = new ConcurrentLinkedQueue<>();
-    @Getter
     private ConcurrentHashQueue<UpdateQuery<?>> updateQueue = new ConcurrentHashQueue<>();
-    @Getter
     private Queue<DeleteQuery> deleteQueue = new ConcurrentLinkedQueue<>();
-    @Getter
     private Queue<SelectQuery<?, ?>> selectQueue = new ConcurrentLinkedQueue<>();
 
-    @Getter
-    @Setter
     private boolean debug;
 
     private BukkitRunnable queueWriteThread = new BukkitRunnable() {

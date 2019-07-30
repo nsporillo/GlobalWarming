@@ -1,36 +1,22 @@
 package net.porillo.objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bukkit.entity.EntityType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrackedEntity {
 
-    @Getter
-    @Setter
     private Integer uniqueId;
-    @Getter
-    @Setter
     private UUID uuid;
-    @Getter
-    @Setter
     private Integer breederId;
-    @Getter
-    @Setter
     private EntityType entityType;
-    @Getter
-    @Setter
     private long ticksLived;
-    @Getter
-    @Setter
     private boolean alive;
 
     public TrackedEntity(ResultSet rs) throws SQLException {

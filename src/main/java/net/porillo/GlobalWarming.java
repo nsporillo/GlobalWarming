@@ -37,23 +37,15 @@ public class GlobalWarming extends JavaPlugin {
 
     private static GlobalWarming instance; // single plugin instance
 
-    @Getter
-    private GlobalWarmingConfig conf;
-    @Getter
-    private ConnectionManager connectionManager;
-    @Getter
-    private TableManager tableManager;
-    @Getter
-    private Random random;
+    @Getter private GlobalWarmingConfig conf;
+    @Getter private ConnectionManager connectionManager;
+    @Getter private TableManager tableManager;
+    @Getter private Random random;
     private PaperCommandManager commandManager;
-    @Getter
-    private Gson gson;
-    @Getter
-    private GScoreboard scoreboard;
-    @Getter
-    private CO2Notifications notifications;
-    @Getter
-    private static Economy economy;
+    @Getter private Gson gson;
+    @Getter private GScoreboard scoreboard;
+    @Getter private CO2Notifications notifications;
+    @Getter private static Economy economy;
 
     @Override
     public void onEnable() {
@@ -107,7 +99,6 @@ public class GlobalWarming extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AttributionListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
         Bukkit.getPluginManager().registerEvents(new CH4Listener(this), this);
-        Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
         if (!AsyncDBQueue.getInstance().isDemo()) {

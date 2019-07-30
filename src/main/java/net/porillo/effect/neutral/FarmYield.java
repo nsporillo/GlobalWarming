@@ -20,8 +20,7 @@ import java.util.Map;
 @ClimateData(type = ClimateEffectType.FARM_YIELD)
 public class FarmYield extends ListenerClimateEffect {
 
-    @Getter
-    private HashMap<Material, Distribution> cropDistribution;
+    @Getter private HashMap<Material, Distribution> cropDistribution;
 
     @EventHandler
     public void onCropGrow(BlockGrowEvent event) {

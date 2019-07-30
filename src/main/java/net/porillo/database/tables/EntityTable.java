@@ -12,18 +12,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
+@Getter
 public class EntityTable extends Table implements SelectCallback<TrackedEntity> {
 
     /**
      * [ENTITY_ID] -> [ENTITY]
      */
-    @Getter
     private Map<UUID, TrackedEntity> entityMap = new HashMap<>();
 
     /**
      * PLAYER_ID -> SET(ENTITY_ID)
      */
-    @Getter
     private Map<Integer, HashSet<UUID>> playerMap = new HashMap<>();
 
     public EntityTable() {

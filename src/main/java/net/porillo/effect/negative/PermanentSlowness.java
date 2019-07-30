@@ -22,8 +22,7 @@ import java.util.UUID;
 public class PermanentSlowness extends ScheduleClimateEffect implements Listener {
 
     private int duration;
-    @Getter
-    private double temperatureThreshold;
+    @Getter private double temperatureThreshold;
 
     private void updatePlayerSlowness(Player player, double temperature) {
         if (temperature >= temperatureThreshold) {

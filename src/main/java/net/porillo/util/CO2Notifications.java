@@ -36,8 +36,7 @@ import java.util.*;
 public class CO2Notifications {
     private enum TemperatureRange {LOW, AVERAGE, HIGH}
 
-    @Getter
-    private Map<UUID, BossBar> bossBars;
+    @Getter private Map<UUID, BossBar> bossBars;
     private static final long NOTIFICATION_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getNotificationInterval();
     private static final long NOTIFICATION_DURATION_TICKS = GlobalWarming.getInstance().getConf().getNotificationDuration();
 

@@ -22,8 +22,7 @@ import org.bukkit.event.Listener;
 public class Fire extends ScheduleClimateEffect implements Listener {
 
     private static final int BLOCKS_PER_CHUNK = 16;
-    @Getter
-    private FireDistribution fireMap;
+    @Getter private FireDistribution fireMap;
 
     /**
      * Set a random set of loaded blocks on fire

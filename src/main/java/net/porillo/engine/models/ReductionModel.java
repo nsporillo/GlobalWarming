@@ -11,8 +11,7 @@ import java.util.Map;
 
 public class ReductionModel extends Model {
 
-    @Getter
-    private Map<Material, Double> reductionMap;
+    @Getter private Map<Material, Double> reductionMap;
 
     public ReductionModel(String worldName) {
         super(worldName, "reductionModel.json");

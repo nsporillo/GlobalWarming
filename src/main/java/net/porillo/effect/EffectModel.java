@@ -14,8 +14,7 @@ import java.util.Map;
 
 public class EffectModel extends Model {
 
-    @Getter
-    private Map<ClimateEffectType, JsonObject> effectMap;
+    @Getter private Map<ClimateEffectType, JsonObject> effectMap;
 
     public EffectModel() {
         super(Bukkit.getWorlds().get(0).getName(), "effectModel.json");

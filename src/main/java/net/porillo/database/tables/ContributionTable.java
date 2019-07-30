@@ -8,8 +8,7 @@ import java.util.List;
 
 public class ContributionTable extends Table {
 
-    @Getter
-    private final List<Contribution> contributions = new ArrayList<>();
+    @Getter private final List<Contribution> contributions = new ArrayList<>();
 
     public ContributionTable() {
         super("contributions");

@@ -21,8 +21,7 @@ public class OffsetTable extends Table implements SelectCallback<OffsetBounty> {
      * TODO: When an offset bounty is complete, delete from this list
      * TODO: "synchronize" will be required to protect critical
      */
-    @Getter
-    private List<OffsetBounty> offsetList = new ArrayList<>();
+    @Getter private List<OffsetBounty> offsetList = new ArrayList<>();
 
     public OffsetTable() {
         super("offsets");

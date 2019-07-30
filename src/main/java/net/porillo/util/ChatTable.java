@@ -40,18 +40,16 @@ public class ChatTable {
 
     public static final int CHAT_WIDTH = GlobalWarming.getInstance().getConf().getChatTableWidth();
     private final Map<Character, Integer> CHAR_WIDTH;
-    @Setter
-    private String title;
+    @Setter private String title;
     private List<String> headers;
     private List<Integer> headerWidth;
     private List<List<String>> body;
-    @Setter
-    private ChatColor gridColor;
-    private ChatColor textColor[];
-    private Character decoration[];
-    private Character delimiter[];
-    private Character onePixelPad[];
-    private Character twoPixelPad[];
+    @Setter private ChatColor gridColor;
+    private ChatColor[] textColor;
+    private Character[] decoration;
+    private Character[] delimiter;
+    private Character[] onePixelPad;
+    private Character[] twoPixelPad;
 
     public ChatTable(String title) {
         this.title = title;
@@ -309,7 +307,7 @@ public class ChatTable {
         int delimiterWidth;
         int headerDelimiterWidth = CHAR_WIDTH.get(delimiter[Section.HEADER.get()]);
         int bodyDelimiterWidth = CHAR_WIDTH.get(delimiter[Section.BODY.get()]);
-        String delimiters[] = new String[2];
+        String[] delimiters = new String[2];
         if (headerDelimiterWidth > bodyDelimiterWidth) {
             delimiterWidth = headerDelimiterWidth;
             delimiters[Section.HEADER.get()] = delimiter[Section.HEADER.get()].toString();

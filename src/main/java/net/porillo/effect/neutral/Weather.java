@@ -25,8 +25,7 @@ public class Weather extends ScheduleClimateEffect {
 
     public enum WeatherData {STORM, THUNDER, STRIKE_PLAYER, DURATION}
 
-    @Getter
-    public HashMap<WeatherData, Distribution> weatherDistribution;
+    @Getter public HashMap<WeatherData, Distribution> weatherDistribution;
 
     /**
      * Determine if a weather effect is allowed

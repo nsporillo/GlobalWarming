@@ -10,9 +10,7 @@ import net.porillo.effect.EffectEngine;
 @AllArgsConstructor
 public abstract class ClimateEffect {
 
-    @Getter
-    @Setter
-    private JsonObject jsonModel;
+    @Getter @Setter private JsonObject jsonModel;
     private ClimateData climateData;
 
     public ClimateEffect() {

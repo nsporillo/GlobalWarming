@@ -36,8 +36,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * - Only one objective can be displayed in a sidebar at one time
  */
 public class GScoreboard {
-    @Getter
-    private Map<UUID, Scoreboard> scoreboards;
+    @Getter private Map<UUID, Scoreboard> scoreboards;
     private ConcurrentLinkedQueue<UUID> requestQueue;
     private static final String GLOBAL_WARMING = "GlobalWarming";
     private static final long SCOREBOARD_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getScoreboardInterval();
