@@ -59,7 +59,7 @@ public class WorldClimateEngine {
         // Remove duplicate block states by collecting them into a hashmap with location as the key
         Map<Location, Material> blockStateMap = blocks.stream().collect(Collectors.toMap(BlockState::getLocation, BlockState::getType, (a, b) -> b));
 
-        int reductionValue = 0;
+        double reductionValue = 0;
         int numBlocks = blockStateMap.size();
 
         for (Material material : blockStateMap.values()) {
@@ -70,7 +70,7 @@ public class WorldClimateEngine {
         if (bonemealUsed && !config.isBonemealReductionAllowed()) {
             return null;
         } else if (bonemealUsed) {
-            reductionValue = (int) (reductionValue * config.getBonemealReductionModifier());
+            reductionValue = (reductionValue * config.getBonemealReductionModifier());
         }
 
         Integer uniqueId = GlobalWarming.getInstance().getRandom().nextInt(Integer.MAX_VALUE);
@@ -79,7 +79,7 @@ public class WorldClimateEngine {
         reduction.setWorldId(config.getWorldId());
         reduction.setReductioner(tree.getOwnerId());
         reduction.setReductionKey(tree.getUniqueId());
-        reduction.setReductionValue(reductionValue);
+        reduction.setReductionValue((int) reductionValue);
         reduction.setNumBlocks(numBlocks);
         return reduction;
     }
