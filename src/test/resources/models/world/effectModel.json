@@ -1,0 +1,91 @@
+{
+  "FIRE": {
+    "enabled": true,
+    "model": {
+      "interval": 200,
+      "distribution": {
+        "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+        "fitness": [0, 0, 0, 0, 0, 0, 0, 0, 15, 25, 30],
+        "blocks": [0, 0, 0, 0, 0, 0, 0, 0, 2, 5, 10]
+      }
+    }
+  },
+  "FARM_YIELD": {
+    "enabled": true,
+    "model": {
+      "WHEAT": {
+        "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+        "fitness": [20, 40, 60, 80, 100, 95, 90, 75, 50, 30, 10]
+      },
+      "CARROT": {
+        "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+        "fitness": [20, 40, 60, 80, 100, 95, 90, 75, 50, 30, 10]
+      },
+      "POTATO": {
+        "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+        "fitness": [20, 40, 60, 80, 100, 95, 90, 75, 50, 30, 10]
+      }
+    }
+  },
+  "ICE_FORMATION": {
+    "enabled": true,
+    "model": {
+      "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+      "fitness": [0, 0, 0, 0, 0, 20, 50, 100, 150, 200, 250]
+    }
+  },
+  "MOB_SPAWN_RATE": {
+    "enabled": true
+  },
+  "SEA_LEVEL_RISE": {
+    "enabled": true,
+    "model": {
+      "chunks-per-period": 8,
+      "queue-ticks": 65,
+      "chunk-ticks": 35,
+      "distribution": {
+        "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+        "fitness": [0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5]
+      }
+    }
+  },
+  "PERMANENT_SLOWNESS": {
+    "enabled": true,
+    "model": {
+      "threshold": 20,
+      "interval": 6000,
+      "duration": 5200
+    }
+  },
+  "SNOW_FORMATION": {
+    "enabled": true,
+    "model": {
+      "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+      "fitness": [0, 0, 0, 0, 0, 20, 50, 100, 150, 200, 250]
+    }
+  },
+  "WEATHER": {
+    "enabled": true,
+    "model": {
+      "interval": 600,
+      "distribution": {
+        "STORM": {
+          "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+          "fitness": [0, 0, 0, 0, 0, 0, 0, 0, 10, 25, 50]
+        },
+        "THUNDER": {
+          "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+          "fitness": [0, 0, 0, 0, 0, 0, 0, 0, 10, 25, 50]
+        },
+        "STRIKE_PLAYER": {
+          "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+          "fitness": [0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 8]
+        },
+        "DURATION": {
+          "temp": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+          "fitness": [0, 0, 0, 0, 0, 0, 0, 0, 100, 200, 400]
+        }
+      }
+    }
+  }
+}

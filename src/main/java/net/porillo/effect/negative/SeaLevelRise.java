@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.Collections;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -223,16 +224,17 @@ public class SeaLevelRise extends ListenerClimateEffect {
               jsonModel.get("distribution"),
               new TypeToken<Distribution>() {
               }.getType());
-
-        if (seaMap == null) {
-            unregister();
-        } else {
-            maxTemperature = (int) seaMap.getTemp()[seaMap.getTemp().length - 1];
+        // Compatibility
+        try {
+            seaMap = new Distribution(seaMap.temp, seaMap.fitness);
+            maxTemperature = Collections.max(seaMap.getX()).intValue();
             chunkTicks = jsonModel.get("chunk-ticks").getAsInt();
             chunksPerPeriod = jsonModel.get("chunks-per-period").getAsInt();
             queueTicks = jsonModel.get("queue-ticks").getAsInt();
             startQueueLoader();
             debounceChunkUpdates();
+        } catch (Exception ex) {
+            unregister();
         }
     }
 }

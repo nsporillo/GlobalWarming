@@ -4,9 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import net.porillo.engine.api.Distribution;
 import net.porillo.engine.api.Model;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import java.lang.reflect.Type;
 import java.util.Comparator;
@@ -28,8 +27,8 @@ public class ScoreTempModel extends Model {
     }
 
     @Getter private Map<Integer, Double> indexMap;
-    private PolynomialSplineFunction splineFunction;
     private CarbonSensitivity sensitivity;
+    private Distribution distribution;
     Map<CarbonSensitivity, Map<Integer, Double>> temperatureMap;
 
     public ScoreTempModel(String worldName, CarbonSensitivity sensitivity) {
@@ -72,11 +71,10 @@ public class ScoreTempModel extends Model {
         double[] scores = new double[indexMap.size()];
         double[] temps = new double[indexMap.size()];
         for (Map.Entry<Integer, Double> entry : indexMap.entrySet()) {
-            scores[i] = entry.getKey();
+            scores[i] = (double)entry.getKey();
             temps[i++] = entry.getValue();
         }
-
-        this.splineFunction = new LinearInterpolator().interpolate(scores, temps);
+        this.distribution = new Distribution(scores, temps);
     }
 
     /**
@@ -85,9 +83,6 @@ public class ScoreTempModel extends Model {
      * - This value is used by most models
      */
     public double getTemperature(int score) {
-        double boundedScore =
-              Math.max(splineFunction.getKnots()[0],
-              Math.min((double)score, splineFunction.getKnots() [splineFunction.getN()]));
-        return splineFunction.value(boundedScore);
+        return distribution.getValue((double) score);
     }
 }
