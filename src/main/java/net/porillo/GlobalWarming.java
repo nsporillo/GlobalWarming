@@ -80,8 +80,7 @@ public class GlobalWarming extends JavaPlugin {
                 }
             }
         } catch (Exception e) {
-            AsyncDBQueue.getInstance().setDemo(true);
-            getLogger().severe("MySQL connection not found.");
+            getLogger().severe("Database connection not found.");
             getLogger().severe("Data won't persist after restarts!");
             getLogger().severe("Please update config.yml and restart the server.");
         }
@@ -101,13 +100,11 @@ public class GlobalWarming extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CH4Listener(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
-        if (!AsyncDBQueue.getInstance().isDemo()) {
-            AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
-        }
+        AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
 
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SimplePie("demo",
-                () -> String.valueOf(AsyncDBQueue.getInstance().isDemo())));
+        metrics.addCustomChart(new Metrics.SimplePie("databaseType",
+                () -> String.valueOf(this.conf.getType())));
     }
 
     @Override

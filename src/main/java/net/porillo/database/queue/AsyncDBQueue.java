@@ -5,7 +5,6 @@ import lombok.Setter;
 import net.porillo.GlobalWarming;
 import net.porillo.database.api.*;
 import net.porillo.database.queries.other.CreateTableQuery;
-import net.porillo.effect.negative.PermanentSlowness;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
@@ -44,8 +43,6 @@ public class AsyncDBQueue {
 
     private static AsyncDBQueue instance;
 
-    private boolean isDemo = false; // if no MySQL, just complain and skip storing anything.
-
     private Queue<CreateTableQuery> createQueue = new ConcurrentLinkedQueue<>();
     private Queue<InsertQuery> insertQueue = new ConcurrentLinkedQueue<>();
     private ConcurrentHashQueue<UpdateQuery<?>> updateQueue = new ConcurrentHashQueue<>();
@@ -74,9 +71,7 @@ public class AsyncDBQueue {
     }
 
     public void close() {
-        if (!isDemo) {
-            queueWriteThread.run();
-        }
+        queueWriteThread.run();
     }
 
     public void runQueueWriteTaskNow() {
