@@ -5,11 +5,13 @@ import lombok.Setter;
 import net.porillo.GlobalWarming;
 import net.porillo.database.api.*;
 import net.porillo.database.queries.other.CreateTableQuery;
+import net.porillo.effect.negative.PermanentSlowness;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -123,9 +125,14 @@ public class AsyncDBQueue {
 
     private void executeStatement(Query query, Connection connection) {
         try {
-            PreparedStatement statement = query.prepareStatement(connection);
+            Statement statement = query.prepareStatement(connection);
             if (debug) GlobalWarming.getInstance().getLogger().info(statement.toString());
-            statement.executeUpdate();
+            if (statement instanceof PreparedStatement) {
+                PreparedStatement preparedStatement = (PreparedStatement) statement;
+                preparedStatement.executeUpdate();
+            } else {
+                statement.executeUpdate(query.getSQL());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

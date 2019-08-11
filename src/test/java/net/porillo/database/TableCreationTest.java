@@ -44,7 +44,7 @@ public class TableCreationTest {
         try {
             Connection connection = TestUtility.getInstance().getConnectionManager().openConnection();
             connection.createStatement().executeUpdate(String.format("DROP TABLE IF EXISTS %s", table));
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

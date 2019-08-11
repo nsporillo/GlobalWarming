@@ -8,7 +8,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
 
     private String host;
     private int port;
-    private String database;
+    private String database, type;
     private String username, password;
     private int maxBounties;
     private int chatTableWidth;
@@ -37,6 +37,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
         this.host = conf.getString("database.host");
         this.port = conf.getInt("database.port");
         this.database = conf.getString("database.name");
+        this.type = conf.getString("database.type", "H2");
         this.username = conf.getString("database.username");
         this.password = conf.getString("database.password");
         this.databaseInterval = conf.getInt("database.interval", 300);
@@ -50,7 +51,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
     }
 
     public ConnectionManager makeConnectionManager() {
-        return new ConnectionManager(host, port, database, username, password);
+        return new ConnectionManager(type, host, port, database, username, password);
     }
 
 } 

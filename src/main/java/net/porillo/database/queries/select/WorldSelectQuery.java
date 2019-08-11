@@ -7,6 +7,7 @@ import net.porillo.objects.GWorld;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class WorldSelectQuery extends SelectQuery<GWorld, WorldTable> {
         }
 
         return worlds;
+    }
+
+    @Override
+    public Statement prepareStatement(Connection connection) throws SQLException {
+        return connection.createStatement(); // H2 doesn't allow empty prepared statements
     }
 
     @Override

@@ -18,7 +18,7 @@ public class TestUtility {
     private final Random random = new Random();
 
     public TestUtility() {
-        this.connectionManager = new ConnectionManager("localhost", 3306, "GlobalWarming", "jenkins", "tests");
+        this.connectionManager = new ConnectionManager("mysql", "localhost", 3306, "GlobalWarming", "jenkins", "tests");
     }
 
     public GWorld nextRandomWorld() {

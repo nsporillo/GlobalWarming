@@ -7,6 +7,7 @@ import net.porillo.objects.OffsetBounty;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,5 +32,10 @@ public class OffsetSelectQuery extends SelectQuery<OffsetBounty, OffsetTable> {
         }
 
         return bounties;
+    }
+
+    @Override
+    public Statement prepareStatement(Connection connection) throws SQLException {
+        return connection.createStatement(); // H2 doesn't allow empty prepared statements
     }
 }

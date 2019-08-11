@@ -3,6 +3,7 @@ package net.porillo.database.api;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public interface Query {
 
@@ -10,5 +11,5 @@ public interface Query {
 
     String getSQL();
 
-    PreparedStatement prepareStatement(Connection connection) throws SQLException;
+    Statement prepareStatement(Connection connection) throws SQLException;
 }

@@ -7,6 +7,7 @@ import net.porillo.objects.Furnace;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class FurnaceSelectQuery extends SelectQuery<Furnace, FurnaceTable> {
         }
 
         return furnaces;
+    }
+
+    @Override
+    public Statement prepareStatement(Connection connection) throws SQLException {
+        return connection.createStatement(); // H2 doesn't allow empty prepared statements
     }
 
     @Override
