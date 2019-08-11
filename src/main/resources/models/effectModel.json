@@ -175,6 +175,7 @@
       "chunks-per-period": 8,
       "queue-ticks": 65,
       "chunk-ticks": 35,
+      "base-sea-level": 64,
       "distribution": {
         "temp": [
           10,

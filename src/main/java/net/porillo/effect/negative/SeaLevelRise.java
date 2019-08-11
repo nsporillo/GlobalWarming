@@ -42,6 +42,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
 
     @Getter private Distribution seaMap;
     @Getter @Setter private boolean isOverride;
+    private int baseSeaLevel;
     private int chunkTicks;
     private int chunksPerPeriod;
     private int queueTicks;
@@ -200,9 +201,9 @@ public class SeaLevelRise extends ListenerClimateEffect {
             if (!isWaterFixed) {
                 final World world = event.getBlock().getWorld();
                 final WorldClimateEngine climateEngine = ClimateEngine.getInstance().getClimateEngine(world.getUID());
-                final int baseSeaLevel = world.getSeaLevel() - 1;
+                final int baseLevel = Math.max(baseSeaLevel, world.getSeaLevel()) - 1;
                 final int deltaSeaLevel = (int) seaMap.getValue(climateEngine.getTemperature());
-                final int customSeaLevel = baseSeaLevel + deltaSeaLevel;
+                final int customSeaLevel = baseLevel + deltaSeaLevel;
                 isWaterFixed = event.getBlock().getY() > customSeaLevel;
             }
 
@@ -231,6 +232,10 @@ public class SeaLevelRise extends ListenerClimateEffect {
             chunkTicks = jsonModel.get("chunk-ticks").getAsInt();
             chunksPerPeriod = jsonModel.get("chunks-per-period").getAsInt();
             queueTicks = jsonModel.get("queue-ticks").getAsInt();
+
+            if (jsonModel.has("base-sea-level")) {
+                baseSeaLevel = jsonModel.get("base-sea-level").getAsInt();
+            }
             startQueueLoader();
             debounceChunkUpdates();
         } catch (Exception ex) {
