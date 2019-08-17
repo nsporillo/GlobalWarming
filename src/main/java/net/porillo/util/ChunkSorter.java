@@ -1,5 +1,6 @@
 package net.porillo.util;
 
+import net.porillo.objects.GChunk;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -8,12 +9,22 @@ import java.util.*;
 
 public class ChunkSorter {
 
-    public static List<Chunk> sortByDistance(Chunk[] chunks, List<Player> players) {
+    public static List<Chunk> sortByDistance(Chunk[] chunks, Map<GChunk, Integer> waterLevel, List<Player> players, int height, int numChunks) {
         if (players.size() == 0) {
-            return Arrays.asList(chunks);
+            return Arrays.asList(chunks).subList(0, Math.min(numChunks, chunks.length));
         } else {
             List<Chunk> sortedChunks = new ArrayList<>();
-            Collections.addAll(sortedChunks, chunks);
+            for (Chunk chunk : chunks) {
+                GChunk gchunk = new GChunk(chunk);
+                if (waterLevel.containsKey(gchunk)) {
+                    int seaLevel = waterLevel.get(gchunk);
+                    if (seaLevel == height) {
+                        continue;
+                    }
+                }
+
+                sortedChunks.add(chunk);
+            }
             sortedChunks.sort((o1, o2) -> {
                 Location l1 = chunkToLocation(o1);
                 Location l2 = chunkToLocation(o2);
@@ -29,7 +40,7 @@ public class ChunkSorter {
                 return Double.compare(d1, d2);
             });
 
-            return sortedChunks;
+            return sortedChunks.subList(0, Math.min(numChunks, sortedChunks.size()));
         }
     }
 
