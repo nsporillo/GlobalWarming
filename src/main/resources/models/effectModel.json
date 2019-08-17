@@ -172,10 +172,10 @@
   "SEA_LEVEL_RISE": {
     "enabled": true,
     "model": {
-      "chunks-per-period": 8,
-      "queue-ticks": 65,
-      "chunk-ticks": 35,
-      "base-sea-level": 64,
+      "chunks-per-period": 12,
+      "queue-ticks": 60,
+      "chunk-ticks": 30,
+      "base-sea-level": 63,
       "distribution": {
         "temp": [
           10,
