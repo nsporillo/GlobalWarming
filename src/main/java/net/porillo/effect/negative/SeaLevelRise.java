@@ -16,6 +16,7 @@ import net.porillo.util.ChunkSorter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -183,9 +184,6 @@ public class SeaLevelRise extends ListenerClimateEffect {
                             block.setType(AIR, true);
                             block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
                         }
-                    } else {
-                        //Release ownership of altered blocks:
-                        block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
                     }
                 }
             }
@@ -195,7 +193,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
     /**
      * Replacing sea-level-blocks will remove them from the tracked set
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
         event.getBlock().removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
     }
@@ -204,7 +202,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
      * Emptying a bucket (water or lava) will remove the adjacent block
      * from the tracked set
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
         Block adjacent = event.getBlockClicked().getRelative(event.getBlockFace());
         adjacent.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
@@ -214,7 +212,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
      * Only allow sea-level blocks to flow if they are below the custom sea-level
      * - Track any new blocks originating from sea-level blocks
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBlockFromToEvent(BlockFromToEvent event) {
         if (event.getBlock().hasMetadata(SEALEVEL_BLOCK)) {
             boolean isWaterFixed = isOverride;
