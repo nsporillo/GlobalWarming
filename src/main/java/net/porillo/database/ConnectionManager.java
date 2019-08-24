@@ -1,5 +1,6 @@
 package net.porillo.database;
 
+import net.porillo.GlobalWarming;
 import org.h2.tools.Server;
 
 import java.io.File;
@@ -53,6 +54,14 @@ public class ConnectionManager {
             }
 
             return connection;
+        }
+    }
+
+    public void close() {
+        try {
+            connection.close();
+        } catch (Exception ex) {
+            GlobalWarming.getInstance().getLogger().severe(ex.getMessage());
         }
     }
 }

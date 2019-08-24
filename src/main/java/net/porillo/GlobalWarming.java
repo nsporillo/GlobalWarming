@@ -110,6 +110,7 @@ public class GlobalWarming extends JavaPlugin {
     @Override
     public void onDisable() {
         AsyncDBQueue.getInstance().close();
+        GlobalWarming.getInstance().getConnectionManager().close();
     }
 
     private void registerCommands() {
