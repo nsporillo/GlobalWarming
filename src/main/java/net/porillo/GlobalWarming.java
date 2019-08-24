@@ -29,8 +29,10 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.h2.jdbc.JdbcSQLNonTransientConnectionException;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Random;
 
 public class GlobalWarming extends JavaPlugin {
@@ -79,7 +81,12 @@ public class GlobalWarming extends JavaPlugin {
                     worldTable.insertNewWorld(world.getUID());
                 }
             }
-        } catch (Exception e) {
+        } catch (JdbcSQLNonTransientConnectionException jex) {
+            getLogger().severe("Server reloads are not supported when using H2 DB.");
+            getLogger().severe("Disabling the plugin. Please full restart to fix.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return; // avoid proceeding with startup logic
+        } catch (SQLException | ClassNotFoundException e) {
             getLogger().severe("Database connection not found.");
             getLogger().severe("Data won't persist after restarts!");
             getLogger().severe("Please update config.yml and restart the server.");

@@ -1,8 +1,5 @@
 package net.porillo.database;
 
-import net.porillo.GlobalWarming;
-import org.h2.tools.Server;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,7 +7,6 @@ import java.sql.SQLException;
 
 public class ConnectionManager {
 
-    private Server server;
     private Connection connection;
     private String host;
     private int port;
@@ -38,8 +34,9 @@ public class ConnectionManager {
 
             if (type.equalsIgnoreCase("H2")) {
                 Class.forName("org.h2.Driver");
-                String path = String.format("%s/plugins/GlobalWarming/database",  new File(".").getAbsolutePath());
-                return DriverManager.getConnection("jdbc:h2:file:" + path + ";MODE=MySQL", username, password);
+                String path = String.format("%s/plugins/GlobalWarming/database", new File(".").getAbsolutePath());
+                String jdbcString = "jdbc:h2:file:" + path + ";MODE=MySQL;DB_CLOSE_ON_EXIT=TRUE;IGNORECASE=TRUE";
+                return DriverManager.getConnection(jdbcString, username, password);
             } else if (type.equalsIgnoreCase("MYSQL")) {
                 Class.forName("com.mysql.jdbc.Driver");
                 String connectionString = String.format(
@@ -59,9 +56,11 @@ public class ConnectionManager {
 
     public void close() {
         try {
-            connection.close();
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         } catch (Exception ex) {
-            GlobalWarming.getInstance().getLogger().severe(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 }
