@@ -53,7 +53,8 @@ public class WorldClimateEngine {
 
     public Reduction treeGrow(Tree tree, List<BlockState> blocks, boolean bonemealUsed) {
         // Remove duplicate block states by collecting them into a hashmap with location as the key
-        Map<Location, Material> blockStateMap = blocks.stream().collect(Collectors.toMap(BlockState::getLocation, BlockState::getType, (a, b) -> b));
+        Map<Location, Material> blockStateMap = blocks.stream()
+                .collect(Collectors.toMap(BlockState::getLocation, BlockState::getType, (a, b) -> b));
 
         double reductionValue = 0;
         int numBlocks = blockStateMap.size();

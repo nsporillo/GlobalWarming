@@ -1,4 +1,5 @@
 {
+  "DIRT": 0.0,
   "ACACIA_LEAVES": 0.2,
   "ACACIA_LOG": 2.0,
   "BIRCH_LEAVES": 0.2,
@@ -7,6 +8,8 @@
   "DARK_OAK_LOG": 1.0,
   "JUNGLE_LEAVES": 0.2,
   "JUNGLE_LOG": 2.0,
+  "SPRUCE_LOG": 2.0,
+  "SPRUCE_LEAVES": 0.2,
   "OAK_LEAVES": 0.2,
   "OAK_LOG": 2.0,
   "VINE": 0.3
