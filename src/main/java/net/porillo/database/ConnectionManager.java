@@ -1,11 +1,22 @@
 package net.porillo.database;
 
+import org.h2.Driver;
+import org.h2.engine.Engine;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
 public class ConnectionManager {
+
+    static {
+        @SuppressWarnings ("unused") Class<?>[] classes = new Class<?>[] {
+                Driver.class,
+                Engine.class
+        };
+    }
 
     private Connection connection;
     private String host;
