@@ -13,6 +13,7 @@ import net.porillo.objects.GPlayer;
 import net.porillo.objects.OffsetBounty;
 import net.porillo.util.AlertManager;
 import net.porillo.util.ChatTable;
+import net.porillo.util.Colorizer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,8 +24,6 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import java.text.DecimalFormat;
 import java.util.*;
-
-import static org.bukkit.ChatColor.*;
 
 @CommandAlias("gw")
 public class GeneralCommands extends BaseCommand {
@@ -262,102 +261,6 @@ public class GeneralCommands extends BaseCommand {
     }
 
     /**
-     * Format a carbon index
-     * - Map the value to color heat
-     * - Maximum of two decimal places
-     */
-    private static String formatIndex(double index, int score) {
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        return String.format("%s%s",
-                getScoreColor(score),
-                decimalFormat.format(index));
-    }
-
-    /**
-     * Format a carbon score
-     * - Map the value to color heat
-     */
-    private static String formatScore(int score) {
-        return String.format("%s%d",
-                getScoreColor(score),
-                score);
-    }
-
-    /**
-     * Format a temperature
-     * - Map the value to color heat
-     * - Maximum of two decimal places
-     */
-    private static String formatTemperature(double temperature) {
-        String format = GlobalWarming.getInstance().getConf().getTemperatureFormat();
-        DecimalFormat decimalFormat = new DecimalFormat(format);
-        return String.format("%s%s",
-                getTemperatureColor(temperature),
-                decimalFormat.format(temperature));
-    }
-
-    /**
-     * Get the color associated with a carbon score
-     * - Values are mapped to color-heat from LOW CO2 (cold) to HIGH CO2 (hot)
-     * - These ranges are somewhat arbitrary
-     */
-    public static ChatColor getScoreColor(int score) {
-        ChatColor color;
-        if (score <= -3500) {
-            color = DARK_BLUE;
-        } else if (score <= -2500) {
-            color = BLUE;
-        } else if (score <= -1500) {
-            color = DARK_AQUA;
-        } else if (score <= -500) {
-            color = AQUA;
-        } else if (score <= 500) {
-            color = GREEN; // (-500, 500]
-        } else if (score <= 1500) {
-            color = YELLOW;
-        } else if (score <= 2500) {
-            color = GOLD;
-        } else if (score <= 3500) {
-            color = RED;
-        } else {
-            color = DARK_RED;
-        }
-
-        return color;
-    }
-
-    /**
-     * Get the color associated with a temperature
-     * - These ranges are somewhat arbitrary
-     */
-    public static ChatColor getTemperatureColor(double temperature) {
-        ChatColor color;
-        if (temperature <= 10.5) {
-            color = DARK_BLUE;
-        } else if (temperature <= 11.5) {
-            color = BLUE;
-        } else if (temperature <= 12.5) {
-            color = DARK_AQUA;
-        } else if (temperature <= 13.5) {
-            color = AQUA;
-        } else if (temperature <= 14.5) {
-            color = GREEN; // (13.5, 14.5]
-        } else if (temperature <= 15.5) {
-            color = YELLOW;
-        } else if (temperature <= 16.5) {
-            color = GOLD;
-        } else if (temperature <= 17.5) {
-            color = LIGHT_PURPLE;
-        } else if (temperature <= 18.5) {
-            color = RED;
-        } else {
-            color = DARK_RED;
-        }
-
-        return color;
-    }
-
-    /**
      * Show the player's carbon score as a chat message
      */
     public static void showCarbonScore(GPlayer gPlayer) {
@@ -375,8 +278,8 @@ public class GeneralCommands extends BaseCommand {
                 //Player's carbon score and the global temperature:
                 welcomeMessage.append(String.format(
                         Lang.SCORE_CHAT.get(),
-                        formatScore(score),
-                        formatTemperature(temperature)));
+                        Colorizer.formatScore(score),
+                        associatedClimateEngine.formatTemp(temperature)));
 
                 //What the target is (i.e., a point of reference):
                 welcomeMessage.append("\n");
@@ -392,7 +295,7 @@ public class GeneralCommands extends BaseCommand {
                 } else {
                     welcomeMessage.append("\n");
                     welcomeMessage.append(Lang.TEMPERATURE_HIGH.get());
-                    if (GlobalWarming.getEconomy() != null) {
+                    if (GlobalWarming.getInstance().getEconomy() != null) {
                         //Tip: create a bounty when the temperature is high:
                         welcomeMessage.append(Lang.TEMPERATURE_HIGHWITHBOUNTY.get());
                     }
@@ -440,8 +343,8 @@ public class GeneralCommands extends BaseCommand {
                     int score = player.getCarbonScore();
                     double index = indexModel.getCarbonIndex(score);
                     row.add(Bukkit.getOfflinePlayer(player.getUuid()).getName());
-                    row.add(formatIndex(index, score));
-                    row.add(formatScore(score));
+                    row.add(Colorizer.formatIndex(index, score));
+                    row.add(Colorizer.formatScore(score));
                     chatTable.addRow(row);
                     if (++rowCount == 10) {
                         break;

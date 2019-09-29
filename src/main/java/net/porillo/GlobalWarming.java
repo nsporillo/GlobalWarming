@@ -16,9 +16,13 @@ import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.EffectEngine;
 import net.porillo.engine.ClimateEngine;
-import net.porillo.listeners.*;
+import net.porillo.listeners.AttributionListener;
+import net.porillo.listeners.CH4Listener;
+import net.porillo.listeners.CO2Listener;
+import net.porillo.listeners.PlayerListener;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
+import net.porillo.papi.TemperatureExpansion;
 import net.porillo.util.CO2Notifications;
 import net.porillo.util.GScoreboard;
 import org.bstats.bukkit.Metrics;
@@ -35,19 +39,21 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Random;
 
+@Getter
 public class GlobalWarming extends JavaPlugin {
 
     private static GlobalWarming instance; // single plugin instance
 
-    @Getter private GlobalWarmingConfig conf;
-    @Getter private ConnectionManager connectionManager;
-    @Getter private TableManager tableManager;
-    @Getter private Random random;
+    private GlobalWarmingConfig conf;
+    private ConnectionManager connectionManager;
+    private TableManager tableManager;
+    private GScoreboard scoreboard;
+    private CO2Notifications notifications;
+    private Random random;
+    private Gson gson;
+
     private PaperCommandManager commandManager;
-    @Getter private Gson gson;
-    @Getter private GScoreboard scoreboard;
-    @Getter private CO2Notifications notifications;
-    @Getter private static Economy economy;
+    private Economy economy;
 
     @Override
     public void onEnable() {
@@ -95,7 +101,7 @@ public class GlobalWarming extends JavaPlugin {
         ClimateEngine.getInstance().loadWorldClimateEngines();
         EffectEngine.getInstance();
         this.commandManager = new PaperCommandManager(this);
-        this.scoreboard = new GScoreboard();
+        this.scoreboard = new GScoreboard(conf.isScoreboardEnabled());
         this.notifications = new CO2Notifications();
         economy = null;
 
@@ -108,6 +114,10 @@ public class GlobalWarming extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
         AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null && !conf.isScoreboardEnabled()) {
+            new TemperatureExpansion().register();
+        }
 
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SimplePie("databaseType",
@@ -133,7 +143,7 @@ public class GlobalWarming extends JavaPlugin {
      * Economy (soft-dependency on Vault)
      * - If a Vault-based economy was not found, disable the bounty system
      */
-    private static void setupEconomy() {
+    private void setupEconomy() {
         if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
             RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
             if (economyProvider != null) {
@@ -153,6 +163,7 @@ public class GlobalWarming extends JavaPlugin {
             instance.getLogger().info("Bounty-system [enabled], Vault economy found");
         }
     }
+
 
     /**
      * @return instance of main class

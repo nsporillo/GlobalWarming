@@ -2,7 +2,6 @@ package net.porillo.util;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import net.porillo.commands.GeneralCommands;
 import net.porillo.config.Lang;
 import net.porillo.effect.EffectEngine;
 import net.porillo.effect.api.ClimateEffectType;
@@ -36,7 +35,8 @@ import java.util.*;
 public class CO2Notifications {
     private enum TemperatureRange {LOW, AVERAGE, HIGH}
 
-    @Getter private Map<UUID, BossBar> bossBars;
+    @Getter
+    private Map<UUID, BossBar> bossBars;
     private static final long NOTIFICATION_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getNotificationInterval();
     private static final long NOTIFICATION_DURATION_TICKS = GlobalWarming.getInstance().getConf().getNotificationDuration();
 
@@ -223,7 +223,7 @@ public class CO2Notifications {
 
         return String.format(
                 message,
-                GeneralCommands.getTemperatureColor(temperature),
+                Colorizer.getTemperatureColor(temperature),
                 optional);
     }
 

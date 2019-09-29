@@ -114,7 +114,7 @@ public class OffsetBounty {
             //Withdraw from account:
             boolean isWithdrawn = false;
             double balance = 0;
-            Economy economy = GlobalWarming.getEconomy();
+            Economy economy = GlobalWarming.getInstance().getEconomy();
             if (economy != null) {
                 EconomyResponse response = economy.withdrawPlayer(gPlayer.getOfflinePlayer(), reward);
                 isWithdrawn = response.transactionSuccess();
@@ -231,7 +231,7 @@ public class OffsetBounty {
         OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
         OffsetBounty bounty = offsetTable.update(hunter, blocksCompleted);
         if (bounty != null && bounty.getTimeCompleted() != 0) {
-            Economy economy = GlobalWarming.getEconomy();
+            Economy economy = GlobalWarming.getInstance().getEconomy();
             if (economy != null) {
                 economy.depositPlayer(hunter.getOfflinePlayer(), bounty.getReward());
                 notify(
@@ -275,7 +275,7 @@ public class OffsetBounty {
         int refund = 0;
         OffsetTable offsetTable = GlobalWarming.getInstance().getTableManager().getOffsetTable();
         List<OffsetBounty> cancelledBounties = offsetTable.cancel(gPlayer);
-        Economy economy = GlobalWarming.getEconomy();
+        Economy economy = GlobalWarming.getInstance().getEconomy();
         if (economy != null) {
             for (OffsetBounty bounty : cancelledBounties) {
                 economy.depositPlayer(gPlayer.getOfflinePlayer(), bounty.getReward());

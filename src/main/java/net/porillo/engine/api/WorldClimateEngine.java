@@ -2,11 +2,13 @@ package net.porillo.engine.api;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
+import net.porillo.config.Lang;
 import net.porillo.config.WorldConfig;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.engine.models.*;
 import net.porillo.objects.*;
+import net.porillo.util.Colorizer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,21 +16,23 @@ import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Getter
 public class WorldClimateEngine {
 
-    @Getter private WorldConfig config;
+    private WorldConfig config;
 
-    // Models
-    @Getter private ScoreTempModel scoreTempModel;
+    private ScoreTempModel scoreTempModel;
     private FuelModel fuelModel;
     private EntityMethaneModel methaneModel;
     private ReductionModel reductionModel;
-    @Getter private EntityFitnessModel entityFitnessModel;
-    @Getter private CarbonIndexModel carbonIndexModel;
+    private EntityFitnessModel entityFitnessModel;
+    private CarbonIndexModel carbonIndexModel;
+    private DecimalFormat format;
 
     public WorldClimateEngine(WorldConfig config) {
         this.config = config;
@@ -44,6 +48,8 @@ public class WorldClimateEngine {
             this.reductionModel = new ReductionModel(worldName);
             this.entityFitnessModel = new EntityFitnessModel(worldName);
             this.carbonIndexModel = new CarbonIndexModel(worldName);
+            String format = GlobalWarming.getInstance().getConf().getTemperatureFormat();
+            this.format = new DecimalFormat(format);
         } else {
             GlobalWarming.getInstance().getLogger().warning(
                     String.format("Could not load climate engine for world id [%s]", config.getWorldId()));
@@ -136,6 +142,13 @@ public class WorldClimateEngine {
         }
 
         return temperature;
+    }
+
+    public String formatTemp(double temp) {
+        return String.format(
+                Lang.SCORE_TEMPERATURE.get(),
+                Colorizer.getTemperatureColor(temp),
+                format.format(temp));
     }
 
     public boolean isEffectEnabled(ClimateEffectType type) {

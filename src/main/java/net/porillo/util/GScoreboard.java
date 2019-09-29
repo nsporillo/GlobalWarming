@@ -2,7 +2,6 @@ package net.porillo.util;
 
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import net.porillo.commands.GeneralCommands;
 import net.porillo.config.Lang;
 import net.porillo.database.tables.PlayerTable;
 import net.porillo.engine.ClimateEngine;
@@ -17,7 +16,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -36,12 +34,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * - Only one objective can be displayed in a sidebar at one time
  */
 public class GScoreboard {
+
     @Getter private Map<UUID, Scoreboard> scoreboards;
     private ConcurrentLinkedQueue<UUID> requestQueue;
     private static final String GLOBAL_WARMING = "GlobalWarming";
     private static final long SCOREBOARD_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getScoreboardInterval();
+    private final boolean isEnabled;
 
-    public GScoreboard() {
+    public GScoreboard(boolean enabled) {
+        this.isEnabled = enabled;
         //One scoreboard per world:
         scoreboards = new HashMap<>();
 
@@ -95,7 +96,7 @@ public class GScoreboard {
      * - Creates a new scoreboard for the world if required
      */
     public void connect(GPlayer gPlayer) {
-        if (gPlayer != null) {
+        if (gPlayer != null && isEnabled) {
             //Disconnect the player from the current scoreboard (if required):
             disconnect(gPlayer);
 
@@ -119,6 +120,9 @@ public class GScoreboard {
      * until a new scoreboard is assigned or the user exits
      */
     public void disconnect(GPlayer gPlayer) {
+        if (!isEnabled) {
+            return;
+        }
         UUID associatedWorldId = gPlayer.getAssociatedWorldId();
         Scoreboard scoreboard = getScoreboard(associatedWorldId, false);
         if (scoreboard != null) {
@@ -145,6 +149,9 @@ public class GScoreboard {
      * - One unique request per player only
      */
     public void update(GPlayer player) {
+        if (!isEnabled) {
+            return;
+        }
         synchronized (this) {
             if (player != null) {
                 if (!requestQueue.contains(player.getUuid())) {
@@ -158,6 +165,9 @@ public class GScoreboard {
      * Show or hide the scoreboard (UI)
      */
     public void show(GPlayer gPlayer, boolean isVisible) {
+        if (!isEnabled) {
+            return;
+        }
         Scoreboard scoreboard = getScoreboard(gPlayer);
         if (isVisible) {
             Objective objective = scoreboard.getObjective(GLOBAL_WARMING);
@@ -189,12 +199,10 @@ public class GScoreboard {
                 //Update the title to show this world's temperature:
                 if (objective != null) {
                     double temperature = climateEngine.getTemperature();
-                    String format = GlobalWarming.getInstance().getConf().getTemperatureFormat();
-                    DecimalFormat decimalFormat = new DecimalFormat(format);
                     objective.setDisplayName(String.format(
                             Lang.SCORE_TEMPERATURE.get(),
-                            GeneralCommands.getTemperatureColor(temperature),
-                            decimalFormat.format(temperature)));
+                            Colorizer.getTemperatureColor(temperature),
+                            climateEngine.formatTemp(temperature)));
                 }
             }
         }
@@ -233,7 +241,7 @@ public class GScoreboard {
                     if (objective != null) {
                         Team team = scoreboard.getPlayerTeam(onlinePlayer);
                         if (team != null) {
-                            team.setColor(GeneralCommands.getScoreColor(gPlayer.getCarbonScore()));
+                            team.setColor(Colorizer.getScoreColor(gPlayer.getCarbonScore()));
                             objective.getScore(onlinePlayer).setScore(gPlayer.getCarbonScore());
                         }
                     }
@@ -247,6 +255,9 @@ public class GScoreboard {
      * - Updates are processed periodically
      */
     private void debounceScoreUpdates() {
+        if (!isEnabled) {
+            return;
+        }
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
                 GlobalWarming.getInstance(),
                 () -> {
