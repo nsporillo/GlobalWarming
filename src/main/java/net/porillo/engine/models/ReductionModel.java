@@ -34,7 +34,9 @@ public class ReductionModel extends Model {
         if (reductionMap.containsKey(block)) {
             return reductionMap.get(block);
         } else {
-            GlobalWarming.getInstance().getLogger().warning(String.format("No reduction defined in the model for: [%s]", block.name()));
+            GlobalWarming.getInstance().getLogger().warning(
+                    String.format("No reduction defined in %s/reductionModel.json for: [%s]",
+                            getWorldName(), block.name()));
             return 0;
         }
     }
