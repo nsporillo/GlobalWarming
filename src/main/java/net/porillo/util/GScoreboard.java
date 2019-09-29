@@ -199,10 +199,7 @@ public class GScoreboard {
                 //Update the title to show this world's temperature:
                 if (objective != null) {
                     double temperature = climateEngine.getTemperature();
-                    objective.setDisplayName(String.format(
-                            Lang.SCORE_TEMPERATURE.get(),
-                            Colorizer.getTemperatureColor(temperature),
-                            climateEngine.formatTemp(temperature)));
+                    objective.setDisplayName(climateEngine.formatTemp(temperature));
                 }
             }
         }
