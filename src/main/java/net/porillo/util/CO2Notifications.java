@@ -52,16 +52,14 @@ public class CO2Notifications {
                     //Create notification for all players, grouped by associated-world
                     synchronized (this) {
                         bossBars.clear();
-                        GScoreboard scoreboard = GlobalWarming.getInstance().getScoreboard();
-                        for (UUID worldId : scoreboard.getScoreboards().keySet()) {
-                            World world = Bukkit.getWorld(worldId);
+                        for (World world : Bukkit.getWorlds()) {
                             if (world != null) {
                                 BossBar bossBar = Bukkit.createBossBar(
-                                        getNotificationMessage(worldId),
+                                        getNotificationMessage(world.getUID()),
                                         BarColor.WHITE,
                                         BarStyle.SOLID);
 
-                                bossBars.put(worldId, bossBar);
+                                bossBars.put(world.getUID(), bossBar);
                                 for (Player player : world.getPlayers()) {
                                     bossBar.addPlayer(player);
                                 }
