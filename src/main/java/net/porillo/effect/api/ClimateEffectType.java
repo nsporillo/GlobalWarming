@@ -20,7 +20,8 @@ public enum ClimateEffectType {
     WEATHER,
 
     PERMANENT_SLOWNESS,
-    FIRE
+    FIRE,
 
+    CORAL_DEATH
     // TODO: Add more
 }

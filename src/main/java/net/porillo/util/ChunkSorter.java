@@ -9,6 +9,30 @@ import java.util.*;
 
 public class ChunkSorter {
 
+    public static List<Chunk> quickDistanceChunks(Chunk[] chunks, List<Player> players, int numChunks) {
+        if (players.size() == 0) {
+            return Arrays.asList(chunks).subList(0, Math.min(numChunks, chunks.length));
+        } else {
+            List<Chunk> sortedChunks = new ArrayList<>();
+            Collections.addAll(sortedChunks, chunks);
+            sortedChunks.sort((o1, o2) -> {
+                Location l1 = chunkToLocation(o1);
+                Location l2 = chunkToLocation(o2);
+                double d1 = 0;
+                double d2 = 0;
+                for (Player player : players) {
+                    d1 += l1.distance(player.getLocation());
+                    d2 += l2.distance(player.getLocation());
+                }
+                d1 /= players.size();
+                d2 /= players.size();
+
+                return Double.compare(d1, d2);
+            });
+
+            return sortedChunks.subList(0, Math.min(numChunks, sortedChunks.size()));
+        }
+    }
     public static List<Chunk> sortByDistance(Chunk[] chunks, Map<GChunk, Integer> waterLevel, List<Player> players, int height, int numChunks) {
         if (players.size() == 0) {
             return Arrays.asList(chunks).subList(0, Math.min(numChunks, chunks.length));

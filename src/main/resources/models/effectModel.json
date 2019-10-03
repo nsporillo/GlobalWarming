@@ -206,6 +206,44 @@
       }
     }
   },
+  "CORAL_DEATH": {
+    "enabled": true,
+    "model": {
+      "chunks-per-period": 32,
+      "queue-ticks": 40,
+      "chunk-ticks": 20,
+      "chunk-cooldown-millis": 30000,
+      "max-period-chunk-changes": 8,
+      "distribution": {
+        "temp": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "fitness": [
+          10,
+          50,
+          70,
+          100,
+          100,
+          100,
+          50,
+          45,
+          30,
+          15,
+          5
+        ]
+      }
+    }
+  },
   "PERMANENT_SLOWNESS": {
     "enabled": true,
     "model": {
