@@ -3,6 +3,27 @@ Minecraft Server Java Edition (Spigot) plugin which adds game changing climate c
 
 <a href="https://discord.gg/VR96VvC"><img src="https://discordapp.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png" height="50"></a>
 
+Table of Contents
+=================
+
+   * [GlobalWarming - <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/259d74d6a1c5d317c8f7b10d09183313da539383/68747470733a2f2f7472617669732d63692e6f72672f6e73706f72696c6c6f2f476c6f62616c5761726d696e672e7376673f6272616e63683d6d6173746572"><img src="https://camo.githubusercontent.com/259d74d6a1c5d317c8f7b10d09183313da539383/68747470733a2f2f7472617669732d63692e6f72672f6e73706f72696c6c6f2f476c6f62616c5761726d696e672e7376673f6272616e63683d6d6173746572" alt="" data-canonical-src="https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master" style="max-width:100\x;"></a> - Supports Minecraft 1.13 ](#globalwarming------supports-minecraft-113)
+      * [Contributing](#contributing)
+      * [Builds](#builds)
+      * [Overview](#overview)
+      * [Purpose](#purpose)
+      * [Mechanics](#mechanics)
+      * [Challenges](#challenges)
+      * [(Planned) Features](#planned-features)
+      * [Negative Climate Damages (Sample Model)](#negative-climate-damages-sample-model)
+      * [Roadmap](#roadmap)
+      * [Related Science of Climate Change](#related-science-of-climate-change)
+         * [Atmosphere warms with more CO2 because of Greenhouse Effect](#atmosphere-warms-with-more-co2-because-of-greenhouse-effect)
+         * [Atmospheric Energy Budget](#atmospheric-energy-budget)
+         * [Impact on Oceans](#impact-on-oceans)
+         * [Ecological Niche](#ecological-niche)
+      * [Suggestions](#suggestions)
+
+
 ## Contributing
 - [Developer Setup](https://github.com/nsporillo/GlobalWarming/wiki/Developer-Setup-and-Installation)
 - There is a Kanban board on Github where I'll be prioritizing work, feel free to help work on any of the tasks.
