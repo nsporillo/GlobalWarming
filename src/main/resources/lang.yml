@@ -5,6 +5,7 @@ lang:
     INVALIDARGS: '§c§OInvalid command arguments, expecting: §7§O%s'
     SPAM: §8§OToo many requests at once
     INVENTORYFULL: §c§OYour inventory is full
+    PLAYERONLY: Player only command
   ALERT:
     SUBSCRIBE: '§2Subscribed to real time carbon score alerts'
     UNSUBSCRIBE: '§cUnsubscribed from real time carbon score alerts'

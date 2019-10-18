@@ -1,5 +1,7 @@
 package net.porillo;
 
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.InvalidCommandContextException;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
 import com.google.gson.Gson;
@@ -29,6 +31,8 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -133,7 +137,13 @@ public class GlobalWarming extends JavaPlugin {
     private void registerCommands() {
         commandManager.enableUnstableAPI("help");
         commandManager.setFormat(MessageType.HELP, ChatColor.GREEN, ChatColor.DARK_GREEN, ChatColor.AQUA);
-        commandManager.getCommandContexts().registerIssuerOnlyContext(GPlayer.class, c -> tableManager.getPlayerTable().getPlayers().get(c.getPlayer().getUniqueId()));
+        commandManager.getCommandContexts().registerIssuerOnlyContext(GPlayer.class, c -> {
+            CommandSender sender = c.getSender();
+            if (sender instanceof Player) {
+                return tableManager.getPlayerTable().getPlayers().get(c.getPlayer().getUniqueId());
+            }
+            throw new InvalidCommandArgument(Lang.GENERIC_PLAYERONLY.get(), false);
+        });
 
         this.commandManager.registerCommand(new AdminCommands());
         this.commandManager.registerCommand(new GeneralCommands());
