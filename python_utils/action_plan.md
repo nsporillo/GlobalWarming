@@ -1,6 +1,6 @@
 ## Steps
 
-A) Download grid data from [GSSURGO](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/soils/home/?cid=nrcs142p2_053628) of any region for sample. In our case using one of the region of usa called California.</br>
+A) Download grid data from [GSSURGO](https://www.nrcs.usda.gov/wps/portal/nrcs/detail/soils/home/?cid=nrcs142p2_053628) of any region for sample. In our case using one of the region of usa called California [direct download link](https://gdg.sc.egov.usda.gov/GDGHome_DirectDownLoad.aspx)</br>
 
 B) classify this region soil data based on soil types already available. Typically the data set in Vector Format.</br>
 
