@@ -8,6 +8,6 @@ Soil-climate models assuming constant inputs of carbon to soils from vegetation 
  The integrated impact of climate change is expected to generally increase crop yields (with winter wheat, sunflower and sugar beet) as a result of the combined effects of CO2 fertilisation, radiation use efficiency and longer growing seasons which mostly applies to species with the C3 photosynthetic pathway22,23 and not necessarily to species with the C4 pathway.</br>
  
  # Bottom-Line
- This repo is responsible for idea implementation of [ water holding capacity behaviour](someURL) on climate change with [step-by-step mechanism](someURL).
+ This repo is responsible for idea implementation of [water holding capacity behaviour](https://github.com/ojhaanshu87/GlobalWarming/blob/soil_type_impact_on_global_warming/python_utils/water_holding_capacity_behaviour.md) on climate change with [step-by-step mechanism](https://github.com/ojhaanshu87/GlobalWarming/blob/soil_type_impact_on_global_warming/python_utils/action_plan.md).
  
 
