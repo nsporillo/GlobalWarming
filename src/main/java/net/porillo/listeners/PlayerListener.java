@@ -40,8 +40,10 @@ public class PlayerListener implements Listener {
                 ClimateEngine.getInstance().getClimateEngine(gPlayer.getAssociatedWorldId());
 
         if (engine != null && engine.isEnabled()) {
-            //Show players their current carbon score in chat:
-            GeneralCommands.showCarbonScore(gPlayer);
+            if (gw.getConf().isWelcomingOnJoin()) {
+                //Show players their current carbon score in chat:
+                GeneralCommands.showCarbonScore(gPlayer);
+            }
 
             if (gw.getConf().isScoreboardEnabled()) {
                 //Add the player to the scoreboard:
