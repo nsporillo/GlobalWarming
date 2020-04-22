@@ -1,5 +1,6 @@
 package net.porillo.listeners;
 
+import lombok.RequiredArgsConstructor;
 import net.porillo.GlobalWarming;
 import net.porillo.config.Lang;
 import net.porillo.database.queries.insert.ContributionInsertQuery;
@@ -16,25 +17,29 @@ import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.*;
 import net.porillo.util.AlertManager;
+import net.porillo.util.FurnaceQueue;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
-import java.util.UUID;
+import java.util.*;
 
+@RequiredArgsConstructor
 public class CO2Listener implements Listener {
 
-    private GlobalWarming gw;
+    private final GlobalWarming gw;
     private static final UUID untrackedUUID = UUID.fromString("1-1-1-1-1");
 
-    public CO2Listener(GlobalWarming main) {
-        this.gw = main;
-    }
+    private Map<Location, FurnaceQueue> furnaceMap = new HashMap<>();
 
     /**
      * Detect when CO2 is emitted via furnace
@@ -261,10 +266,80 @@ public class CO2Listener implements Listener {
     // until we consider the
     // @EventHandler
     public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
-        if (event.getItem().getType().isFuel()) {
-            if (event.getDestination() instanceof FurnaceInventory) {
-                FurnaceInventory furnaceInventory = (FurnaceInventory) event.getDestination();
+        ItemStack itemStack = event.getItem();
+        Material type = itemStack.getType();
+
+        if (type.isFuel()) {
+            Inventory initiator = event.getSource();
+            Inventory destination = event.getDestination();
+
+            if (initiator instanceof PlayerInventory && destination instanceof FurnaceInventory) {
+                // Player is moving fuel into a furnace
+                FurnaceInventory furnaceInventory = (FurnaceInventory) destination;
+                PlayerInventory playerInventory = (PlayerInventory) initiator;
+
+                Location furnaceLocation = furnaceInventory.getLocation();
+                UUID playerId = getHolder(playerInventory);
+
+                insertFuel(furnaceLocation, playerId, itemStack);
+            } else if (initiator instanceof FurnaceInventory && destination instanceof PlayerInventory) {
+                // Player is moving fuel out of a furnace
+                PlayerInventory playerInventory = (PlayerInventory) destination;
+                FurnaceInventory furnaceInventory = (FurnaceInventory) initiator;
+                Location furnaceLocation = furnaceInventory.getLocation();
+                UUID playerId = getHolder(playerInventory);
+
+                removeFuel(furnaceLocation, playerId, itemStack);
             }
         }
+    }
+
+    private UUID getHolder(PlayerInventory playerInventory) {
+        HumanEntity holder = playerInventory.getHolder();
+        return holder != null ? holder.getUniqueId() : null;
+    }
+
+    public void insertFuel(Location location, UUID playerId, ItemStack itemStack) {
+        if (location == null || playerId == null) {
+            gw.getLogger().warning("Could not track fuel insertion");
+            return;
+        }
+
+        FurnaceQueue furnaceQueue = furnaceMap.get(location);
+        if (furnaceQueue == null) {
+            furnaceQueue = new FurnaceQueue();
+        }
+
+        furnaceQueue.insertFuel(playerId, itemStack);
+    }
+
+    public void removeFuel(Location location, UUID playerId, ItemStack itemStack) {
+        if (location == null || playerId == null) {
+            gw.getLogger().warning("Could not track fuel insertion");
+            return;
+        }
+
+        FurnaceQueue furnaceQueue = furnaceMap.get(location);
+        if (furnaceQueue == null) {
+            furnaceQueue = new FurnaceQueue();
+        }
+
+        furnaceQueue.removeFuel(playerId, itemStack);
+    }
+
+    public void burnFuel(Location location, ItemStack itemStack) {
+        if (location == null) {
+            gw.getLogger().warning("Could not track furnace fuel burn");
+            return;
+        }
+
+        FurnaceQueue furnaceQueue = furnaceMap.get(location);
+        if (furnaceQueue == null) {
+            gw.getLogger().warning("No tracked fuel found for furnace @ " + location.toString());
+            return;
+        }
+
+        PlayerFurnaceFuel lastMatchingFuel = furnaceQueue.getFirstInsertedFuel();
+
     }
 }
