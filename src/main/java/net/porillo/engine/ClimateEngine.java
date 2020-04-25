@@ -31,7 +31,6 @@ public class ClimateEngine {
 
             if (!worldConfig.isEnabled()) {
                 GlobalWarming.getInstance().getLogger().info(String.format("World: [%s] found, but is disabled", world.getName()));
-                return;
             } else {
                 GlobalWarming.getInstance().getLogger().info(String.format("Loading climate engine for: [%s]", world.getName()));
             }
