@@ -22,7 +22,7 @@ public class FuelModel extends Model {
     @Override
     public void loadModel() {
         try {
-            this.fuelMap = ClimateEngine.getInstance().getGson()
+            this.fuelMap = GlobalWarming.getInstance().getGson()
                     .fromJson(super.getContents(), new TypeToken<Map<Material, Double>>() {
                     }.getType());
         } catch (JsonSyntaxException ex) {

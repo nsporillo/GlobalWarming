@@ -1,8 +1,5 @@
 package net.porillo.engine;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.config.Lang;
 import net.porillo.config.WorldConfig;
@@ -13,48 +10,34 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ClimateEngine {
 
     private static ClimateEngine climateEngine;
     private Map<UUID, WorldClimateEngine> worldClimateEngines;
-    @Getter private Gson gson;
 
     public ClimateEngine() {
         this.worldClimateEngines = new HashMap<>();
-        if (GlobalWarming.getInstance() != null) {
-            this.gson = GlobalWarming.getInstance().getGson();
-        } else {
-            this.gson = new GsonBuilder().setPrettyPrinting().create();
-        }
     }
 
-    public void loadWorldClimateEngines() {
-        //Load a world config for all worlds:
-        Set<WorldConfig> worldConfigs = new HashSet<>();
-        for (World world : Bukkit.getWorlds()) {
-            worldConfigs.add(new WorldConfig(world.getUID()));
-        }
+    public void loadWorldClimateEngine(World world) {
+        if (world == null) return;
+        UUID worldId = world.getUID();
+        if (!worldClimateEngines.containsKey(worldId)) {
+            WorldConfig worldConfig = new WorldConfig(worldId);
 
-        for (WorldConfig config : worldConfigs) {
-            //Engine status notification:
-            final UUID worldId = config.getWorldId();
-            final World world = Bukkit.getWorld(worldId);
-
-            if (world == null) {
-                GlobalWarming.getInstance().getLogger().warning(String.format("Failed to load config for: [%s]", config.getName()));
-                continue;
-            }
-
-            if (config.isEnabled()) {
-                GlobalWarming.getInstance().getLogger().info(String.format("Loading climate engine for: [%s]", world.getName()));
-            } else {
+            if (!worldConfig.isEnabled()) {
                 GlobalWarming.getInstance().getLogger().info(String.format("World: [%s] found, but is disabled", world.getName()));
+                return;
+            } else {
+                GlobalWarming.getInstance().getLogger().info(String.format("Loading climate engine for: [%s]", world.getName()));
             }
 
             //Add the climate engine:
-            worldClimateEngines.put(worldId, new WorldClimateEngine(config));
+            worldClimateEngines.put(worldId, new WorldClimateEngine(worldConfig));
 
             //Delayed attempt create the world object if it doesn't currently exist:
             WorldTable worldTable = GlobalWarming.getInstance().getTableManager().getWorldTable();
@@ -73,11 +56,14 @@ public class ClimateEngine {
         }
     }
 
-    public WorldClimateEngine getClimateEngine(UUID worldId) {
-        WorldClimateEngine climateEngine = null;
-        if (worldClimateEngines.containsKey(worldId)) {
-            climateEngine = worldClimateEngines.get(worldId);
+    public void loadWorldClimateEngines() {
+        for (World world : Bukkit.getWorlds()) {
+            loadWorldClimateEngine(world);
         }
+    }
+
+    public WorldClimateEngine getClimateEngine(UUID worldId) {
+        WorldClimateEngine climateEngine = worldClimateEngines.get(worldId);
 
         if (climateEngine == null) {
             GlobalWarming.getInstance().getLogger().warning(String.format(

@@ -22,7 +22,7 @@ public class EntityMethaneModel extends Model {
     @Override
     public void loadModel() {
         try {
-            this.entityMethaneMap = ClimateEngine.getInstance().getGson().fromJson(
+            this.entityMethaneMap = GlobalWarming.getInstance().getGson().fromJson(
                     super.getContents(),
                     new TypeToken<Map<EntityType, Double>>() {
                     }.getType());

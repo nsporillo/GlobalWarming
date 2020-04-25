@@ -16,10 +16,7 @@ import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.EffectEngine;
 import net.porillo.engine.ClimateEngine;
-import net.porillo.listeners.AttributionListener;
-import net.porillo.listeners.CH4Listener;
-import net.porillo.listeners.CO2Listener;
-import net.porillo.listeners.PlayerListener;
+import net.porillo.listeners.*;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
 import net.porillo.papi.TemperatureExpansion;
@@ -112,6 +109,7 @@ public class GlobalWarming extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
         Bukkit.getPluginManager().registerEvents(new CH4Listener(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
 
         AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
 

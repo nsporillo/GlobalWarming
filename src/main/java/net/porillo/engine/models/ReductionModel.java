@@ -20,7 +20,7 @@ public class ReductionModel extends Model {
 
     @Override
     public void loadModel() {
-        this.reductionMap = ClimateEngine.getInstance().getGson().fromJson(
+        this.reductionMap = GlobalWarming.getInstance().getGson().fromJson(
                 super.getContents(),
                 new TypeToken<Map<Material, Double>>() {
                 }.getType());
