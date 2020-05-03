@@ -1,10 +1,10 @@
 package net.porillo.engine.models;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import net.porillo.GlobalWarming;
-import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.Model;
 import org.bukkit.Material;
 
@@ -14,17 +14,18 @@ public class FuelModel extends Model {
 
     @Getter private Map<Material, Double> fuelMap;
 
-    public FuelModel(String worldName) {
+    private final Gson gson;
+
+    public FuelModel(Gson gson, String worldName) {
         super(worldName, "fuelModel.json");
+        this.gson = gson;
         this.loadModel();
     }
 
     @Override
     public void loadModel() {
         try {
-            this.fuelMap = GlobalWarming.getInstance().getGson()
-                    .fromJson(super.getContents(), new TypeToken<Map<Material, Double>>() {
-                    }.getType());
+            this.fuelMap = gson.fromJson(super.getContents(), new TypeToken<Map<Material, Double>>() {}.getType());
         } catch (JsonSyntaxException ex) {
             ex.printStackTrace();
             GlobalWarming.getInstance().getLogger().severe("Error loading model file: " + super.getPath());
