@@ -386,29 +386,27 @@ public class GeneralCommands extends BaseCommand {
             if (!isDuplicate) {
                 ItemStack wiki = new ItemStack(Material.WRITTEN_BOOK);
                 final BookMeta meta = (BookMeta) wiki.getItemMeta();
-                meta.setDisplayName(Lang.WIKI_NAME.get());
-                meta.setAuthor(Lang.WIKI_AUTHOR.get());
+                if (meta != null) {
+                    meta.setDisplayName(Lang.WIKI_NAME.get());
+                    meta.setAuthor(Lang.WIKI_AUTHOR.get());
+                    meta.setTitle(Lang.WIKI_LORE.get());
+                    meta.setPages(
+                            Lang.WIKI_INTRODUCTION.get(),
+                            Lang.WIKI_SCORES.get(),
+                            Lang.WIKI_EFFECTS.get(),
+                            Lang.WIKI_BOUNTY.get(),
+                            Lang.WIKI_OTHER.get()
+                            );
 
-                final ArrayList<String> lore = new ArrayList<>();
-                lore.add(Lang.WIKI_LORE.get());
-                meta.setLore(lore);
-
-                final ArrayList<String> content = new ArrayList<>();
-                content.add(Lang.WIKI_INTRODUCTION.get());
-                content.add(Lang.WIKI_SCORES.get());
-                content.add(Lang.WIKI_EFFECTS.get());
-                content.add(Lang.WIKI_BOUNTY.get());
-                content.add(Lang.WIKI_OTHER.get());
-
-                //Create the book and add to inventory:
-                meta.setPages(content);
-                wiki.setItemMeta(meta);
-                if (onlinePlayer.getInventory().addItem(wiki).isEmpty()) {
-                    //Added:
-                    gPlayer.sendMsg(Lang.WIKI_ADDED);
-                } else {
-                    //Inventory full:
-                    gPlayer.sendMsg(Lang.GENERIC_INVENTORYFULL);
+                    //Create the book and add to inventory:
+                    wiki.setItemMeta(meta);
+                    if (onlinePlayer.getInventory().addItem(wiki).isEmpty()) {
+                        //Added:
+                        gPlayer.sendMsg(Lang.WIKI_ADDED);
+                    } else {
+                        //Inventory full:
+                        gPlayer.sendMsg(Lang.GENERIC_INVENTORYFULL);
+                    }
                 }
             }
         }

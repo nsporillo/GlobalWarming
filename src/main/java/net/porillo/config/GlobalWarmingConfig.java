@@ -20,6 +20,7 @@ public class GlobalWarmingConfig extends ConfigLoader {
     private boolean scoreboardEnabled;
     private int scoreboardInterval;
     private String temperatureFormat;
+    private boolean welcomingOnJoin;
 
     public GlobalWarmingConfig() {
         super("config.yml");
@@ -48,6 +49,8 @@ public class GlobalWarmingConfig extends ConfigLoader {
         this.scoreboardEnabled = conf.getBoolean("scoreboard.enabled", true);
         this.scoreboardInterval = conf.getInt("scoreboard.interval", 20);
         this.temperatureFormat = conf.getString("temperature.format", "#.##");
+
+        this.welcomingOnJoin = conf.getBoolean("chat.welcome-on-join", true);
     }
 
     public ConnectionManager makeConnectionManager() {

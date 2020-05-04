@@ -1,5 +1,6 @@
 package net.porillo.engine.api;
 
+import com.google.gson.Gson;
 import lombok.Getter;
 import net.porillo.GlobalWarming;
 import net.porillo.config.Lang;
@@ -41,11 +42,12 @@ public class WorldClimateEngine {
         World world = Bukkit.getWorld(config.getWorldId());
 
         if (world != null) {
+            Gson gson = GlobalWarming.getInstance().getGson();
             String worldName = Bukkit.getWorld(config.getWorldId()).getName();
             this.scoreTempModel = new ScoreTempModel(worldName, config.getSensitivity());
-            this.fuelModel = new FuelModel(worldName);
+            this.fuelModel = new FuelModel(gson, worldName);
             this.methaneModel = new EntityMethaneModel(worldName);
-            this.reductionModel = new ReductionModel(worldName);
+            this.reductionModel = new ReductionModel(gson, worldName);
             this.entityFitnessModel = new EntityFitnessModel(worldName);
             this.carbonIndexModel = new CarbonIndexModel(worldName);
             String format = GlobalWarming.getInstance().getConf().getTemperatureFormat();

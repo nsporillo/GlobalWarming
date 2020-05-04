@@ -18,10 +18,7 @@ import net.porillo.database.queue.AsyncDBQueue;
 import net.porillo.database.tables.WorldTable;
 import net.porillo.effect.EffectEngine;
 import net.porillo.engine.ClimateEngine;
-import net.porillo.listeners.AttributionListener;
-import net.porillo.listeners.CH4Listener;
-import net.porillo.listeners.CO2Listener;
-import net.porillo.listeners.PlayerListener;
+import net.porillo.listeners.*;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
 import net.porillo.papi.TemperatureExpansion;
@@ -37,7 +34,6 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.h2.jdbc.JdbcSQLNonTransientConnectionException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -91,15 +87,15 @@ public class GlobalWarming extends JavaPlugin {
                     worldTable.insertNewWorld(world.getUID());
                 }
             }
-        } catch (JdbcSQLNonTransientConnectionException jex) {
-            getLogger().severe("Server reloads are not supported when using H2 DB.");
-            getLogger().severe("Disabling the plugin. Please full restart to fix.");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return; // avoid proceeding with startup logic
         } catch (SQLException | ClassNotFoundException e) {
             getLogger().severe("Database connection not found.");
             getLogger().severe("Data won't persist after restarts!");
             getLogger().severe("Please update config.yml and restart the server.");
+        } catch (Exception jex) {
+            getLogger().severe("Server reloads are not supported when using H2 DB.");
+            getLogger().severe("Disabling the plugin. Please full restart to fix.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return; // avoid proceeding with startup logic
         }
 
         ClimateEngine.getInstance().loadWorldClimateEngines();
@@ -116,6 +112,7 @@ public class GlobalWarming extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new CO2Listener(this), this);
         Bukkit.getPluginManager().registerEvents(new CH4Listener(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new WorldListener(this), this);
 
         AsyncDBQueue.getInstance().scheduleAsyncTask(conf.getDatabaseInterval() * 20L);
 

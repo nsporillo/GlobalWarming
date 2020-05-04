@@ -1,6 +1,7 @@
 bounty:
   max-created-per-player: 5
 chat:
+  welcome-on-join: true
   table-width: 280
 climate-notification:
   degrees-until-change-detected: 0.25

@@ -11,18 +11,8 @@ public class ModelTest {
     private static final String world = "world";
 
     @Test
-    public void testFuelModel() {
-        FuelModel model = new FuelModel(world);
-    }
-
-    @Test
     public void testMethaneModel() {
         EntityMethaneModel methaneModel = new EntityMethaneModel(world);
-    }
-
-    @Test
-    public void testReductionModel() {
-        ReductionModel model = new ReductionModel(world);
     }
 
     @Test

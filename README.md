@@ -1,5 +1,5 @@
-# GlobalWarming - ![](https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master) - Supports Minecraft 1.13+
-Minecraft Server Java Edition (Spigot) plugin which adds game changing climate change mechanics.
+# GlobalWarming-![](https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master) - Supports Minecraft 1.13+
+Minecraft Server Java Edition (Spigot) plugin which adds game-changing climate change mechanics.
 
 <a href="https://discord.gg/VR96VvC"><img src="https://discordapp.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png" height="50"></a>
 
@@ -41,11 +41,11 @@ Table of Contents
 + As CO2 levels rise, global temperature rises because of the [Greenhouse Effect](http://hyperphysics.phy-astr.gsu.edu/hbase/thermo/grnhse.html)
 
 ## Purpose
-+ Ever had the hankering to turn a game meant for fun into a emulator of one of the modern worlds toughest challenges?
++ Ever had the hankering to turn a game meant for fun into an emulator of one of the modern world's toughest challenges?
 + Observe the [Prisoner's Dilemma](https://en.wikipedia.org/wiki/Prisoner%27s_dilemma#In_environmental_studies) first hand! 
 + Players are best off when they co-operate and agree to reduce their emissions
-+ However, each individual player typically believes they are better off for themselves to emit as much as they wish. 
-+ Avoiding a [Tragedy of the Commons](https://en.wikipedia.org/wiki/Tragedy_of_the_commons) might be fun! If the players don't play nice and end up dealing with the consequences, they might decide to make an agreement to fix the planet. 
++ However, each player typically believes they are better off for themselves to emit as much as they wish. 
++ Avoiding a [Tragedy of the Commons](https://en.wikipedia.org/wiki/Tragedy_of_the_commons) might be fun! If the players don't play nice and end up dealing with the consequences, they might decide to agree to fix the planet. 
 
 ## Mechanics 
 + Every furnace burn causes a "Contribution" to emissions with an associated numerical value (based on the model)
@@ -61,7 +61,7 @@ Table of Contents
 ## (Planned) Features
 + Scoreboard Integration - Players can compete for carbon neutrality! The worst polluters can be shamed.
 + Economy Integration - Carbon Offsetting using your in-game currency! Set up tree-planting bounties 
-+ Carbon Scorecard - Each player can see their latest carbon footprint trends via command line.
++ Carbon Scorecard - Each player can see their latest carbon footprint trends via the command line.
 + Multi-world - You can experiment with this plugin on one of your worlds to test it out!
 + Custom Models - The inner numerical workings are as configurable as possible. Set thresholds, probabilities, and distributions.
 + Database storage - Load data on startup, queue DB changes to be done async and at intervals (instead of as they happen, that'd kill performance), and empty queue on shutdown. 
@@ -108,4 +108,4 @@ Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
 Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
 
 ## Suggestions 
-Feel free to create issues on this github project, or join the discord
+Feel free to create issues on this GitHub project, or join the discord
