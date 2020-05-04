@@ -15,6 +15,7 @@ import net.porillo.engine.api.WorldClimateEngine;
 import net.porillo.objects.GPlayer;
 import net.porillo.objects.GWorld;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandAlias("gw")
@@ -26,16 +27,16 @@ public class AdminCommands extends BaseCommand {
 
         @Subcommand("db")
         @Description("Toggles database console logging")
-        public void onDatabaseDebug(GPlayer gPlayer, String[] args) {
+        public void onDatabaseDebug(CommandSender sender, String[] args) {
             boolean value = AsyncDBQueue.getInstance().isDebug();
             AsyncDBQueue.getInstance().setDebug(!value);
             if (!value) {
-                gPlayer.sendMsg(String.format(
+                sender.sendMessage(String.format(
                         "%sDatabase console logging = %strue.",
                         ChatColor.GREEN,
                         ChatColor.YELLOW));
             } else {
-                gPlayer.sendMsg(String.format(
+                sender.sendMessage(String.format(
                         "%sDatabase console logging = %sfalse.",
                         ChatColor.GREEN,
                         ChatColor.GRAY));
