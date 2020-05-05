@@ -30,13 +30,20 @@ public class FurnaceQueue {
         return furnaceQueue.pollFirst();
     }
 
-    public void burnFuel(ItemStack itemStack) {
+    public UUID burnFuel(ItemStack itemStack) {
         PlayerFurnaceFuel firstInsertedFuel = getFirstInsertedFuel();
-
+        if (firstInsertedFuel.getCount() - itemStack.getAmount() > 0) {
+            firstInsertedFuel.setCount(firstInsertedFuel.getCount() - itemStack.getAmount());
+            furnaceQueue.addFirst(firstInsertedFuel);
+        } else {
+            System.out.println("Last bit of fuel added by " + firstInsertedFuel.getPlayerId() + " burned out.");
+        }
+        return firstInsertedFuel.getPlayerId();
     }
 
     public void insertFuel(UUID playerId, ItemStack itemStack) {
         if (hasFuelForPlayer(playerId)) {
+            System.out.println("Furnace has fuel for player already");
             PlayerFurnaceFuel playerFurnaceFuel = getPlayerFurnaceFuel(playerId);
             furnaceQueue.remove(playerFurnaceFuel);
             PlayerFurnaceFuel newFuel = PlayerFurnaceFuel.builder()
@@ -47,6 +54,7 @@ public class FurnaceQueue {
             furnaceQueue.add(newFuel);
             playerFurnaceFuelMap.put(playerId, newFuel);
         } else {
+            System.out.println("Inserting fuel into queue for player");
             PlayerFurnaceFuel newFuel = PlayerFurnaceFuel.builder()
                     .playerId(playerId)
                     .fuelType(itemStack.getType())
@@ -61,6 +69,10 @@ public class FurnaceQueue {
         int removedAmount = 0;
         final int toRemove = itemStack.getAmount();
         while (removedAmount < toRemove) {
+            if (furnaceQueue.isEmpty()) {
+                System.out.println("No fuel to possibly remove.");
+                return;
+            }
             // if a player removes fuel, remove theirs first and then remove others
             if (hasFuelForPlayer(playerId)) {
                 PlayerFurnaceFuel playerFurnaceFuel = getPlayerFurnaceFuel(playerId);
