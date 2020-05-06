@@ -1,4 +1,4 @@
-# GlobalWarming-![](https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master) - Supports Minecraft 1.13+
+# GlobalWarming-![](https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master) - Supports Minecraft 1.14+
 Minecraft Server Java Edition (Spigot) plugin which adds game-changing climate change mechanics.
 
 <a href="https://discord.gg/VR96VvC"><img src="https://discordapp.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png" height="50"></a>
@@ -6,7 +6,7 @@ Minecraft Server Java Edition (Spigot) plugin which adds game-changing climate c
 Table of Contents
 =================
 
-   * [GlobalWarming - <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/259d74d6a1c5d317c8f7b10d09183313da539383/68747470733a2f2f7472617669732d63692e6f72672f6e73706f72696c6c6f2f476c6f62616c5761726d696e672e7376673f6272616e63683d6d6173746572"><img src="https://camo.githubusercontent.com/259d74d6a1c5d317c8f7b10d09183313da539383/68747470733a2f2f7472617669732d63692e6f72672f6e73706f72696c6c6f2f476c6f62616c5761726d696e672e7376673f6272616e63683d6d6173746572" alt="" data-canonical-src="https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master" style="max-width:100\x;"></a> - Supports Minecraft 1.13 ](#globalwarming------supports-minecraft-113)
+   * [GlobalWarming - <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/259d74d6a1c5d317c8f7b10d09183313da539383/68747470733a2f2f7472617669732d63692e6f72672f6e73706f72696c6c6f2f476c6f62616c5761726d696e672e7376673f6272616e63683d6d6173746572"><img src="https://camo.githubusercontent.com/259d74d6a1c5d317c8f7b10d09183313da539383/68747470733a2f2f7472617669732d63692e6f72672f6e73706f72696c6c6f2f476c6f62616c5761726d696e672e7376673f6272616e63683d6d6173746572" alt="" data-canonical-src="https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master" style="max-width:100\x;"></a> - Supports Minecraft 1.14 ](#globalwarming------supports-minecraft-114)
       * [Contributing](#contributing)
       * [Builds](#builds)
       * [Overview](#overview)
@@ -28,10 +28,6 @@ Table of Contents
 - [Developer Setup](https://github.com/nsporillo/GlobalWarming/wiki/Developer-Setup-and-Installation)
 - There is a Kanban board on Github where I'll be prioritizing work, feel free to help work on any of the tasks.
 - Pull requests welcome! This is a very new project and I appreciate contributions.
-
-## Builds
-- <strike><a href="http://jenkins.porillo.net/job/GlobalWarming/">Snapshots on <img src="https://i.imgur.com/3FtNxcM.png" height="30"></a></strike> 
-- Jenkins was exploited with RCE, currently down for maintenence.
 
 ## Overview
 + Adds the concept of greenhouse gases (CO2) in the worlds atmosphere 
@@ -58,16 +54,15 @@ Table of Contents
 + Designing a default model that doesn't quickly destroy worlds
 + Efficiently applying in-game mechanics changes
 
-## (Planned) Features
+## Features
 + Scoreboard Integration - Players can compete for carbon neutrality! The worst polluters can be shamed.
-+ Economy Integration - Carbon Offsetting using your in-game currency! Set up tree-planting bounties 
++ Economy Integration - Set up tree-planting bounties 
 + Carbon Scorecard - Each player can see their latest carbon footprint trends via the command line.
-+ Multi-world - You can experiment with this plugin on one of your worlds to test it out!
++ Multi-world - Associate emissions in the end or nether worlds to the primary overworld with ease.
 + Custom Models - The inner numerical workings are as configurable as possible. Set thresholds, probabilities, and distributions.
 + Database storage - Load data on startup, queue DB changes to be done async and at intervals (instead of as they happen, that'd kill performance), and empty queue on shutdown. 
 + Highly configurable - Almost everything will have some degree of configuration to suit your server's needs.
-+ Efficient - Despite major mechanics changes and an extensive event listening setup, I plan to optimize this plugin to be suitable for up to medium to large servers. 
-
++ Efficient - Despite major mechanics changes and an extensive event listening setup, GlobalWarming is fast.
 
 ## Negative Climate Damages (Sample Model)
 Higher temps inherit the damages from the lower temps
@@ -84,10 +79,6 @@ Higher temps inherit the damages from the lower temps
 
 These are just a sample of the possible effects, these will be configurable and implement randomness and probabilities.
 
-
-## Roadmap
-+ Support for non-spigot platforms.
-+ <strike>Incorporate Methane, since CO2 is not the only greenhouse gas that matters.</strike> Done!
 
 ## Related Science of Climate Change
 ### Atmosphere warms with more CO2 because of Greenhouse Effect
