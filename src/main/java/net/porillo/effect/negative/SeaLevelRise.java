@@ -122,6 +122,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
         GlobalWarming.getInstance().getLogger().info("Loading Climate Effect " + super.getName());
 
         for (World world : getSeaLevelEnabledWorlds()) {
+            long now = -System.currentTimeMillis();
             taggedBlocks.put(world.getUID().toString(), new HashSet<>()); // ensure we have
             EffectData effectData = new EffectData(world.getUID().toString(), "seaLevelBlocks.db");
             String contents = effectData.getContents();
@@ -130,18 +131,19 @@ public class SeaLevelRise extends ListenerClimateEffect {
                 continue;
             }
 
-            String[] locStrings = contents.split(",");
+            String[] locStrings = contents.split("\\|");
             int loadCount = 0;
             for (String locString : locStrings) {
-                String[] coords = locString.split("-");
+                String[] coords = locString.split(",");
                 Location location = new Location(world, parseInt(coords[0]), parseInt(coords[1]), parseInt(coords[2]));
                 world.getBlockAt(location).setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
                 loadCount++;
             }
 
+            now += System.currentTimeMillis();
             GlobalWarming.getInstance().getLogger().info(
-                    String.format("Loaded [%d] block metadata from [%s] for world [%s]",
-                            loadCount, effectData.getEffectName(), world.getName()));
+                    String.format("Loaded [%d] block metadata from [%s] for world [%s], took %d ms.",
+                            loadCount, effectData.getEffectName(), world.getName(), now));
         }
     }
 
@@ -152,20 +154,22 @@ public class SeaLevelRise extends ListenerClimateEffect {
         for (World world : getSeaLevelEnabledWorlds()) {
             Set<Location> taggedBlockSet = taggedBlocks.get(world.getUID().toString());
             if (!taggedBlockSet.isEmpty()) {
+                long now = -System.currentTimeMillis();
                 StringBuilder builder = new StringBuilder();
                 EffectData effectData = new EffectData(world.getUID().toString(), "seaLevelBlocks.db");
 
                 for (Location location : taggedBlockSet) {
-                    builder.append(String.format("%d-%d-%d,",
+                    builder.append(String.format("%d,%d,%d|",
                             location.getBlockX(), location.getBlockY(), location.getBlockZ()));
                 }
 
                 builder.setLength(builder.length() - 1);
                 effectData.writeContents(builder.toString());
 
+                now += System.currentTimeMillis();
                 GlobalWarming.getInstance().getLogger().info(
-                        String.format("Saved [%d] block metadata to [%s] for world [%s]",
-                                taggedBlockSet.size(), effectData.getEffectName(), world.getName()));
+                        String.format("Saved [%d] block metadata to [%s] for world [%s], took %d ms.",
+                                taggedBlockSet.size(), effectData.getEffectName(), world.getName(), now));
             }
         }
     }
