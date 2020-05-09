@@ -35,4 +35,7 @@ public abstract class ClimateEffect {
         EffectEngine.getInstance().unregisterEffect(getType());
     }
 
+    public abstract void onPluginEnable();
+
+    public abstract void onPluginDisable();
 }

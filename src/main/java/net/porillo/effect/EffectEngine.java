@@ -69,7 +69,15 @@ public class EffectEngine {
                     ScheduleClimateEffect runnable = (ScheduleClimateEffect) effect;
                     runnable.setTaskId(Bukkit.getScheduler().runTaskTimer(GlobalWarming.getInstance(), runnable, 0, runnable.getPeriod()).getTaskId());
                 }
+
+                effect.onPluginEnable();
             }
+        }
+    }
+
+    public void unloadEffects() {
+        for (ClimateEffect climateFffect : effects.values()) {
+            climateFffect.onPluginDisable();
         }
     }
 

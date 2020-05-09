@@ -8,6 +8,7 @@ import net.porillo.GlobalWarming;
 import net.porillo.effect.ClimateData;
 import net.porillo.effect.api.ClimateEffectType;
 import net.porillo.effect.api.ListenerClimateEffect;
+import net.porillo.effect.storage.EffectData;
 import net.porillo.engine.ClimateEngine;
 import net.porillo.engine.api.Distribution;
 import net.porillo.engine.api.WorldClimateEngine;
@@ -26,6 +27,7 @@ import org.bukkit.metadata.MetadataValue;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static java.lang.Integer.parseInt;
 import static org.bukkit.Material.*;
 
 /**
@@ -49,6 +51,8 @@ public class SeaLevelRise extends ListenerClimateEffect {
     private static final Set<Material> replaceOnFall = new HashSet<>();
     private static final String SEALEVEL_BLOCK = "S";
 
+    private final Map<String, Set<Location>> taggedBlocks = new HashMap<>();
+
     private final ConcurrentLinkedQueue<ChunkSnapshot> requestQueue;
     private final Map<GChunk, Integer> waterLevel = new HashMap<>();
     @Getter private Distribution seaMap;
@@ -65,7 +69,8 @@ public class SeaLevelRise extends ListenerClimateEffect {
         replaceOnRise.add(FERN);
         replaceOnRise.add(ALLIUM);
         replaceOnRise.add(VINE);
-        
+        replaceOnRise.add(DEAD_BUSH);
+
         for (Material material : values()) {
             String mat = material.name().toLowerCase();
             if (mat.contains("flower") || mat.contains("sapling") || mat.contains("seed")) {
@@ -85,6 +90,86 @@ public class SeaLevelRise extends ListenerClimateEffect {
         requestQueue = new ConcurrentLinkedQueue<>();
     }
 
+    private Set<World> getSeaLevelEnabledWorlds() {
+        Set<World> worlds = new HashSet<>();
+
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getEnvironment() != World.Environment.NORMAL) {
+                continue;
+            }
+
+            final WorldClimateEngine wce = ClimateEngine.getInstance().getClimateEngine(world.getUID());
+            if (wce != null && wce.isEffectEnabled(ClimateEffectType.SEA_LEVEL_RISE)) {
+                worlds.add(world);
+            }
+        }
+
+        return worlds;
+    }
+
+    private void addTaggedBlock(String s, Block block) {
+        block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
+        taggedBlocks.computeIfAbsent(s, k -> new HashSet<>()).add(block.getLocation());
+    }
+
+    private void removeTaggedBlock(String s, Block block) {
+        block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
+        taggedBlocks.computeIfAbsent(s, k -> new HashSet<>()).remove(block.getLocation());
+    }
+
+    @Override
+    public void onPluginEnable() {
+        GlobalWarming.getInstance().getLogger().info("Loading Climate Effect " + super.getName());
+
+        for (World world : getSeaLevelEnabledWorlds()) {
+            taggedBlocks.put(world.getUID().toString(), new HashSet<>()); // ensure we have
+            EffectData effectData = new EffectData(world.getUID().toString(), "seaLevelBlocks.db");
+            String contents = effectData.getContents();
+
+            if (contents.isEmpty()) {
+                continue;
+            }
+
+            String[] locStrings = contents.split(",");
+            int loadCount = 0;
+            for (String locString : locStrings) {
+                String[] coords = locString.split("-");
+                Location location = new Location(world, parseInt(coords[0]), parseInt(coords[1]), parseInt(coords[2]));
+                world.getBlockAt(location).setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
+                loadCount++;
+            }
+
+            GlobalWarming.getInstance().getLogger().info(
+                    String.format("Loaded [%d] block metadata from [%s] for world [%s]",
+                            loadCount, effectData.getEffectName(), world.getName()));
+        }
+    }
+
+    @Override
+    public void onPluginDisable() {
+        GlobalWarming.getInstance().getLogger().info("Unloading Climate Effect " + super.getName());
+
+        for (World world : getSeaLevelEnabledWorlds()) {
+            Set<Location> taggedBlockSet = taggedBlocks.get(world.getUID().toString());
+            if (!taggedBlockSet.isEmpty()) {
+                StringBuilder builder = new StringBuilder();
+                EffectData effectData = new EffectData(world.getUID().toString(), "seaLevelBlocks.db");
+
+                for (Location location : taggedBlockSet) {
+                    builder.append(String.format("%d-%d-%d,",
+                            location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+                }
+
+                builder.setLength(builder.length() - 1);
+                effectData.writeContents(builder.toString());
+
+                GlobalWarming.getInstance().getLogger().info(
+                        String.format("Saved [%d] block metadata to [%s] for world [%s]",
+                                taggedBlockSet.size(), effectData.getEffectName(), world.getName()));
+            }
+        }
+    }
+
     /**
      * Update the queue with loaded-chunks one the queue is empty
      */
@@ -102,7 +187,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
                             final int deltaSeaLevel = (int) seaMap.getValue(wce.getTemperature());
                             final int customSeaLevel = baseSeaLevel + deltaSeaLevel;
 
-                            for (Chunk chunk : ChunkSorter.sortByDistance(world.getLoadedChunks() ,waterLevel,
+                            for (Chunk chunk : ChunkSorter.sortByDistance(world.getLoadedChunks(), waterLevel,
                                     world.getPlayers(), customSeaLevel, chunksPerPeriod * 2)) {
                                 requestQueue.add(chunk.getChunkSnapshot(false, true, false));
                             }
@@ -172,7 +257,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
                             //Set any air-blocks below-and-at sea-level to water
                             //as long as the sea-level is above normal [5]
                             block.setType(WATER, true);
-                            block.setMetadata(SEALEVEL_BLOCK, BLOCK_TAG);
+                            addTaggedBlock(world.getUID().toString(), block);
                         }
                     } else if (replaceOnFall.contains(block.getType())) {
                         if ((block.hasMetadata(SEALEVEL_BLOCK) && (y > customSeaLevel || deltaSeaLevel == 0))
@@ -182,7 +267,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
                             // - Owner of block above sea-level [2]
                             // - Owner of block below sea-level when sea-level is normal [4]
                             block.setType(AIR, true);
-                            block.removeMetadata(SEALEVEL_BLOCK, GlobalWarming.getInstance());
+                            removeTaggedBlock(world.getUID().toString(), block);
                         }
                     }
                 }

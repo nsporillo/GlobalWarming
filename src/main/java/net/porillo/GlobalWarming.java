@@ -129,6 +129,7 @@ public class GlobalWarming extends JavaPlugin {
     public void onDisable() {
         AsyncDBQueue.getInstance().close();
         GlobalWarming.getInstance().getConnectionManager().close();
+        EffectEngine.getInstance().unloadEffects(); // handles stuff like sea level metadata disk storage
     }
 
     private void registerCommands() {
