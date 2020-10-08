@@ -21,6 +21,7 @@ Table of Contents
          * [Atmospheric Energy Budget](#atmospheric-energy-budget)
          * [Impact on Oceans](#impact-on-oceans)
          * [Ecological Niche](#ecological-niche)
+         * [Impact on Glaciers and the ice cap](#glaciers-impact)
       * [Suggestions](#suggestions)
 
 
@@ -97,6 +98,11 @@ Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
 - Plants also have niches (Sunlight, Temperature, Water, Nutrients, CO2, Soil, etc)
 
 Source: RIT "Climate Change: Science, Technology, and Policy" lecture slides
+
+### Impact on Glaciers and the ice cap
+![Impact on Glaciers](https://lh3.googleusercontent.com/proxy/390ZAIrQCypiP8iKwJMUvbUnwe4LNH3yUGRNgrxVbaqSijyuFlqaVMj41VM0bhvk_ezzeQbB0TEhY2WMEpKZjPI7LJSGDRvixALKz1Gwo5ev9CdG_04EugFJE0flmRlQln0SfSORr0gv1fLxU1kPJtMYJQuAFGR4YHjoXrn61RpuzQ)
+
+Source:http://www.coolgeography.co.uk/
 
 ## Suggestions 
 Feel free to create issues on this GitHub project, or join the discord
