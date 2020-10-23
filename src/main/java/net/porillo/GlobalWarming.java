@@ -67,19 +67,27 @@ public class GlobalWarming extends JavaPlugin {
         this.tableManager = new TableManager();
 
         try {
-            //Connect to the database:
-            // - Refer to setup.sh for setup information
+            /**
+             * Connect to the database:
+             * - Refer to setup.sh for setup information
+             */
             Connection connection = GlobalWarming.getInstance().getConnectionManager().openConnection();
 
-            //Create the database if it doesn't exist:
-            // - Required for the first run
+            /**
+             * Create the database if it doesn't exist:
+             * - Required for the first run
+             */
             AsyncDBQueue.getInstance().writeCreateTableQueue(connection);
 
-            //Load any stored records back into memory:
+            /**
+             * Load any stored records back into memory:
+             */
             AsyncDBQueue.getInstance().writeSelectQueue(connection);
 
-            //Confirm that each world has a record:
-            // - Required for the first run
+            /**
+             * Confirm that each world has a record:
+             * - Required for the first run
+             */
             WorldTable worldTable = tableManager.getWorldTable();
             for (World world : Bukkit.getWorlds()) {
                 GWorld gWorld = worldTable.getWorld(world.getUID());
