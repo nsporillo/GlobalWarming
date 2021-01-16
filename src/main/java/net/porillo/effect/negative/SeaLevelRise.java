@@ -257,7 +257,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
                     //--------------------------------------------------------------------------------------------------
                     Block block = world.getChunkAt(snapshot.getX(), snapshot.getZ()).getBlock(x, y, z);
                     if (replaceOnRise.contains(block.getType())) {
-                        if (deltaSeaLevel > 0 && y <= customSeaLevel && !isOverride) {
+                        if (deltaSeaLevel > 0 && y <= customSeaLevel && !isOverride && block.getLightFromSky() > 12) {
                             //Set any air-blocks below-and-at sea-level to water
                             //as long as the sea-level is above normal [5]
                             block.setType(WATER, true);
