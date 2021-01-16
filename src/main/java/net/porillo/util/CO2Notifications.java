@@ -25,6 +25,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Maintain one periodic notification-message per world (uses the scoreboard's worlds)
@@ -36,12 +37,9 @@ public class CO2Notifications {
     private enum TemperatureRange {LOW, AVERAGE, HIGH}
 
     @Getter
-    private Map<UUID, BossBar> bossBars;
-    private static final long NOTIFICATION_INTERVAL_TICKS = GlobalWarming.getInstance().getConf().getNotificationInterval();
-    private static final long NOTIFICATION_DURATION_TICKS = GlobalWarming.getInstance().getConf().getNotificationDuration();
+    private Map<UUID, BossBar> bossBars = new ConcurrentHashMap<>();
 
     public CO2Notifications() {
-        bossBars = new HashMap<>();
         showPlayerNotifications();
     }
 
@@ -50,35 +48,31 @@ public class CO2Notifications {
                 GlobalWarming.getInstance(),
                 () -> {
                     //Create notification for all players, grouped by associated-world
-                    synchronized (this) {
-                        bossBars.clear();
-                        for (World world : Bukkit.getWorlds()) {
-                            if (world != null) {
-                                BossBar bossBar = Bukkit.createBossBar(
-                                        getNotificationMessage(world.getUID()),
-                                        BarColor.WHITE,
-                                        BarStyle.SOLID);
+                    bossBars.clear();
+                    for (World world : Bukkit.getWorlds()) {
+                        if (world != null) {
+                            BossBar bossBar = Bukkit.createBossBar(
+                                    getNotificationMessage(world.getUID()),
+                                    BarColor.WHITE,
+                                    BarStyle.SOLID);
 
-                                bossBars.put(world.getUID(), bossBar);
-                                for (Player player : world.getPlayers()) {
-                                    bossBar.addPlayer(player);
-                                }
+                            bossBars.put(world.getUID(), bossBar);
+                            for (Player player : world.getPlayers()) {
+                                bossBar.addPlayer(player);
                             }
                         }
                     }
 
                     //Hide the notification after some time:
-                    Bukkit.getScheduler().scheduleAsyncDelayedTask(
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(
                             GlobalWarming.getInstance(),
                             () -> {
-                                synchronized (this) {
-                                    for (BossBar bossBar : bossBars.values()) {
-                                        bossBar.removeAll();
-                                    }
+                                for (BossBar bossBar : bossBars.values()) {
+                                    bossBar.removeAll();
                                 }
                             },
-                            NOTIFICATION_DURATION_TICKS);
-                }, 0L, NOTIFICATION_INTERVAL_TICKS);
+                            GlobalWarming.getInstance().getConf().getNotificationDuration());
+                }, 0L, GlobalWarming.getInstance().getConf().getNotificationInterval());
     }
 
     private String getNotificationMessage(UUID worldId) {
