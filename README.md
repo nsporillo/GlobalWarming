@@ -8,7 +8,7 @@ Table of Contents
 
    * [GlobalWarming - <a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/259d74d6a1c5d317c8f7b10d09183313da539383/68747470733a2f2f7472617669732d63692e6f72672f6e73706f72696c6c6f2f476c6f62616c5761726d696e672e7376673f6272616e63683d6d6173746572"><img src="https://camo.githubusercontent.com/259d74d6a1c5d317c8f7b10d09183313da539383/68747470733a2f2f7472617669732d63692e6f72672f6e73706f72696c6c6f2f476c6f62616c5761726d696e672e7376673f6272616e63683d6d6173746572" alt="" data-canonical-src="https://travis-ci.org/nsporillo/GlobalWarming.svg?branch=master" style="max-width:100\x;"></a> - Supports Minecraft 1.14 ](#globalwarming------supports-minecraft-114)
       * [Contributing](#contributing)
-      * [Builds](#builds)
+      * [Install](#install)
       * [Overview](#overview)
       * [Purpose](#purpose)
       * [Mechanics](#mechanics)
@@ -28,6 +28,19 @@ Table of Contents
 - [Developer Setup](https://github.com/nsporillo/GlobalWarming/wiki/Developer-Setup-and-Installation)
 - There is a Kanban board on Github where I'll be prioritizing work, feel free to help work on any of the tasks.
 - Pull requests welcome! This is a very new project and I appreciate contributions.
+
+## Install
++ Download and install mysql: https://dev.mysql.com/downloads/mysql/
+  + Setup a user that can create tables. 
+  + Add a schema called GlobalWarming (if your mysql is configured to only allow lowercase schemas, globalwarming with lowercase works, you just have to change that config in config.yaml below)
++ Setup and install build tools with it's Prerequisites (java and git): https://www.spigotmc.org/wiki/buildtools/
++ Setup a Spigot server using these instructions: https://www.spigotmc.org/wiki/spigot-installation/
+  + Copy the spigot.jar for the build tools install to a new directory with the batch script from the Spigot server install, making sure to edit the batch script with the amount of Ram for the server and the correct file name
++ Run the server batch script to get all of the folders created
++ Copy GlobalWarming.jar into the plugins folder in your server directory
++ Run the server again now that you have the plugin.  This will create a GlobalWarming folder in the plugins folder.
++ Edit config.yaml in the GlobalWarming folder to specify your mysql db username and password.
++ You should be able to run the server with the GlobalWarming plugin successfully now and connect to your server from the Minecraft Game.
 
 ## Overview
 + Adds the concept of greenhouse gases (CO2) in the worlds atmosphere 
