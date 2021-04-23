@@ -33,7 +33,7 @@ Table of Contents
 + Download and install mysql: https://dev.mysql.com/downloads/mysql/
   + Setup a user that can create tables. 
   + Add a schema called GlobalWarming (if your mysql is configured to only allow lowercase schemas, globalwarming with lowercase works, you just have to change that config in config.yaml below)
-+ Setup and install build tools with it's Prerequisites (java and git): https://www.spigotmc.org/wiki/buildtools/
++ Setup and install BuildTools with it's Prerequisites (java and git): https://www.spigotmc.org/wiki/buildtools/
 + Setup a Spigot server using these instructions: https://www.spigotmc.org/wiki/spigot-installation/
   + Copy the spigot.jar for the build tools install to a new directory with the batch script from the Spigot server install, making sure to edit the batch script with the amount of Ram for the server and the correct file name
 + Run the server batch script to get all of the folders created
