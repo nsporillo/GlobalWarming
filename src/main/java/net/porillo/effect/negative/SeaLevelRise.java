@@ -62,7 +62,7 @@ public class SeaLevelRise extends ListenerClimateEffect {
     static {
         replaceOnRise.add(AIR);
         replaceOnRise.add(TALL_GRASS);
-        replaceOnRise.add(GRASS);
+        replaceOnRise.add(GRASS_BLOCK);
         replaceOnRise.add(LILY_PAD);
         replaceOnRise.add(LILAC);
         replaceOnRise.add(SUGAR_CANE);

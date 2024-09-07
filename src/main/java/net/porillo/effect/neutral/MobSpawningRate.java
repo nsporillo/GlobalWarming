@@ -45,7 +45,6 @@ public class MobSpawningRate extends ListenerClimateEffect {
                                 case ZOMBIE:
                                 case DROWNED:
                                 case HUSK:
-                                case PIG_ZOMBIE:
                                 case ZOMBIE_VILLAGER:
                                     ((Zombie) entity).setBaby(true);
                                     break;

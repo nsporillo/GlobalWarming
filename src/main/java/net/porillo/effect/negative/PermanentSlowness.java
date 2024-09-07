@@ -26,7 +26,7 @@ public class PermanentSlowness extends ScheduleClimateEffect implements Listener
 
     private void updatePlayerSlowness(Player player, double temperature) {
         if (temperature >= temperatureThreshold) {
-            PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, duration, 1);
+            PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOWNESS, duration, 1);
             player.addPotionEffect(potionEffect);
         }
     }
